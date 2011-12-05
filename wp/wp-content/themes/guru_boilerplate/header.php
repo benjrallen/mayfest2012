@@ -54,15 +54,16 @@
 		 */
 		wp_head();		
 ?>
-
-		Modernizr.load([
-			{ load : ['//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'] },
-			/* plugins.js & common.js fordevelopment */
-			{ load : Guru.TemplateUrl+'/js/plugins.js' },
-			{ load : Guru.TemplateUrl+'/js/common.js' }
-			/* concatenate and optimize seperate script files for deployment using google closure compiler (compiler.jar) in js folder */
-			//{ load : Guru.TemplateUrl+'/js/theme.js' }
-		]);
+		<script type="text/javascript">
+			Modernizr.load([
+				{ load : ['//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'] },
+				/* plugins.js & common.js fordevelopment */
+				{ load : Guru.TemplateUrl+'/js/plugins.js' },
+				{ load : Guru.TemplateUrl+'/js/common.js' }
+				/* concatenate and optimize seperate script files for deployment using google closure compiler (compiler.jar) in js folder */
+				//{ load : Guru.TemplateUrl+'/js/theme.js' }
+			]);
+		</script>
 	</head>
 	<body <?php body_class(); ?>>
 		<header id="header" class="wrap" role="banner">
