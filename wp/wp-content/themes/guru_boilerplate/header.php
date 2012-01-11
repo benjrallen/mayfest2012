@@ -56,7 +56,7 @@
 ?>
 		<script type="text/javascript">
 			Modernizr.load([
-				{ load : ['//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'] },
+				{ load : ['//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'] },
 				/* plugins.js & common.js fordevelopment */
 				{ load : Guru.TemplateUrl+'/js/plugins.js' },
 				{ load : Guru.TemplateUrl+'/js/common.js' }
