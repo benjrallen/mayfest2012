@@ -535,13 +535,16 @@ if ( function_exists( 'add_theme_support' ) ) {
 
 /** BEGIN GuRu Theme Specific Functions **/
 
-/*
-function flag_content_more_link($link) { 
-	$link = '<a href="'.get_permalink().'" class="orange flag page-read-more" title="Read More">Read More</a>';
-	return $link;
+
+/** WE LOAD IN OUR MODERNIZR AND JQUERY SCRIPTS OURSELVES
+ *		Modernizr.load in header.php controls all the asynchronous loading
+ */
+function deregister_base_scripts(){
+	wp_deregister_script( 'ieshiv' ); // get rid of IEShiv if it somehow got called too (IEShiv is included in Modernizr)
+	wp_deregister_script( 'modernizr' ); // get rid of any native Modernizr
+	wp_deregister_script( 'jquery' ); // get rid of WP's jQuery
 }
-add_filter('the_content_more_link', 'flag_content_more_link');
-*/
+add_action('init', 'deregister_base_scripts');
 
 //register secondary thumbnail image, using multiple-post-thumbnail plugin
 if (class_exists('MultiPostThumbnails')) {
