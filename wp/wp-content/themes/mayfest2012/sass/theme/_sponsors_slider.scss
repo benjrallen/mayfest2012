@@ -1,0 +1,40 @@
+//
+// CSS for the specific theme rotator
+//
+
+/** Slider **/
+
+#slider, .slider{
+	width: 100%;
+	overflow:hidden;
+	position: relative;
+	height: 116px;
+	
+	& .slides{
+		@include padding-leader();
+		@include padding-trailer();
+		width: 9999em;
+		position: absolute;
+		top: 0;
+		left: $base-width;
+		
+		//background: #bada55;
+		
+		& .slide{
+			@include inline-block;
+			vertical-align: middle;
+			
+			& a{
+				display: block;
+				padding-left: 2em;
+				padding-right: 2em;
+				
+				& img{
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+/** End Slider **/

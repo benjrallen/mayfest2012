@@ -10,12 +10,17 @@
 		@include float-right;
 	}
 	& a{
-		color: lighten( $base-color, 30% );
+		color: $base-color;
+		
+		&:hover{
+			color: $guru-color;
+		}
 	}
-}
-
-a#guruLink{
-	&:hover{
-		color: $guru-color; //from _base
+	
+	& .inner{
+		@include padding-leader();
+		@include padding-trailer();
+		padding-left: 2em;
+		padding-right: 2em;
 	}
 }

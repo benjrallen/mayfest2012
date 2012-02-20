@@ -2,17 +2,145 @@
 // CSS for the specific theme header
 //
 
-#header{
-		
-	& a#logo{
+$header-width: 240px;
 
+#header{
+	
+	@include inline-block;
+	vertical-align: middle;
+	width: $header-width;
+	background: #fff;
+	@include padding-leader(1.5);
+	@include margin-trailer( 4 );
+	margin-left: 2.25em;
+	margin-right: 0.75em;
+	
+	@include box-shadow( $font-color, 0, 12px, 20px, -8px );
+	@include pie;
+	//position: relative;
+
+	& a#logo, & #sublogo, & .banner-bottom{
+		text-indent: -9999em;
+		@include main-sprite;
+	}
+	
+	& a#logo{
 		@include single-transition( opacity, $base-transition-time, ease-in-out );
+		display: block;
+		height: 133px;
+		width: 214px;
+		margin-left: auto;
+		margin-right: auto;
+		background-position: -162px 0;
+		@include margin-trailer( 1 );
 		
 		&:hover{
 			@include opacity($base-hover-opacity);
 		}
 	}
 	
+	& #sublogo{
+		height: 220px;
+		width: 239px;
+		display: block;
+		background-position: -430px 0;
+	}
+	
+	& .times{
+		background: $base-orange;
+		padding-left: 1em;
+		padding-right: 1em;
+		color: #fff;
+		font-weight: 700;
+		@include margin-leader(0.125);
+		@include padding-leader(0.25);
+		@include padding-trailer(0.125);
+		
+		& .marker, & .content{
+			@include inline-block;
+			vertical-align: middle;
+		}
+		
+		& .marker{
+			height: 82px;
+			width: 48px;
+			@include main-sprite;
+			background-position: 0 -79px;
+		}
+		& .content{
+			margin-left: 1em;
+			width: 145px;
+			
+			& p{
+				@include adjust-font-size-to(14px, 0.9);
+				@include margin-leader(0.25);
+				@include margin-trailer(0.125);
+			}
+		}
+		
+	}
+	
+	& .social{
+		@include padding-leader( 0.375 );
+		@include padding-trailer( 0.75 );
+		padding-left: 1.5em;
+		padding-right: 1.5em;
+		
+		& h3{
+			color: $base-green;
+			text-align: center;
+			font-weight: 700;
+			letter-spacing: 1px;
+			@include padding-trailer( 0.5 );
+		}
+		& a{
+			//@include inline-block;
+			display: block;
+			float: left;
+			height: 32px;
+			width: 32px;
+			@include main-sprite;
+			text-indent: -9999em;
+			margin-left: 1.8em;
+			
+			&.fb{
+				margin-left: 0;
+				background-position: 0 -236px;
+				&:hover{
+					background-position: 0 -268px;
+				}	
+			}
+			&.flickr{
+				background-position: -64px -236px;
+				&:hover{
+					background-position: -64px -268px;
+				}	
+			}
+			&.tw{
+				background-position: -32px -236px;
+				&:hover{
+					background-position: -32px -268px;
+				}	
+			}
+			&.my{
+				background-position: -96px -236px;
+				&:hover{
+					background-position: -96px -268px;
+				}	
+			}
+		}
+		
+	}
+	
+	& .banner-bottom{
+		height: 50px;
+		width: 240px;
+		display: block;
+		position: absolute;
+		left: 0;
+		bottom: -50px;
+		background-position: 0 -344px;
+	}
 }
 
 

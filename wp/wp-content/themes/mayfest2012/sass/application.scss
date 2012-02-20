@@ -4,22 +4,67 @@
 //look in base for other variables
 $inner-content-padding: 20px;
 
-body{
+html, body{
 	height:100%;
+}
+
+body{
 	width:100%;
 	display:block;
-	//background: $base-bg url('../images/bg-diag.png');
-	background: $base-bg;
-	//background: #bad;
+	
+	@include box-bg-textured;
+	
 	@include open-sans; //font stack
 	color:$base-color;
 
-	//position:relative;	
-	//@include min-height( 2000px );
+}
+
+#outer{
+	display: block;
+	//height: 100%;
+	width: 100%;
+	background: $base-bg;
+	
+	@include base-bg-textured;
+	
+	@include padding-trailer(4);
+
+	position: relative;
+	
+}
+
+#top, #access, #mainWrap, #content, #subfooter, #footer{
+	position: relative;
+	z-index: 2;
+}
+
+
+#bgPhoto{
+	position: absolute;
+	z-index: 0;
+	top: 0;
+	left: 0;
+	width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6{
 	//@include bowlby;
+	color: $base-header-color;
+	font-weight: 800;
+	
+	& a{
+		color: $base-header-color;
+
+		&:hover{ 
+			color: darken( $base-header-color, 10% ) 
+		}
+		&:active{
+			color: darken( $base-header-color, 15% ) 
+		}
+		&:visited{
+			color: $base-header-color;
+		}
+	}
 }
 
 h1{ @include adjust-font-size-to( 18px ); }
@@ -32,23 +77,17 @@ h4{ @include adjust-font-size-to( 12px ); }
 
 a{
 	text-decoration:none;
-	color: $base-color;
-	&:hover{ color: $guru-color; }
-	&:visited{
-		color: $base-color;
-	}
-	@include single-transition( all, $base-transition-time, ease-in-out );
+	//@include single-transition( all, $base-transition-time, ease-in-out );
 }
 
 b,strong{
-	color: $guru-color;
-	font-weight: 300;	
+	font-weight: 600;	
 }
 
 p{
-	@include margin-leader(0.5);
-	@include margin-trailer(0.5);
-	@include adjust-font-size-to(14px);
+	//@include margin-leader(0.5);
+	@include margin-trailer(0.75);
+	//@include adjust-font-size-to(14px);
 }
 
 input, textarea{
@@ -69,7 +108,8 @@ $sidebar-width: 180px;
 @import "theme/body";
 @import "theme/front_page";
 @import "theme/sidebar";
-	//@import "theme/rotator";
+@import "theme/rotator";
+@import "theme/sponsors_slider";
 	//@import "theme/footer_nav";
 @import "theme/footer";
 @import "theme/page_post";
@@ -85,6 +125,12 @@ $sidebar-width: 180px;
 .wrap{
 	width:$base-width;
 	margin:0 auto;
+}
+
+.line{
+	width: 1px;
+	height: 100%;
+	margin-left: -1px;
 }
 
 

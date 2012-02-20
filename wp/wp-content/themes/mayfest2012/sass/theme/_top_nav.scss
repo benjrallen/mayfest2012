@@ -1,38 +1,206 @@
-
-nav#access{
-	display:block;
-	cursor: default;
+nav{
 	
-	& .menu{
+	&#top, &#subfooter{
 		
-		& li{
-			@include single-transition( all, $base-transition-time, ease-in-out );
-										
-			&.menu-item-last{
-
-			}
-			
-			&:hover{
-				
-			}
-			
-			& a{
-				text-decoration:none;
-
-				
-				&:hover{
-				}
-			}
-			
-			&.current_page_item{
-				
-				& a{
-					
-				}
-			}
-
+		display:block;
+		cursor: default;
+		
+		& .menu{
+			@include inline-block-list;
 		}
 	}
 	
+	
+	&#top{
+		text-align: right;
+		font-weight: 800;
+		@include adjust-font-size-to(14px);
+		@include padding-leader( 0.5 );
+		
+		& .menu{
+			
+			& li{
+				padding-left: 33px;
+				height: 22px;
+				line-height: 22px;
+				@include main-sprite;
+				background-position: 0 0;
+				margin-right: 1em;
+				
+				& a{
+					display: block;
+					height: 22px;
+					line-height: 16px;
+				}
+			}
+		}
+	}
+	
+	&#access{
+		
+		background: lighten( $base-green, 8% );
+		//background: $base-green;
+		@include border-radius( $boxRad $boxRad 0 0 );
+		
+		display: block;
+		cursor: default;
+		@include single-text-shadow( $base-green-light, 1px, 1px, 2px );
+		
+		& .menu{
+			//display: table;
 
+			& li{
+				@include single-transition( all, $base-transition-time, ease-in-out );
+				
+				//display: table-cell;
+				@include float-left;
+				display: block;
+				text-align: center;
+				@include padding-leader(0.5);
+				@include padding-trailer(0.5);
+				
+				
+				&.menu-item-first{
+					@include border-radius( $boxRad 0 0 0 );
+					& a{
+						border-left: 1px solid transparent;
+					}
+				}
+				&.menu-item-last{
+					@include border-radius( 0 $boxRad 0 0 );
+					
+					& a{
+						border-right: 1px solid transparent;
+					}
+				}
+				
+				&:hover, &.current_page_item{
+					background: $base-green;
+
+					& a{
+						border-right: 1px solid transparent;
+						//border-left: 1px solid transparent;
+					}
+				}
+				
+				& a{
+					text-decoration:none;
+					@include adjust-font-size-to( 20px, 1 );					
+					color: $base-orange;
+					//font-weight: 800;
+					min-width: 100px;
+					display: block;
+					padding-left: 2em;
+					padding-right: 2em;
+					height: 3em;
+					
+					
+					border-right: 1px solid $base-green-light;
+					border-left: 1px solid $base-green-dark;
+
+					& .line, & .icon, & strong{
+						@include inline-block;
+						vertical-align: middle;
+					}
+					& strong{
+						font-weight: 800;
+						text-align: left;
+					}
+					
+					&:hover{
+					}
+				}
+				
+				&.current_page_item{
+					
+					& a{
+						
+					}
+				}
+				
+				&.artist-applications{
+					& a{
+						padding-left: 1em;
+						padding-right: 1em;
+						& .icon{
+							@include main-sprite;
+							background-position: 0 -508px;
+							width: 18px;
+							height: 46px;
+							padding-right: 0.5em;
+						}
+						& strong{
+							max-width: 130px;
+						}
+					}
+				}
+				&.booth-applications{
+					& a{
+						padding-left: 2em;
+						padding-right: 1.5em;
+						& .icon{
+							@include main-sprite;
+							background-position: -28px -508px;
+							width: 29px;
+							height: 49px;
+							padding-right: 0.5em;
+						}
+						& strong{
+							max-width: 130px;
+						}
+					}
+				}
+				&.food-vendors{
+					& a{
+						padding-left: 1.5em;
+						padding-right: 1.5em;
+						& .icon{
+							@include main-sprite;
+							background-position: -69px -508px;
+							width: 22px;
+							height: 46px;
+							padding-right: 0.5em;
+						}
+						& strong{
+							max-width: 85px;
+						}
+					}
+				}
+				&.q-as{
+					& a{
+						padding-left: 1.25em;
+						padding-right: 1em;
+						& .icon{
+							@include main-sprite;
+							background-position: -104px -508px;
+							width: 31px;
+							height: 45px;
+							padding-right: 0.5em;
+						}
+					}
+				}
+	
+			}
+		}
+	}
+}
+
+.lte7 nav{
+	&#access{
+		
+		
+		& .menu{
+
+			& li{
+				margin-top: -1px;
+				margin-bottom: 1px;
+				& a{
+					@include adjust-font-size-to( 20px, 1.5 );					
+					& strong{
+						
+					}
+				}
+			}
+		}
+	}	
 }

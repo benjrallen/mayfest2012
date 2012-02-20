@@ -7,6 +7,10 @@
 
 article.hentry{
 	
+	padding-left: 2em;
+	padding-right: 2em;
+	@include padding-trailer();
+	
 	& header.parent-title{
 		
 		& h3, & h4{
@@ -47,6 +51,55 @@ article.hentry{
 
 		}
 		
+	}
+	
+	
+	
+	& .col{
+		@include inline-block;
+		vertical-align: top;
+		
+		min-height: 1em;
+		width: 33%;
+		
+		& .in{
+			padding-left: 1em;
+			padding-right: 1em;
+		}
+		
+		& h2{
+			@include adjust-font-size-to( 22px );
+			letter-spacing: 1px;
+			
+			@include single-text-shadow( lighten($box-bg, 10%), 1px, 1px, 1px );
+		}
+		
+		& ul{
+			border-top: 1px solid $base-bg;
+			border-bottom: 1px solid lighten( $base-bg, 20% );
+			
+			& li{
+				border-top: 1px solid lighten( $base-bg, 20% );
+				border-bottom: 1px solid $base-bg;
+			}
+		}
+		
+		&.first{
+			& .in{
+				padding-left: 0;
+				padding-right: 2em;
+			}
+		}
+		&.mid{
+			& .in{
+			}
+		}
+		&.last{
+			& .in{
+				padding-right: 0;
+				padding-left: 1em;
+			}
+		}
 	}
 	
 }

@@ -12,6 +12,26 @@
 }
 
 
+@mixin bg-texture{
+	background-image: url("../images/bg-texture-50-8.png");
+}
+
+@mixin base-bg-textured{
+	background: darken( $base-bg, 5% );
+	//background: $base-bg;
+
+	@include bg-texture;
+}
+@mixin box-bg-textured{
+	background: lighten( $box-bg, 5% );
+	//background: $box-bg;
+
+	@include bg-texture;
+}
+
+
+
+
 @mixin hover-opacity{
 	&:hover{
 		@include opacity(0.7);

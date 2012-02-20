@@ -14,3 +14,47 @@
 	//	darken( $base-bg, 50% ) 10px 0 35px -30px
 	//);
 }
+
+.box, .wrap.box{
+	position: relative;
+	
+	& .inner{
+		@include box-bg-textured;
+		@include border-radius($boxRad);
+		//padding: 5em;
+	
+		@include margin-trailer();
+		border-top: 1px solid lighten( $box-bg, 10% );
+	
+		@include pie;
+		//position: relative;
+		z-index: 2;
+		
+	}
+
+	$shadow-width: 920px;
+	& .shadow{
+		@include main-sprite;
+		background-position: 0 -678px;
+		height: 37px;
+		width: $shadow-width;
+		position: absolute;
+		z-index: 1;
+		left: floor( ($base-width - $shadow-width) / 2 );
+		bottom: -9px;
+	}
+
+	&#content{
+		& .inner{
+			border-top: none;
+			//behavior: none;
+		}
+	}
+}
+
+.lte7 .box{
+	
+	& .shadow{
+		bottom: 9px;
+	}
+}

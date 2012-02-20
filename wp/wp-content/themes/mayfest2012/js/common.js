@@ -5,15 +5,65 @@
 		maxWidth = 960;
 		
 	$(document).ready(function(){
-		console.log('hello common ready');
 		
 		$('html.ie').length ? Guru.ie = true : Guru.ie = false;
 		$('html.lte8').length ? Guru.lte8 = true : Guru.lte8 = false;
 		typeof WebKitPoint !== 'undefined' ? Guru.webkit = true : Guru.webkit = false;
 				
 		
+        var fpRotate = new GuruRotator({
+             transitionTime: 750,
+             timeoutTime: 7000,
+             showControls: true,
+             autoRotate: true
+         });
 		
+		
+		accessFix();
+
+		var mySlider = new GuruSliderController({
+//			sliders: [
+//				{ 	container_selector: '#slider',
+//					slider_selector: '.slides',
+//					transition_time: 500
+//				},
+//				{	container_selector: '#sliderNo2',
+//					slider_selector: '.slidesClassButDifferent',
+//					transition_time: 800
+//				}
+//			],
+			container_selector: '.slider',
+			timeout_time: 3000,
+			transition_time: 1000
+		});
+		
+		//console.log( mySlider );
+
+
+		var twit =	new GuruTwitter({
+						//screen_name: 'FakeGurustu',
+						trim_user: true,
+						interval: 5000
+					});
+
 	});	
+	
+	function accessFix(){
+		if( $('nav#access').length ){
+			var nav = $('nav#access'),
+				lis = nav.find('li'),
+				navW = nav.width(),
+				w = 0;
+				
+			$.each( lis, function(i){
+				w += $(this).outerWidth();
+			});
+			
+			lis.last().css('padding-right', Math.floor( navW - w ) );
+				
+			//console.log( 'accessFix', navW, w );
+		}
+	}
 	
 	
 //	function autoMenu(){

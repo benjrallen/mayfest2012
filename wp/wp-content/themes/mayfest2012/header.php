@@ -70,8 +70,8 @@
 		/* We add some JavaScript to pages with the comment form
 		 * to support sites with threaded comments (when in use).
 		 */
-		if ( is_singular() && get_option( 'thread_comments' ) )
-			wp_enqueue_script( 'comment-reply' );
+		//if ( is_singular() && get_option( 'thread_comments' ) )
+		//	wp_enqueue_script( 'comment-reply' );
 
 		/* Always have wp_head() just before the closing </head>
 		 * tag of your theme, or you will break many plugins, which
@@ -82,12 +82,19 @@
 ?>
 	</head>
 	<body <?php body_class(); ?>>
-		<header id="header" class="wrap" role="banner">
-			<?php if (is_front_page()) { echo '<h1>'; } else { echo '<h2>'; } ?>
-			<a id="logo" href="<?php echo home_url( '/' ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a>
-			<?php if (is_front_page()) { echo '</h1>'; } else { echo '</h2>'; } ?>
-		</header>
 		
-		<?php get_template_part('nav','primary'); ?>
+	  <div id="outer">
 		
-		<section id="content" class="wrap" role="main">
+		<?php get_template_part('featured','background'); ?>
+		
+		<?php get_template_part('nav','top'); ?>
+		
+		<div id="mainWrap" class="wrap">
+			<?php get_template_part('header','banner'); ?>
+			<?php get_template_part('front-page','rotator'); ?>
+		</div>
+		
+		
+		<section id="content" class="box wrap" role="main">
+			<div class="inner">
+			<?php get_template_part('nav','primary'); ?>

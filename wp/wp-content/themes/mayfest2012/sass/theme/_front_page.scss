@@ -1,6 +1,193 @@
 article#front-page-entry.hentry{
 
+	//@include box-bg-textured;
+	//@include border-radius(4px);
+	//padding: 5em;
+	
+	
+	//border-top: 1px solid lighten( $box-bg, 10% );
+	
+	
 	& p{
 	}
 	
+	
+	& ul{
+		margin-left: 0;
+		list-style: none outside;
+		
+		& li{
+			
+			& a{
+				display: block;
+				@include padding-leader(0.25);
+				@include padding-trailer(0.25);
+				@include adjust-font-size-to(14px, 1.75);
+				@include single-transition( 'background', $base-transition-time, 'ease-in-out' );
+				
+				&:hover{
+					background: $base-bg;
+				}
+			}
+		}
+	}
+
+	& h2{
+		padding-left: 0.25em;
+		@include padding-trailer( 0.25 );		
+	}
+
+	& .entry{
+		@include padding-leader( 0.5 );
+
+		& h2{
+			//@include padding-trailer( 0 );		
+		}
+		& .entry-content{
+			@include adjust-font-size-to( 14px );
+			padding-left: 0.5em;
+			//padding-right: 0.5em;
+		}
+		
+		& .read-more{
+			font-weight: 800;
+			@include float-right;
+		}
+	}
+
+	/* Front Page Twitter Feed */
+	& .twitter-box{
+		@include padding-leader();
+		padding-left: 2em;
+		
+		& header{
+			
+			& .icon, & h2{
+			}
+			& .icon{
+			}
+			& h2{
+				@include adjust-font-size-to(30px);
+				@include padding-leader( 0.25 );
+			}
+		}
+		
+		& .twitter-feed{}
+	}
+
+	/* Front Page News Loop */
+	& #fp-news{
+		& ul{
+			& li{
+				& a{
+					@include padding-leader(0.5);
+					@include padding-trailer(0.5);
+					padding-left: 0.5em;
+					@include adjust-font-size-to( 14px, 1 );
+					
+					& span, & strong{
+						@include inline-block;
+						vertical-align: middle;
+					}
+					
+					& .date{
+						color: $base-header-color;
+						width: 20%;
+						@include adjust-font-size-to( 14px );
+						@include single-text-shadow( lighten($box-bg, 10%), 1px, 1px, 1px );
+						font-weight: 600;
+					}
+					& strong{
+						font-weight: 700;
+						width: 77%;
+						padding-left: 2%;
+					}
+				}
+			}
+		}
+	}
+
+
+	/* Front Page Content Navs */
+	& nav{
+		
+		&#fp-left{
+			
+			& h2{
+				color: $base-orange;
+			}
+			
+			& ul{
+				& li{
+					& a{
+						@include padding-leader(0.1875);
+						@include padding-trailer(0.1875);
+					}
+				}
+			}
+		}
+		&#fp-mid{}
+	
+		& ul{
+			& li{
+				& a{
+					padding-left: 0.5em;
+					
+					& .line, & .icon, & strong{
+						@include inline-block;
+						vertical-align: middle;
+					}
+					& .icon{
+						height: 22px;
+						width: 33px;
+						@include main-sprite;
+						background-position: 0 0;
+						padding-right: 0.5em;
+					}
+					& strong{
+						color: #fff;
+						font-weight: 800;
+						letter-spacing: 1px;
+					}
+				}
+			}
+		}		
+	}
+
 }
+
+
+/* Twitter feed widget non-front-page specific */
+.twitter-box{
+	
+	& header{
+		
+		& .icon, & h2{
+			@include inline-block;
+			vertical-align: middle;
+		}
+		& .icon{
+			height: 41px;
+			width: 59px;
+			@include main-sprite;
+			background-position: 0 -423px;
+		}
+		& h2{
+			text-transform: uppercase;
+			color: lighten( $base-header-color, 5% );
+		}
+	}
+	
+	& .twitter-feed{
+		min-height: 3em;
+	
+		&.loading{
+			background: url('../images/loading.gif') no-repeat center center;
+		}
+		
+		& .tweet{
+			@include margin-leader;
+		}
+	}
+}
+

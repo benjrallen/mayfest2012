@@ -94,7 +94,13 @@ function boilerplate_setup() {
 
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
-		'primary' => __( 'Primary Navigation', 'boilerplate' )
+		'primary' => __( 'Primary Navigation', 'boilerplate' ),
+		'sub-footer' => __( 'Sub Footer', 'boilerplate' ),
+		'fp-banners' => __( 'Front Page Banners', 'boilerplate' ),
+		'top' => __( 'Top of Header', 'boilerplate' ),
+		'sponsors' => __( 'Sponsors Slider', 'boilerplate' ),
+		'fp-col-left' => __( 'Front Page Left Column', 'boilerplate' ),
+		'fp-col-mid' => __( 'Front Page Middle Column', 'boilerplate' )
 	) );
 
 	// This theme allows users to set a custom background
@@ -539,27 +545,62 @@ if ( function_exists( 'add_theme_support' ) ) {
 /** WE LOAD IN OUR MODERNIZR AND JQUERY SCRIPTS OURSELVES
  *		Modernizr.load in header.php controls all the asynchronous loading
  */
-function deregister_base_scripts(){
-	wp_deregister_script( 'ieshiv' ); // get rid of IEShiv if it somehow got called too (IEShiv is included in Modernizr)
-	wp_deregister_script( 'modernizr' ); // get rid of any native Modernizr
-	wp_deregister_script( 'jquery' ); // get rid of WP's jQuery
+function guru_deregister_scripts(){
+	
+	if ( !is_admin() ) {
+		wp_deregister_script( 'ieshiv' ); // get rid of IEShiv if it somehow got called too (IEShiv is included in Modernizr)
+		wp_deregister_script( 'modernizr' ); // get rid of any native Modernizr
+		wp_deregister_script( 'jquery' ); // get rid of WP's jQuery
+		
+		/**
+		 *  we RARELY use commenting on our wordpress sites.
+		 *  add these lines to keep the associated javascript from loading
+		 *  and to remove the comments feed link from the <head>
+		 **/
+		wp_dequeue_script('comment-reply');
+		wp_deregister_script('comment-reply');
+	}
 }
-add_action('init', 'deregister_base_scripts');
+add_action('init', 'guru_deregister_scripts');
+
+remove_action( 'wp_head', 'feed_links', 2 );
+add_action('wp_head', 'addBackPostFeed');
+function addBackPostFeed() {
+    echo '<link rel="alternate" type="application/rss+xml" title="RSS 2.0 Feed"    href="'.get_bloginfo('rss2_url').'" />';
+}
+
+
 
 //register secondary thumbnail image, using multiple-post-thumbnail plugin
 if (class_exists('MultiPostThumbnails')) {
-	new MultiPostThumbnails(array(
-		'label' => 'Front Page Banner',
-		'id' => 'fp-banner',
-		'post_type' => 'page'
-		)
-	);
+
+	//register banners for pages and partners.  add another post type to array to register for that type as well
+	$types = array( 'page', 'mayfest_banner', 'post' );
+	foreach( $types as $type ) {
+	
+		new MultiPostThumbnails(array(
+			'label' => 'Front Page Banner',
+			'id' => 'fp-banner',
+			'post_type' => $type
+			)
+		);
+	
+		if( $type != 'mayfest_banner' ){	
+			new MultiPostThumbnails(array(
+				'label' => 'Page Background',
+				'id' => 'page-background',
+				'post_type' => $type
+				)
+			);
+		}
+	}
 }
 
 //add image sizes
 add_image_size( 'page-thumb', 314, 314, false );
 add_image_size( 'project-thumb', 180, 120, true );
-add_image_size( 'banner', 707, 371, true );
+add_image_size( 'banner', 680, 387, true );
+add_image_size( 'sponsor-thumb', 400, 80, false );
 
 
 //add page excerpts if necessary
@@ -575,6 +616,17 @@ function nav_menu_first_last( $items ) {
 }
 add_filter( 'wp_nav_menu_items', 'nav_menu_first_last' );
 
+//to add slug of item to classes for each nav menu item
+function slug_nav_class( $classes, $item ){
+	//$slug = get_page( $item->object_id )->post_name;
+		
+	$classes[] = get_page( $item->object_id )->post_name;
+	
+	//$slug = null;
+	
+	return $classes;
+}
+add_filter( 'nav_menu_css_class', 'slug_nav_class', 10, 2 ); // 10 is priority, 2 is the accepted number of args to pass to the function.  opens up $item in this case.
 
 function content($limit = 55) {
   $content = explode(' ', strip_tags(get_the_content()), $limit);
@@ -590,31 +642,48 @@ function content($limit = 55) {
   return $content;
 }
 
-//
-//	Meta Box (Class included in new post type plugin)
-//
-if( class_exists( 'MetaBoxTemplate' )){
-	$pageMeta = new MetaBoxTemplate(array(
-					'page' => 'page',
-					'id' => 'page-subtitle',
-					'title' => 'Page Subtitle',
-					'context' => 'normal',
-					'priority' => 'core',
-					'fields' => array(
-						array(
-							'name' => 'Subtitle: ',
-							'id' => 'tcf_page_subtitle',
-							'type' => 'text',
-							'std' => ''
-						)
-					)
-				));
-				
-}
 
-// only install post type if class present
-//if( class_exists( 'NewPostType' )){
-//
+// only install post type if class present (Class included in new post type plugin)
+if( class_exists( 'NewPostType' )){
+
+	$prefix = 'mayfest_';
+
+	NewPostType::instance()->add(array(
+		'post_type' => $prefix.'banner',
+		'post_type_name' => 'Banners',
+		'args' => array(
+			'rewrite' => array( 'slug' => 'banners' ),
+			'supports' => array( 'title', 'thumbnail' ),
+			'public' => true,
+			'has_archive' => true
+		)
+	));
+
+	NewPostType::instance()->add(array(
+		'post_type' => 'guru_sponsors',
+		'post_type_name' => 'Sponsors',
+		'args' => array(
+			'rewrite' => array( 'slug' => 'sponsors' ),
+			'supports' => array( 'title', 'editor', 'thumbnail' ),
+			'public' => true,
+			'has_archive' => true
+		)
+	))->add_meta_box(array(
+		'id' => 'sponsor_link',
+		'title' => 'Sponsor Info:',
+		'context' => 'side',
+		'priority' => 'default',
+		'fields' => array(
+			array(
+				'name' => 'Url: ',
+				'id' => 'guru_sponsor_link',
+				'type' => 'text',
+				'std' => ''
+			)
+		)	
+	));
+
+
 //	$prefix = 'guru_';
 //
 //	NewPostType::instance()->add(array(
@@ -638,10 +707,46 @@ if( class_exists( 'MetaBoxTemplate' )){
 //			)
 //		)	
 //	));
-//}
+}
+
+//
+//	Meta Box (Class included in new post type plugin)
+//
+if( class_exists( 'MetaBoxTemplate' )){
+	$bannerLink = new MetaBoxTemplate(array(
+					'page' => 'mayfest_banner',
+					'id' => 'custom-banner-link',
+					'title' => 'Custom Banner Link: ',
+					'context' => 'normal',
+					'priority' => 'low',
+					'fields' => array(
+						array(
+							'name' => 'Filling in this field overrides linking the banner directly to this page',
+							'id' => 'mayfest_banner_link',
+							'type' => 'text',
+							'std' => ''
+						)
+					)
+				));
 
 
-
+//	$pageMeta = new MetaBoxTemplate(array(
+//					'page' => 'page',
+//					'id' => 'page-subtitle',
+//					'title' => 'Page Subtitle',
+//					'context' => 'normal',
+//					'priority' => 'core',
+//					'fields' => array(
+//						array(
+//							'name' => 'Subtitle: ',
+//							'id' => 'mayfest_page_subtitle',
+//							'type' => 'text',
+//							'std' => ''
+//						)
+//					)
+//				));
+				
+}
 
 
 /** END GuRu Theme Specific Functions **/
