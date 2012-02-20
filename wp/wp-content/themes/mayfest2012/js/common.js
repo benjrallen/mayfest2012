@@ -43,7 +43,7 @@
 		var twit =	new GuruTwitter({
 						//screen_name: 'FakeGurustu',
 						trim_user: true,
-						interval: 5000
+						interval: 45000
 					});
 
 	});	
@@ -53,13 +53,14 @@
 			var nav = $('nav#access'),
 				lis = nav.find('li'),
 				navW = nav.width(),
+				adjust = ( Guru.ie ? 0 : 1 ),
 				w = 0;
 				
 			$.each( lis, function(i){
 				w += $(this).outerWidth();
-			});
+			});			
 			
-			lis.last().css('padding-right', Math.floor( navW - w ) );
+			lis.last().css('padding-right', Math.floor( navW - w - adjust ) );
 				
 			//console.log( 'accessFix', navW, w );
 		}

@@ -2,45 +2,100 @@
 // CSS for the specific theme footer navigation
 //
 
+$foot-nav-width: 930px;
 $foot-nav-columns: 7;
+$nav-block-padding: 12px;
 
-#foot-nav{
-	@include padding-leader;
-	@include padding-trailer(2);
+$nav-block-width: floor( ($foot-nav-width / $foot-nav-columns) - $nav-block-padding );
+
+
+nav#subfooter{
 	position:relative;
 	z-index:6;
+	@include margin-leader(2);
+	@include margin-trailer(2);
+	
+	& .inner{
+		@include padding-leader(0.5);
+		@include padding-trailer(1.5);
+		padding-left: 2em;
+		padding-right: 2em;
+	}
 	
 	& a{}
+	
+	& a.homeLink{
+		display: block;
+		@include margin-trailer(1.5);
+		color: $base-header-color;
+		&:hover{
+			color: darken($base-header-color, 15% );
+		}
+	}
 	
 	& .menu{
 		@include inline-block-list;
 		//@include inline-block-list-container;
 		
-		& > li{
+		@include adjust-font-size-to( 12px, 0.9 );
+		
+		& li{
+		
 			//@include inline-block-list-item;
 			vertical-align: top;
-			width: floor( 100% / $foot-nav-columns ) - 0.1;
+			width: $nav-block-width;
+			padding-left: $nav-block-padding;
 			
-			& > a{
-				color: $base-header-color;
-				@include adjust-font-size-to( 16px, 1 );
-				@include single-text-shadow( #fff, 1px, 1px, 1px );
+			&.food{
+				width: 60px;
+			}
+			&.sponsors{
+				width: 130px;
+			}
+			&.souvenirs{
+				width: 80px;
+			}
+			&.volunteer{
+				width: 150px;
+			}
+			&.artists{
+				width: 150px;
+			}
+			&.kidzone{
+				width: $nav-block-width;
+			}
+			&.about{
+				width: 150px;
+			}
+			
+			&.menu-item-first{
+				padding-left: 0;
+			}
+			
+			& a{
+				color: $base-color;
+				//@include adjust-font-size-to( 16px, 1 );
+				//@include single-text-shadow( lighten( $box-bg, 10% ), 1px, 1px, 1px );
 				
 				&:hover{
-					color: lighten( $base-header-color, 10% );
+					color: lighten( $base-color, 20% );
 				}
 			}
 			
 			& ul.sub-menu{
 				display:block;
-				padding-right: 0.5em;
 				
 				& li{
 					display:block;
+					width: auto;
+					padding-left: 0;
 					
 					& a{
+						display: block;
+						width: 100%;
+						white-space: pre-wrap;
 						&:hover{
-							color: lighten( $base-color, 10% );
+							//color: darken( $base-color, 20% );
 						}
 					}
 				}
