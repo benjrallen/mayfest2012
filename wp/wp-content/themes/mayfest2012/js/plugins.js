@@ -69,6 +69,9 @@ try{
 		
 		var removeLoading = function(){
 			me.container.removeClass('loading');
+			me.REQUESTS.pop();
+			//console.log( me.REQUESTS );
+			return me.TIMEOUT = setTimeout( function(){ me.makeApiCall.call(me) }, me.interval );
 		}
 		
 		var tweetBlock = null;
@@ -83,10 +86,10 @@ try{
 				tweetBlock = $('<div />').addClass('tweetBlock').prependTo( me.container )			
 				$.each( json, makeTweet );
 				me.SINCE_ID = json[0].id;
-
 			}
 			
-			return me.TIMEOUT = setTimeout( function(){ me.makeApiCall.call(me) }, me.interval );
+						
+			//return me.TIMEOUT = setTimeout( function(){ me.makeApiCall.call(me) }, me.interval );
 		};
 
 		var makeTweet = function(i){
