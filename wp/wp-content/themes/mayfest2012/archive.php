@@ -13,6 +13,9 @@
  */
 
 get_header(); ?>
+
+<?php get_sidebar(); ?>
+
 <?php
 	/* Queue the first post, that way we know
 	 * what date we're dealing with (if that is the case).
@@ -20,6 +23,16 @@ get_header(); ?>
 	 * We reset this later so we can run the loop
 	 * properly with a call to rewind_posts().
 	 */
+	 
+	 
+	//query infinite number of posts for sponsors archive
+	if (is_post_type_archive('guru_sponsors')){
+		query_posts(array(
+			'posts_per_page' => -1,
+			'post_type' => 'guru_sponsors'
+		));
+	}
+	
 	if ( have_posts() )
 		the_post();
 ?>
@@ -30,6 +43,8 @@ get_header(); ?>
 							printf( __( 'Monthly Archives: %s', 'boilerplate' ), get_the_date('F Y') );
 						elseif ( is_year() ) :
 							printf( __( 'Yearly Archives: %s', 'boilerplate' ), get_the_date('Y') );
+						elseif ( is_post_type_archive('guru_sponsors') ) :
+							_e( 'Sponsors', 'boilerplate' );
 						else :
 							_e( 'Blog Archives', 'boilerplate' );
 						endif;
@@ -46,5 +61,5 @@ get_header(); ?>
 	 */
 	 get_template_part( 'loop', 'archive' );
 ?>
-<?php get_sidebar(); ?>
+<div class="clearfix"></div>
 <?php get_footer(); ?>

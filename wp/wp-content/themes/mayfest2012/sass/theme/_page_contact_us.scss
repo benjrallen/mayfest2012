@@ -6,105 +6,99 @@ $map-width: 460px;
 
 /** Contact Us Page Template **/
 
-.guruContactPage{
-	@include margin-trailer;
-}
-#guruMap{
-	display:inline-block;
-	width: $map-width;
-
-	@include margin-leader(0.5);
-
-	& .mapp-directions-div{
-		@include margin-leader;
+#mapWrap{
+	
+	//background: $base-bg;
+	//padding: 0.5em;
+	//@include pie;
+	//@include box-shadow(
+	//	lighten( $base-color, 40% ) 0 0 6px 0
+	//);
+	//@include margin-trailer(1);
+	
+	& #gMap{
+		height: 406px;
 	}
-
-}
-#guruAddy{
-	display:inline-block;
-	vertical-align:top;
-	margin-left:10px;
-	
-	@include adjust-font-size-to( 16px, 1.5 );
-
-	
-	& #mappUserAddy{ width: 150px }
-	
-	& strong{
-		color: $base-header-color;
-		font-weight:normal;
-		
-		width:150px;
-	}
-	
 }
 
-#guruAddy #saddr{width: 130px}
-
-.ie #guruMap{
-	@include float-left;
-}
-.ie #guruAddy{
+article.hentry .locationList{
+	margin-left: 0;
+	list-style: none outside;
 	@include float-right;
-}
-
-a.directions-link{
+	
+	& .locationItem{
+		padding: 0 2em;
+		@include padding-leader;
+		@include padding-trailer;
+		
+		&:hover{
+			background: lighten( $base-button-color, 20% );
+		}
+	}
 	
 }
 
-#guruAddy em, .cbox section em{
-	font-style:normal;
-	padding-left:13px;
-	display:block;
-	font-size:14px;
-	color:#7d7d7d;
-	line-height:18px;
+article.hentry .locationItem, .mapInfoDom{
+	//display: none;
+
+	//border-bottom: 1px solid lighten($base-color, 75%);
+	//@include padding-leader( 0.75 );
+	//@include padding-trailer( 0.75 );
+	
+	@include adjust-font-size-to(14px);
+	
+	& p{
+		margin-bottom: 0;
+	}
+	
+	& a, & span{
+		display: block;
+		font-weight: 600;
+		cursor: default;
+		color: $base-color;
+		
+		&:hover{
+			color: $base-color;
+		}
+		
+		&.locationAddress{
+			&:hover{
+				//color: $base-button-color;
+			}
+		}
+		&.shortname{
+			display: none;
+		}
+		&.longname{
+			font-weight: 700;
+			//color: darken($base-color, 10%);
+		}
+		&.locationPhone{
+			//font-weight: 700;
+			//color: $base-button-color;
+			@include adjust-font-size-to(13px);
+			@include padding-leader(0.125);
+			@include padding-trailer(0.125);
+		}
+
+		&.directionsLink{
+			//margin-left: 65px;
+			//@include float-right;
+			@include margin-leader(0.75);
+			display: block;
+			cursor: pointer;
+			cursor: hand;
+			&:hover{
+				color: $base-header-color;
+			}
+		}
+
+	}
 }
 
-/*
-a.directions-link{
-	background:url('images/main-sprite-8.png') no-repeat -795px -106px;	
-	display:block;
-	line-height:30px;
-	font-size:12px;
-	padding-left:42px;
-	font-size:11px;
-	font-weight:bold;
-	color:#7d7d7d;
+.mapInfoDom{
+	padding-right: 2em;
+	min-height: 160px;
 }
-a.directions-link:hover{
-	text-decoration:none;
-	color:#666;
-}
-#guruAddy strong, .cbox section strong{
-    border: 1px solid #EAEAEA;
-    font-weight:normal;
-    font-size: 14px;
-    line-height: 24px;
-    padding: 6px 12px;
-	display:block;
-	color:#fba12d;
-	
-	background:rgba(255, 255, 255, 0.5);
-	
-	-webkit-border-radius:3px;
-	-moz-border-radius:3px;
-	border-radius:3px;
-	position:relative;
-	behavior:url(/PIE.php);
-}
-
-#guruAddy em{
-	
-}
-#guruAddy em, .cbox section em{
-	font-style:normal;
-	padding-left:13px;
-	display:block;
-	font-size:14px;
-	color:#7d7d7d;
-	line-height:18px;
-}
-*/
 
 /** End Contact Us Page Template **/

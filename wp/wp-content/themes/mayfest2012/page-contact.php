@@ -1,28 +1,31 @@
 <?php
 /**
- * The template for displaying all pages.
- *
- * This is the template that displays all pages by default.
- * Please note that this is the wordpress construct of pages
- * and that other 'pages' on your wordpress site will use a
- * different template.
+ * Template Name: Page - Contact
  *
  * @package WordPress
  * @subpackage Boilerplate
  * @since Boilerplate 1.0
  */
 
+
 get_header(); ?>
 
 <?php get_sidebar(); ?>
 
 <?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
+	<div id="mapWrap">
+		<div id="gMap"></div>
+	</div>
 	
 	<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+		<?php
+			echo get_location_list();
+		?>
 		<header class="parent-title">
 			<h1 class="entry-title"><?php the_title(); ?></h1>
 		</header>
 		<div class="entry-content">
+		
 			<?php
 				if( has_post_thumbnail() ){														
 					$thumbID = get_post_thumbnail_id($post->ID);

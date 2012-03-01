@@ -19,5 +19,5 @@ get_header(); ?>
 			<div class="clearfix"</div>
 		</div><!-- .entry-content -->
 	</article><!-- #post-## -->
-<div class="clearfix"</div>
+<div class="clearfix"></div>
 <?php get_footer(); ?>

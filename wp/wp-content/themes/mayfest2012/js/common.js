@@ -41,10 +41,12 @@
 
 
 		var twit =	new GuruTwitter({
-						//screen_name: 'FakeGurustu',
+						screen_name: 'mayfest',
 						trim_user: true,
 						interval: 45000
 					});
+					
+		contactPage();
 
 	});	
 	
@@ -66,6 +68,33 @@
 		}
 	}
 	
+
+	function contactPage(){
+		if( $('#gMap').length ){
+			new GuruMap({
+				streetViewControl: true,
+				fitMarkers: false,
+				zoom: 16,
+				centerLat: 36.153077,
+				centerLng: -95.989392,
+				mapHeight: 406,
+				contId: 'gMap',
+				locationKey: 'mayfest_location_address',
+				markerScale: 0.4,
+				markerImageKey: 'featured_custom_marker',
+				blocksAreClickable: true,
+				scrollToMapOnClick: true,
+				scrollSpeed: 450,
+				directionsLink: true
+			});
+			
+			//block the location links from doing anything.
+			//console.log( $('.entry-content .locationList a') );
+			//$('.entry-content .locCont a').live('click', function(e){
+			//	e.preventDefault();
+			//});
+		}	
+	}
 	
 //	function autoMenu(){
 //		if ( $('nav#access').length ) {

@@ -86,7 +86,7 @@ b,strong{
 
 p{
 	//@include margin-leader(0.5);
-	@include margin-trailer(0.75);
+	@include margin-trailer(0.5);
 	//@include adjust-font-size-to(14px);
 }
 
@@ -97,6 +97,27 @@ input, textarea{
 	}
 }
 
+
+button{
+	@include pie;
+	@include base-gradient( lighten( $base-header-color, 20% ), $base-header-color );
+	border: 1px solid lighten( $base-header-color, 10% );
+	@include border-radius( 3px );
+	@include adjust-font-size-to(14px);
+	padding-left: 1em;
+	padding-right: 1em;
+	@include margin-trailer(0.25);
+	
+	color: #fff;
+	font-weight: 700;
+	
+	&:hover{
+		background: lighten( $base-header-color, 10% );
+	}
+	&:active{
+		@include base-gradient( $base-header-color, lighten( $base-header-color, 20% ) );
+	}
+}
 
 /* Parts */
 
@@ -113,7 +134,7 @@ $sidebar-width: 180px;
 @import "theme/footer_nav";
 @import "theme/footer";
 @import "theme/page_post";
-	//@import "theme/page_contact_us";
+@import "theme/page_contact_us";
 	//@import "theme/contact_form";
 	//@import "theme/mailchimp_subscribe";
 	//@import "theme/photo_gallery";

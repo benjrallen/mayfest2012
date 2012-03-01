@@ -89,11 +89,14 @@
 		
 		<?php get_template_part('nav','top'); ?>
 		
-		<div id="mainWrap" class="wrap">
-			<?php get_template_part('header','banner'); ?>
-			<?php get_template_part('front-page','rotator'); ?>
-		</div>
-		
+		<?php 
+		if ( is_front_page() ) {
+			echo '<div id="mainWrap" class="wrap">';
+			get_template_part('header','banner');
+			get_template_part('front-page','rotator');
+			echo '</div>';
+		}
+		?>
 		
 		<section id="content" class="box wrap" role="main">
 			<div class="inner">

@@ -4,6 +4,14 @@
 
 $header-width: 240px;
 
+#mainWrap{
+	& #header{
+		margin-left: 2.25em;
+		margin-right: 0.75em;
+		@include margin-trailer( 3 );
+	}
+}
+
 #header{
 	
 	@include inline-block;
@@ -11,9 +19,6 @@ $header-width: 240px;
 	width: $header-width;
 	background: #fff;
 	@include padding-leader(1.5);
-	@include margin-trailer( 4 );
-	margin-left: 2.25em;
-	margin-right: 0.75em;
 	
 	@include box-shadow( $font-color, 0, 12px, 20px, -8px );
 	@include pie;
@@ -143,5 +148,11 @@ $header-width: 240px;
 	}
 }
 
-
+.lte8{
+	& #header{
+		& .banner-bottom{
+			bottom: -49px;
+		}
+	}
+}
 

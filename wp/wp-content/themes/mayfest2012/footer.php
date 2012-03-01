@@ -14,6 +14,11 @@
 			<div class="shadow"></div>
 		</section><!-- #main -->
 
+		<?php 
+			if ( !is_front_page() )
+				get_template_part('footer','sponsors-slider');
+		?>
+
 		<?php get_template_part('nav','footer'); ?>
 						
 		<footer id="footer" class="wrap box" role="contentinfo">

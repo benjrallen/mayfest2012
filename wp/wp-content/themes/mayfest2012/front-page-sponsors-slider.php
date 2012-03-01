@@ -10,7 +10,7 @@
 		$menu = wp_get_nav_menu_object( $locations[ $menu_name ] );
 		$menu_items = wp_get_nav_menu_items( $menu->term_id );
 		
-		$menu_items = array_reverse( $menu_items );
+		//$menu_items = array_reverse( $menu_items );
 		//$descriptions = array();
 		
 		echo '<div class="slides">';

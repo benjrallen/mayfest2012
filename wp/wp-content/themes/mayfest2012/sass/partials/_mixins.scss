@@ -31,6 +31,31 @@
 
 
 
+@mixin base-gradient( $light: $base-button-color, $dark: darken($base-button-color, 30%) ){
+	background: $dark;
+	@include background(
+		linear-gradient(
+			top,
+			$light 0%,
+			$dark 100%
+		)
+	);
+}
+
+@mixin base-full-gradient( $light: $base-button-color, $dark: darken($base-button-color, 30%) ){
+	background: $dark;
+	@include background(
+		linear-gradient(
+			top,
+			$dark 0%,
+			$light 50%,
+			$dark 100%
+		)
+	);
+}
+
+
+
 
 @mixin hover-opacity{
 	&:hover{

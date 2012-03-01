@@ -14,6 +14,7 @@
  */
 
 get_header(); ?>
+<?php get_sidebar(); ?>
 
 			<?php
 			/* Run the loop to output the posts.
@@ -23,5 +24,5 @@ get_header(); ?>
 			 get_template_part( 'loop', 'index' );
 			?>
 
-<?php get_sidebar(); ?>
+<div class="clearfix"></div>
 <?php get_footer(); ?>

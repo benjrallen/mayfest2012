@@ -457,17 +457,12 @@ if ( ! function_exists( 'boilerplate_posted_on' ) ) :
  * @since Twenty Ten 1.0
  */
 function boilerplate_posted_on() {
-	printf( __( '<span class="%1$s">Posted on</span> %2$s <span class="meta-sep">by</span> %3$s', 'boilerplate' ),
+	printf( __( '<span class="%1$s">Posted on</span> %2$s', 'boilerplate' ),
 		'meta-prep meta-prep-author',
 		sprintf( '<a href="%1$s" title="%2$s" rel="bookmark"><span class="entry-date">%3$s</span></a>',
 			get_permalink(),
 			esc_attr( get_the_time() ),
 			get_the_date()
-		),
-		sprintf( '<span class="author vcard"><a class="url fn n" href="%1$s" title="%2$s">%3$s</a></span>',
-			get_author_posts_url( get_the_author_meta( 'ID' ) ),
-			sprintf( esc_attr__( 'View all posts by %s', 'boilerplate' ), get_the_author() ),
-			get_the_author()
 		)
 	);
 }
@@ -541,6 +536,9 @@ if ( function_exists( 'add_theme_support' ) ) {
 
 /** BEGIN GuRu Theme Specific Functions **/
 
+
+global $prefix;
+$prefix = 'mayfest_';
 
 /** WE LOAD IN OUR MODERNIZR AND JQUERY SCRIPTS OURSELVES
  *		Modernizr.load in header.php controls all the asynchronous loading
@@ -646,7 +644,8 @@ function content($limit = 55) {
 // only install post type if class present (Class included in new post type plugin)
 if( class_exists( 'NewPostType' )){
 
-	$prefix = 'mayfest_';
+	//$prefix = 'mayfest_';
+	global $prefix;
 
 	NewPostType::instance()->add(array(
 		'post_type' => $prefix.'banner',
@@ -682,6 +681,73 @@ if( class_exists( 'NewPostType' )){
 			)
 		)	
 	));
+
+
+    NewPostType::instance()->add(array(
+		'post_type' => $prefix.'locations',
+		'post_type_name' => 'Locations',
+		'args' => array(
+		    'rewrite' => array( 'slug' => 'locations' ),
+		    'public' => false,
+		    'has_archive' => false,
+		    'supports' => array( 'title', 'editor', 'thumbnail', 'page-attributes' )
+		)
+    ))->add_meta_box(array(
+		'id' => 'location_details',
+		'title' => 'Location Information:',
+		'context' => 'side',
+		'priority' => 'default',
+		'fields' => array(
+		    array(
+		        'name' => 'Short Name: ',
+		        'id' => $prefix . 'location_shortname',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'Address: ',
+		        'id' => $prefix . 'location_address',
+		        'type' => 'textarea',
+		        'std' => ''
+		    ),
+		    array(
+		         'name' => 'Email: ',
+		         'id' => $prefix . 'location_email',
+		         'type' => 'text',
+		         'std' => ''
+		    ),
+		    array(
+		        'name' => 'Phone: ',
+		        'id' => $prefix . 'location_phone',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'Secondary Phone: ',
+		        'id' => $prefix . 'location_secondary_phone',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'Fax: ',
+		        'id' => $prefix . 'location_fax',
+		        'type' => 'text',
+		        'std' => ''
+		    )    ,
+//		    array(
+//		        'name' => 'Text*: ',
+//		        'id' => $prefix . 'location_text',
+//		        'type' => 'text',
+//		        'std' => ''
+//		    ),
+		    array(
+		        'name' => 'Show in sidebar: ',
+		        'id' => $prefix . 'location_show',
+		        'type' => 'checkbox',
+		        'std' => ''
+		    )
+		)   
+    ));
 
 
 //	$prefix = 'guru_';
@@ -745,6 +811,113 @@ if( class_exists( 'MetaBoxTemplate' )){
 //						)
 //					)
 //				));
+
+
+
+	
+	//used throughout template to list the location post type with the additional meta info
+	//also associates json data with the block in order to make it work with GuruMap jquery plugin - BA
+	function get_location_list( $preHTML = false, $contactTitle = 'Contact Us' ){
+	
+		global $guru_locations;
+		global $prefix;
+	
+		$html = '<ul class="locationList">';
+		
+		//$contactPage = get_page_by_title( $contactTitle );
+		$contactPage = 11; //id for contact-us page
+		$contactLink = ( $contactPage ? get_permalink( $contactPage ) : '' );
+	
+		if( !isset($guru_locations) ){
+			$guru_locations = 	get_posts(array(
+									'numberposts' => -1,
+									'post_type' => $prefix.'locations',
+									'order' => 'ASC',
+									//'orderby' => 'title'
+									'orderby' => 'menu_order'
+								));
+		}
+	
+		$keys = array(
+			$prefix.'location_shortname',
+			$prefix.'location_address',
+			$prefix.'location_secondary_phone',
+			$prefix.'location_phone',
+			$prefix.'location_email',
+			$prefix.'location_fax',
+			$prefix.'location_text',
+			$prefix.'location_show'
+		);
+		
+		foreach ( $guru_locations as $location ) {
+			$meta = get_post_custom( $location->ID );
+			
+			//set location->meta array
+			$location->meta = array();
+			
+			//iterate through $keys
+			foreach( $keys as $key ){
+				if( isset($meta[$key]) ) {
+					$location->meta[$key] = $meta[$key][0];
+				}
+			}
+			unset( $key );
+			unset( $meta );
+			$class = "";
+	
+	
+	        if ( isset($location->meta[$prefix.'location_show']) && $location->meta[$prefix.'location_show'] == "on")
+	            $class = "show-in-sidebar";
+	
+			
+			
+			$html .= '<li class="locationItem ' . $class . '" location-data=\''.json_encode( $location->meta ).'\'>';
+						//'<a class="locationLink" href="'.get_permalink($location->ID).'" title="'.$location->post_title.'">'.$location->post_title.'</a>';
+			
+			//was used to inject html into list.  not needed	
+			//if( $preHTML )
+			//	$html .= $preHTML;
+			
+			//$html .= '<span class="side"><span class="ico"></span></span><span class="innerLoc"><span class="line"></span><span class="locCont">';
+			
+			$html .= '<a class="locationLink longname">'.$location->post_title.'</a>';
+	
+			if ( isset($location->meta[$prefix.'location_address']) )
+				$html .= '<a href="'.$contactLink.'"  class="locationAddress">'.apply_filters( 'the_content', $location->meta[$prefix.'location_address'] ).'</a>';	
+	
+			if ( isset($location->meta[$prefix.'location_phone']) )
+				$html .= '<a href="tel:'.$location->meta[$prefix.'location_phone'].'" class="locationPhone">'.apply_filters( 'the_title', $location->meta[$prefix.'location_phone']).'</a>';
+	
+			if ( isset($location->meta[$prefix.'location_fax']) )
+				$html .= '<span class="locationFax"><p>'.$location->meta[$prefix.'location_fax'].'&nbsp;&nbsp;(fax)</p></span>';
+	
+			if ( isset($location->meta[$prefix.'location_shortname']) )
+				$html .= '<a class="locationLink shortname">'.$location->meta[$prefix.'location_shortname'].'</a>';
+			
+			if ( isset($location->meta[$prefix.'location_email']) )
+				$html .= '<a href="mailto:'.$location->meta[$prefix.'location_email'].'" class="locationEmail">'.apply_filters( 'the_title', $location->meta[$prefix.'location_email']).'</a>';
+	
+			if ( isset($location->meta[$prefix.'location_secondary_phone']) )
+				$html .= '<span class="locationSecondaryPhone">'.apply_filters( 'the_content', $location->meta[$prefix.'location_secondary_phone']).'</span>';
+	
+			if ( isset($location->meta[$prefix.'location_text']) )
+				$html .= '<span class="locationText"><p>'.$location->meta[$prefix.'location_text'].'&nbsp;&nbsp;(text*)</p></span>';
+			
+			//$html .= '</span></span>';
+			
+			$html .= '</li>';	
+			
+		}
+		
+	
+		$html .= 	'<div class="clearfix"></div>';	
+		$html .= '</ul>';
+	
+		//$html .= '<div id="locationJSON">'.json_encode( $locations ).'</div>';
+		
+		return $html;
+	}
+
 				
 }
 

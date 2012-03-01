@@ -6,7 +6,7 @@
 #content{
 	//@include pie;
 	
-	
+	@include margin-trailer(3);
 		
 	//@include box-shadow( 
 	//	darken( $base-bg, 50% ) 0 20px 25px -20px, 

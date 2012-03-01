@@ -5,27 +5,32 @@
 
 /** Default Page Template **/
 
+$article-width: $base-width - $header-width - 50;
+
+
+.page-title{
+	padding-left: 1.5em;
+	@include padding-leader(0.5);
+}
+
 article.hentry{
 	
 	padding-left: 2em;
 	padding-right: 2em;
-	@include padding-trailer();
+	//@include padding-trailer();
 	
-	& header.parent-title{
-		
-		& h3, & h4{
-		}
-		& h3{
-			
-			& a{
-			}
-		}
-		& h4{
+	
 
-		}
+	& h1.entry-title, h2.entry-title{
+		@include adjust-font-size-to( 24px );
+		@include margin-leader(0.5);
+		//@include margin-trailer(0.25);
 	}
 	
 	.entry-content{
+		width: $article-width;
+		
+		@include margin-leader(0.5);
 		
 		.pic{
 			//display:inline;
@@ -45,10 +50,6 @@ article.hentry{
 		}
 
 		& h1, & h2, & h3, & h4, & h5, & h6{
-		}
-
-		& h1.entry-title, h2.entry-title{
-
 		}
 		
 	}
@@ -104,6 +105,30 @@ article.hentry{
 	
 }
 
+
+#nav-below, #nav-above{
+	padding-left:1.5em;
+	padding-right: 1.5em;
+	@include margin-leader(0.25);
+	@include margin-trailer(-1);
+	@include adjust-font-size-to(16px);
+	
+	width: $article-width;
+	
+	& a{
+		color: darken( $base-header-color, 20% );
+		&:hover{
+			color: $base-header-color;
+		}
+	}
+	
+	& .nav-previous{
+		@include float-left;	
+	}
+	& .nav-next{
+		@include float-right;
+	}
+}
 
 
 /** End Default Page Template **/

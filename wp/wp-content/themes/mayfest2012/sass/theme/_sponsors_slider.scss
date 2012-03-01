@@ -10,6 +10,8 @@
 	position: relative;
 	height: 116px;
 	
+	//background: #fff;
+	
 	& .slides{
 		@include padding-leader();
 		@include padding-trailer();
