@@ -750,6 +750,81 @@ if( class_exists( 'NewPostType' )){
     ));
 
 
+
+    NewPostType::instance()->add(array(
+		'post_type' => $prefix.'map_location',
+		'post_type_name' => 'Map Location',
+		'args' => array(
+		    'rewrite' => array( 'slug' => 'map-locations' ),
+		    'public' => false,
+		    'has_archive' => false,
+		    'supports' => array( 'title' )
+		)
+	))->add_meta_box(array(
+		'id' => 'map_location_details',
+		'title' => 'Map Location Information (REQUIRED FOR MAP APP):',
+		'context' => 'normal',
+		'priority' => 'core',
+		'fields' => array(
+		    array(
+		        'name' => ' Type: (JA, MA, STAGE, etc...)',
+		        'id' => $prefix . 'ml_type',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'ID: (Mayfest Data, not UID)',
+		        'id' => $prefix . 'ml_id',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		         'name' => 'X: (Coordinate on Map)',
+		         'id' => $prefix . 'ml_x',
+		         'type' => 'text',
+		         'std' => ''
+		    ),
+		    array(
+		        'name' => 'Y: (Coordinate on Map)',
+		        'id' => $prefix . 'ml_y',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'Description: (Extra Info)',
+		        'id' => $prefix . 'ml_desc',
+		        'type' => 'text',
+		        'std' => ''
+		    )
+		)   
+    ));
+
+	//filter the dasboard columns to show the custom meta
+	add_filter( 'manage_'.$prefix.'map_location_posts_columns', 'set_map_location_columns' );
+	add_filter( 'manage_'.$prefix.'map_location_posts_custom_column', 'custom_map_location_columns', 10, 2 );
+	
+	//column names use the same id as the custom post met in the meta box
+	function set_map_location_columns($columns){
+		//echo 'HERRRRRRRROOOOO!';
+		global $prefix;
+		unset( $columns['date'] );
+		return	array_merge( $columns, 
+					array(
+						$prefix . 'ml_type' => __('Type'),
+						$prefix . 'ml_id' => __('ID'),
+						$prefix . 'ml_x' => __('X'),
+						$prefix . 'ml_y' => __('Y'),
+						$prefix . 'ml_desc' => __('Desc')
+					)
+				);
+	}
+	function custom_map_location_columns( $column, $post_id ){
+		//since it uses the same id as the custom post meta in the meta box, it makes for super easy getting
+		echo get_post_meta( $post_id , $column , true );
+	}
+	
+	
+
 //	$prefix = 'guru_';
 //
 //	NewPostType::instance()->add(array(
