@@ -599,7 +599,8 @@ add_image_size( 'page-thumb', 314, 314, false );
 add_image_size( 'project-thumb', 180, 120, true );
 add_image_size( 'banner', 680, 387, true );
 add_image_size( 'sponsor-thumb', 400, 80, false );
-
+add_image_size( 'ico', 20, 20, false );
+add_image_size( 'app-thumb', 120, 120, false );
 
 //add page excerpts if necessary
 //add_post_type_support( 'page', 'excerpt' );
@@ -639,6 +640,49 @@ function content($limit = 55) {
   $content = str_replace(']]>', ']]&gt;', $content);
   return $content;
 }
+
+
+//for getting tree of terms structured by hierarchy
+function get_term_hierchy($term){
+	$terms = get_terms( $term );
+	
+	//print_r( $terms );
+
+	//first, index terms by parent id					
+	$terms_by_parent = array();
+	foreach( $terms as $term ){
+		$parent_id = $term->parent;
+		
+		if( !array_key_exists($parent_id, $terms_by_parent) ){
+			$terms_by_parent[$parent_id] = array();
+		}
+		
+		$terms_by_parent[$parent_id][] = $term;
+	}
+
+	function add_terms_to_bag(&$parent_bag, &$child_bag, &$children){
+		foreach( $children as $child_term ){
+			$child_id = $child_term->term_id;
+			
+			if ( array_key_exists($child_id, $parent_bag) ){
+				$child_term->children = array();
+				add_terms_to_bag( $parent_bag, $child_term->children, $parent_bag[$child_id] );
+			}
+			$child_bag[$child_id] = $child_term;
+		}
+	}
+
+	
+	//then build hierarchical tree
+	$term_tree = array();
+	add_terms_to_bag( $terms_by_parent, $term_tree, $terms_by_parent[0] );
+	
+	unset($terms);
+	unset($terms_by_parent);
+	
+	return $term_tree;
+}
+
 
 
 // only install post type if class present (Class included in new post type plugin)
@@ -750,7 +794,139 @@ if( class_exists( 'NewPostType' )){
     ));
 
 
+    NewPostType::instance()->add(array(
+		'post_type' => $prefix.'attraction',
+		'post_type_name' => 'Attraction',
+		'args' => array(
+		    //'rewrite' => array( 'slug' => 'attractions' ),
+		    'public' => false,
+		    'has_archive' => false,
+		    'supports' => array( 'title', 'editor', 'thumbnail' )
+		)
+	))->add_meta_box(array(
+		'id' => 'map_location_select',
+		'title' => 'Map Location (* for Map App):',
+		'context' => 'side',
+		'priority' => 'core',
+		'fields' => array(
+		    array(
+		        'name' => 'Location Name:',
+		        'id' => $prefix . 'ml_uid',
+		        'type' => 'text',
+		        'std' => ''
+		    )
+		)   
+	))->add_taxonomy( 'attraction_category', array(
+		'taxonomy_single' => 'Attraction Category',
+		'taxonomy_plural' => 'Attraction Category',
+		'args' => array(
+			'hierarchical' => true
+		)
+	))->add_meta_box(array(
+		'id' => 'attraction_details',
+		'title' => 'Attraction Information (FOR MAP APP):',
+		'context' => 'normal',
+		'priority' => 'core',
+		'fields' => array(
+		    array(
+		        'name' => 'City:',
+		        'id' => $prefix . 'att_city',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'State:',
+		        'id' => $prefix . 'att_state',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'First Name:',
+		        'id' => $prefix . 'att_first_name',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'Last Name:',
+		        'id' => $prefix . 'att_last_name',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'First Name Partner:',
+		        'id' => $prefix . 'att_first_name_partner',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'Last Name Partner:',
+		        'id' => $prefix . 'att_last_name_partner',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		)   
+    ));
+    
 
+    NewPostType::instance()->add(array(
+		'post_type' => $prefix.'event',
+		'post_type_name' => 'Event',
+		'args' => array(
+		    //'rewrite' => array( 'slug' => 'attractions' ),
+		    'public' => false,
+		    'has_archive' => false,
+		    'supports' => array( 'title', 'editor', 'thumbnail' )
+		)
+	))->add_meta_box(array(
+		'id' => 'map_attraction_select',
+		'title' => 'Map Stage / Gallery (* for Map App):',
+		'context' => 'side',
+		'priority' => 'core',
+		'fields' => array(
+		    array(
+		        'name' => 'Attraction Name:',
+		        'id' => $prefix . 'attraction_uid',
+		        'type' => 'text',
+		        'std' => ''
+		    )
+		)   
+	))->add_meta_box(array(
+		'id' => 'map_event_info',
+		'title' => 'Event Info:',
+		'context' => 'normal',
+		'priority' => 'core',
+		'fields' => array(
+		    array(
+		        'name' => 'Event Day:',
+		        'id' => $prefix . 'event_day',
+		        'type' => 'text',
+		        'std' => ''
+		    ),
+		    array(
+		        'name' => 'Event Time:',
+		        'id' => $prefix . 'event_time',
+		        'type' => 'text',
+		        'std' => ''
+		    )
+		)   
+    ));
+
+	//add genre tags to events and attractions
+	new TaxonomyTemplate(array(
+		'taxonomy' => 'genre',
+		'post_type' => array('mayfest_event','mayfest_attraction'),
+		'taxonomy_single' => 'Genre',
+		'taxonomy_plural' => 'Genres',
+		'args' => array(
+			'hierarchical' => false
+		)    
+	));
+
+
+	/**
+	 *	MAYFEST ARTISTS, VENDORS, and EVERYTHING ELSE
+	 *	ARE BROKEN DOWN BY CATEGORY INTO ATTRACTIONS
+	 */
     NewPostType::instance()->add(array(
 		'post_type' => $prefix.'map_location',
 		'post_type_name' => 'Map Location',
@@ -799,13 +975,151 @@ if( class_exists( 'NewPostType' )){
 		)   
     ));
 
+	
+	//hook into the save post to save out the json data of that post type for the entire query
+	add_filter( 'save_post', 'build_guru_app_json' );
+	function build_guru_app_json($post_id){
+		global $prefix;
+		
+		//key of post type with array of custom fields to grab as well
+		$types = array(
+			$prefix.'attraction' => array(
+				'genre',
+				'attraction_category',
+				'thumbnail',
+				$prefix . 'att_city',
+				$prefix . 'att_state',
+				$prefix . 'att_first_name',
+				$prefix . 'att_last_name',
+				$prefix . 'att_first_name_partner',
+				$prefix . 'att_last_name_partner',
+				$prefix . 'ml_uid'
+			),
+			$prefix.'map_location' => array(
+				$prefix . 'ml_type',
+				$prefix . 'ml_id',
+				$prefix . 'ml_x',
+				$prefix . 'ml_y',
+				$prefix . 'ml_desc'
+			),
+			$prefix.'event' => array(
+				'genre',
+				'thumbnail',
+				$prefix . 'event_day',
+				$prefix . 'event_time',
+				$prefix . 'attraction_uid'
+			)
+		);
+		
+		$post_type = get_post_type().'';
+			
+		//if( in_array( $post_type, $types ) ){
+		if( array_key_exists( $post_type, $types ) ){
+			//error_log( 'I EXIST!  '.get_post_type($post_id) );
+	
+			//TEMP QUERY JUST TO WRITE TO FILE
+			$posts = get_posts(array(
+				'numberposts' => -1,
+				'post_type' => $post_type,
+				'order' => 'ASC',
+				'orderby' => 'title'
+			));	
+			
+			$full = array();
+			
+			foreach( $posts as $post ){
+				$p = array(
+					'id' => $post->ID,
+					'title' => $post->post_title,
+					'content' => $post->post_content
+				);
+
+				foreach( $types[$post_type] as $field ){
+					//get the custom field
+					
+					if( $field == 'thumbnail' ) {
+						//special case for thumbnail
+						if( has_post_thumbnail($post->ID) ){
+						
+							$thumb_id = wp_get_post_thumbnail_id( $post->ID );
+							$cf = array(
+								'ico' => wp_get_attachment_image_src( $thumb_id, 'ico' ),
+								'app-thumb' => wp_get_attachment_image_src( $thumb_id, 'app-thumb' )
+							);
+							
+						}
+					} elseif( $field == 'genre' ) {
+						//specific case for genre tags
+						$cf = wp_get_object_terms( $post->ID, $field );
+					} elseif( $field == 'attraction_category' ) {
+						//specific case for attraction category
+						$cf = wp_get_object_terms( $post->ID, $field );
+					} else {
+						//normal get custom field
+						$cf = get_post_meta( $post->ID, $field, true );
+					}
+					
+					if( !$cf )
+						$cf = '';
+						
+					$p[$field] = $cf;
+				}
+				
+				$full[] = $p;
+				unset( $p );
+			}
+						
+			unset($posts);
+			
+			//check for the file
+			$filename = TEMPLATEPATH . '/app_cache/'.$post_type.'.json';	
+			
+			//check if file exists
+			//$file = ( file_exists( $filename ) ? fopen( $filename, 'w+' ) : fopen( $filename, 'x+' ) );			
+			if ( file_exists( $filename ) ) {
+				$file = fopen( $filename, 'w+' );
+			} else {
+				$file = fopen( $filename, 'x+' );
+			}			
+			
+			if( fwrite( $file, json_encode($full) ) === FALSE ){
+				error_log('ERROR WRITING POSTS TO CACHE FILE IN FUNCTIONS.PHP ~line 1086: '.$filename);
+			}
+				
+			fclose($file);
+			
+			//also write the attraction categories
+			//get_term_hierchy('attraction_category')
+			//check for the file
+			$term = 'attraction_category';
+			$filename = TEMPLATEPATH . '/app_cache/'.$term.'.json';	
+			
+			//check if file exists
+			//$file = ( file_exists( $filename ) ? fopen( $filename, 'w+' ) : fopen( $filename, 'x+' ) );			
+			if ( file_exists( $filename ) ) {
+				$file = fopen( $filename, 'w+' );
+			} else {
+				$file = fopen( $filename, 'x+' );
+			}			
+			
+			if( fwrite( $file, json_encode(get_term_hierchy($term)) ) === FALSE ){
+				error_log('ERROR WRITING POSTS TO CACHE FILE IN FUNCTIONS.PHP ~line 1106: '.$filename);
+			}
+				
+			fclose($file);
+			
+			return;		
+					
+		}
+	}
+
+
 	//filter the dasboard columns to show the custom meta
 	add_filter( 'manage_'.$prefix.'map_location_posts_columns', 'set_map_location_columns' );
 	add_filter( 'manage_'.$prefix.'map_location_posts_custom_column', 'custom_map_location_columns', 10, 2 );
 	
 	//column names use the same id as the custom post met in the meta box
 	function set_map_location_columns($columns){
-		//echo 'HERRRRRRRROOOOO!';
 		global $prefix;
 		unset( $columns['date'] );
 		return	array_merge( $columns, 
@@ -823,6 +1137,37 @@ if( class_exists( 'NewPostType' )){
 		echo get_post_meta( $post_id , $column , true );
 	}
 	
+        
+    /** LOAD AN ADMIN ONLOAD SCRIPT TO WORK WITH MAP LOCATION SELECT BOX **/
+	if (is_admin() && $pagenow=='post-new.php' OR $pagenow=='post.php')
+	    add_action('admin_head', 'load_mayfest_admin_script');
+	
+	function load_mayfest_admin_script(){
+			
+		echo	'<style>'.
+				'.ui-button { margin-left: -1px; }'.
+				'.ui-button-icon-only .ui-button-text { padding: 1px 3px; display: block; font-size: 16px; }'.
+				'.ui-button-icon-only .ui-icon { display: none; }'.
+				'.ui-autocomplete-input { margin: 0; padding: 0.48em 0 0.47em 0.45em; }'.
+				'.ui-autocomplete.ui-menu { background: #fff; padding: 0.35em; border: 1px solid #ccc; border-top: none; max-width: 163px !important; }'.
+				'.ui-button, .ui-autocomplete-input{ display: inline-block; *display: inline; vertical-align: middle; }'.
+				'</style>';
+
+		echo 	'<script type="text/javascript">'.
+					'var GuruAdmin = GuruAdmin || {};'.
+					'GuruAdmin.Url = "'.get_bloginfo('url').'";'.
+					'GuruAdmin.TemplateDirectory = "'.get_bloginfo('template_directory').'";'.
+				'</script>';
+		
+		$siteurl = get_bloginfo('template_directory');
+		wp_deregister_script('admin-autocomplete');
+		wp_register_script('admin-autocomplete', $siteurl . '/js/jquery-combobox.js', false, '0.0.1');
+		wp_enqueue_script('admin-autocomplete');
+		wp_deregister_script('admin-onload');
+		wp_register_script('admin-onload', $siteurl . '/js/admin-onload.js', false, '0.0.1');
+		wp_enqueue_script('admin-onload');
+		wp_enqueue_style('jquery.ui.theme', $siteurl . '/js/smoothness/jquery-ui-1.8.18.custom.css');
+	}
 	
 
 //	$prefix = 'guru_';

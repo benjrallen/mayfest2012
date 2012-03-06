@@ -16,3 +16,6 @@ I'm doing some crazy stuff in functions.php with custom post types and managing 
 Wrote a new JSON API controller called mayfest_migration.php in the plugin controllers folder.  Make sure to turn it on in the dashboard settings.
 
 Wrote a migration script in the migration folder at the root of the site.  Totally sweet, and can reuse for the other post types.
+
+
+A custom JSON file caching has been implemented in the theme folder
