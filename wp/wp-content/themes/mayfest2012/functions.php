@@ -677,12 +677,77 @@ function get_term_hierchy($term){
 	$term_tree = array();
 	add_terms_to_bag( $terms_by_parent, $term_tree, $terms_by_parent[0] );
 	
+	//$clean_tree = array();
+	
+	//then take out all the ids.	
+	function remove_array_keys( &$arrayToClean ){
+		$new = array();
+		foreach( $arrayToClean as $id => $data ){
+			$thisData = $data;
+			
+			if ( isset( $data->children ) ){
+				$thisData->children = remove_array_keys( $data->children );
+				
+			} else {
+				$thisData->leaf = true;
+				//error_log( 'no children: '.$thisData->leaf );
+			}
+			
+			$new[] = $thisData;
+		}
+		
+		return $new;
+	}
+	$clean_tree = remove_array_keys( $term_tree );
+	
+	
+	unset($terms);
+	unset($terms_by_parent);
+	
+	return $clean_tree;
+}
+
+/*
+function get_term_hierchy($term){
+	$terms = get_terms( $term );
+	
+	//print_r( $terms );
+
+	//first, index terms by parent id					
+	$terms_by_parent = array();
+	foreach( $terms as $term ){
+		$parent_id = $term->parent;
+		
+		if( !array_key_exists($parent_id, $terms_by_parent) ){
+			$terms_by_parent[$parent_id] = array();
+		}
+		
+		$terms_by_parent[$parent_id][] = $term;
+	}
+
+	function add_terms_to_bag(&$parent_bag, &$child_bag, &$children){
+		foreach( $children as $child_term ){
+			$child_id = $child_term->term_id;
+			
+			if ( array_key_exists($child_id, $parent_bag) ){
+				$child_term->children = array();
+				add_terms_to_bag( $parent_bag, $child_term->children, $parent_bag[$child_id] );
+			}
+			$child_bag[$child_id] = $child_term;
+		}
+	}
+
+	
+	//then build hierarchical tree
+	$term_tree = array();
+	add_terms_to_bag( $terms_by_parent, $term_tree, $terms_by_parent[0] );
+	
 	unset($terms);
 	unset($terms_by_parent);
 	
 	return $term_tree;
 }
-
+*/
 
 
 // only install post type if class present (Class included in new post type plugin)
@@ -1041,13 +1106,16 @@ if( class_exists( 'NewPostType' )){
 						//special case for thumbnail
 						if( has_post_thumbnail($post->ID) ){
 						
-							$thumb_id = wp_get_post_thumbnail_id( $post->ID );
+							$thumb_id = get_post_thumbnail_id( $post->ID );
 							$cf = array(
 								'ico' => wp_get_attachment_image_src( $thumb_id, 'ico' ),
 								'app-thumb' => wp_get_attachment_image_src( $thumb_id, 'app-thumb' )
 							);
 							
+						} else {
+							$cf = false;
 						}
+						
 					} elseif( $field == 'genre' ) {
 						//specific case for genre tags
 						$cf = wp_get_object_terms( $post->ID, $field );
@@ -1102,7 +1170,9 @@ if( class_exists( 'NewPostType' )){
 				$file = fopen( $filename, 'x+' );
 			}			
 			
-			if( fwrite( $file, json_encode(get_term_hierchy($term)) ) === FALSE ){
+			
+			
+			if( fwrite( $file, json_encode( array( 'children' => get_term_hierchy($term) ) ) ) === FALSE ){
 				error_log('ERROR WRITING POSTS TO CACHE FILE IN FUNCTIONS.PHP ~line 1106: '.$filename);
 			}
 				
