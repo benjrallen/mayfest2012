@@ -1,208 +1,341 @@
-nav{
+#topNav{
+	background: $base-white;
+	@include base-shadow;
+	//@include text-shadow( darken( $base-white, 20% ) 1px 1px 1px );
+	@include pie;
 	
-	&#top, &#subfooter{
-		
-		display:block;
-		cursor: default;
-		
-		& .menu{
-			@include inline-block-list;
-		}
-	}
+	$nav-hover: lighten( $base-black, 66% );
 	
-	
-	&#top{
-		text-align: right;
-		font-weight: 800;
-		@include adjust-font-size-to(14px);
-		@include padding-leader( 0.5 );
+	& nav{
 		
-		& .menu{
+		& li{
+			@include single-transition( background, $base-transition-time, ease-in-out );
+		
+			&:hover{
+				@include single-transition( background, $base-transition-time, ease-in-out );
 			
-			& li{
-				padding-left: 33px;
-				height: 22px;
-				line-height: 22px;
-				@include main-sprite;
-				background-position: 0 0;
-				margin-right: 1em;
-				
 				& a{
+					//@include single-transition( color, $base-transition-time, ease-in-out );
+				}
+			}
+			
+			& a{
+				//@include single-transition( color, $base-transition-time, ease-in-out );
+			}
+		}
+		
+		&#access{
+			
+			display: block;
+			cursor: default;
+			
+			
+			border-bottom: 1px solid lighten( $base-black, 50% );
+			
+			width: 100%;
+			overflow-x: hidden;
+			
+			& .menu{
+				//display: table;
+				width: 150%;
+	
+				& li{
+					
+					//display: table-cell;
+					@include float-left;
 					display: block;
-					height: 22px;
-					line-height: 16px;
+					text-align: center;
+					@include padding-leader(0.5);
+					@include padding-trailer(0.5);
+					
+					
+					&.menu-item-first{
+						//@include border-radius( $boxRad 0 0 0 );
+						
+						& a{
+							//border-left: 1px solid transparent;
+						}
+					}
+					&.menu-item-last{
+						//@include border-radius( 0 $boxRad 0 0 );
+						
+						& a{
+							//border-right: 1px solid transparent;
+						}
+					}
+					
+					$hover-pct: 10%;
+					
+					&:hover, &.current_page_item{
+						background: $nav-hover;
+
+	
+						& a{
+							//border-right: 1px solid transparent;
+							//border-left: 1px solid transparent;
+							color: #333 !important;
+						}
+						
+						&.purple{
+							& a{
+								//color: darken( $base-purple, $hover-pct );
+								
+								& .icon{
+									background-position: 0 -570px;
+								}
+							}
+						}
+						&.teal{
+							& a{
+								//color: darken( $base-teal, $hover-pct );
+
+								& .icon{
+									background-position: -35px -570px;
+								}
+							}
+						}
+						&.orange{
+							& .icon{
+								background-position: -60px -570px;
+							}
+							& a{
+								//color: darken( $base-orange, $hover-pct );
+								
+								& .icon{
+									background-position: -60px -570px;
+								}
+							}
+						}
+						&.yellow{
+							& a{
+								//color: darken( $base-yellow, $hover-pct );
+
+								& .icon{
+									background-position: -85px -571px;
+								}
+							}
+						}
+						&.red{
+							& a{
+								//color: darken( $base-red, $hover-pct );
+
+								& .icon{
+									background-position: -117px -571px;
+								}
+							}
+						}
+
+
+					}
+					
+					$icon-margin: 0.25em;
+					
+					&.purple{
+						& a{
+							color: $base-purple;
+							& .icon{
+								@include main-sprite;
+								background-position: 0 -509px;
+								width: 32px;
+								height: 33px;
+								margin-right: $icon-margin;
+							}
+						}
+					}
+					&.teal{
+						& a{
+							color: $base-teal;
+							& .icon{
+								@include main-sprite;
+								background-position: -35px -509px;
+								width: 15px;
+								height: 38px;
+								margin-right: $icon-margin;
+							}
+							& strong{
+								max-width: 120px;
+							}						
+						}
+					}
+					&.orange{
+						& a{
+							color: $base-orange;
+							& .icon{
+								@include main-sprite;
+								background-position: -60px -509px;
+								width: 14px;
+								height: 36px;
+								margin-right: $icon-margin;
+							}
+							& strong{
+								max-width: 120px;
+							}						
+						}
+					}
+					&.yellow{
+						& a{
+							color: $base-yellow;
+							& .icon{
+								@include main-sprite;
+								background-position: -85px -510px;
+								width: 19px;
+								height: 40px;
+								margin-right: $icon-margin;
+							}
+							& strong{
+								max-width: 80px;
+							}						
+						}
+					}
+					&.red{
+						& a{
+							color: $base-red;
+							padding-right: 2em;
+							& .icon{
+								@include main-sprite;
+								background-position: -117px -510px;
+								width: 27px;
+								height: 39px;
+								margin-right: $icon-margin;
+							}
+						}
+					}
+					
+					& a{
+						text-decoration:none;
+						@include adjust-font-size-to( 18px, 1 );					
+						
+						color: $base-black;
+						
+						//font-weight: 800;
+						//min-width: 100px;
+						display: block;
+						padding-left: 1em;
+						padding-right: 0.5em;
+						height: 3em;
+						
+						//border-right: 1px solid $base-green-light;
+						//border-left: 1px solid $base-green-dark;
+	
+						& .line, & .icon, & strong{
+							@include inline-block;
+							vertical-align: middle;
+						}
+						& strong{
+							font-weight: 800;
+							text-align: left;
+							max-width: 150px;
+						}						
+						&:hover{
+						}
+					}
+					
+					&.current_page_item{
+						
+						& a{
+							
+						}
+					}
+					
+		
 				}
 			}
 		}
-	}
-	
-	&#access{
 		
-		background: lighten( $base-green, 8% );
-		//background: $base-green;
-		@include border-radius( $boxRad $boxRad 0 0 );
-		
-		display: block;
-		cursor: default;
-		@include single-text-shadow( $base-green-light, 1px, 1px, 2px );
-		
-		@include margin-leader;
-		
-		& .menu{
-			//display: table;
-
-			& li{
-				@include single-transition( all, $base-transition-time, ease-in-out );
+		&#top{
+			text-align: right;
+			font-weight: 800;
+			@include adjust-font-size-to(14px);
+			display: block;
+			//@include text-shadow( none );
+			
+			& .menu{
+								
+				@include inline-block-list;
 				
-				//display: table-cell;
-				@include float-left;
-				display: block;
-				text-align: center;
-				@include padding-leader(0.5);
-				@include padding-trailer(0.5);
-				
-				
-				&.menu-item-first{
-					@include border-radius( $boxRad 0 0 0 );
-					& a{
-						border-left: 1px solid transparent;
-					}
-				}
-				&.menu-item-last{
-					@include border-radius( 0 $boxRad 0 0 );
+				& li{
 					
 					& a{
-						border-right: 1px solid transparent;
-					}
-				}
-				
-				&:hover, &.current_page_item{
-					background: $base-green;
-
-					& a{
-						border-right: 1px solid transparent;
-						//border-left: 1px solid transparent;
-					}
-				}
-				
-				& a{
-					text-decoration:none;
-					@include adjust-font-size-to( 20px, 1 );					
-					color: $base-orange;
-					//font-weight: 800;
-					min-width: 100px;
-					display: block;
-					padding-left: 2em;
-					padding-right: 2em;
-					height: 3em;
-					
-					
-					border-right: 1px solid $base-green-light;
-					border-left: 1px solid $base-green-dark;
-
-					& .line, & .icon, & strong{
-						@include inline-block;
-						vertical-align: middle;
-					}
-					& strong{
-						font-weight: 800;
-						text-align: left;
-					}
-					
-					&:hover{
-					}
-				}
-				
-				&.current_page_item{
-					
-					& a{
+						@include padding-leader( 0.25 );
+						@include padding-trailer( 0.35 );
+						padding-right: 0.75em;
+						padding-left: 0.75em;
+						display: block;
+						color: lighten( $base-black, 20%);
 						
 					}
-				}
-				
-				&.artist-applications{
-					& a{
-						padding-left: 1em;
-						padding-right: 1em;
-						& .icon{
-							@include main-sprite;
-							background-position: 0 -508px;
-							width: 18px;
-							height: 46px;
-							padding-right: 0.5em;
-						}
-						& strong{
-							max-width: 130px;
+					
+					&:hover, &.current_page_item{
+						background: $nav-hover;
+						
+						& a{
+							color: $base-black;
 						}
 					}
 				}
-				&.booth-applications{
-					& a{
-						padding-left: 2em;
-						padding-right: 1.5em;
-						& .icon{
-							@include main-sprite;
-							background-position: -28px -508px;
-							width: 29px;
-							height: 49px;
-							padding-right: 0.5em;
-						}
-						& strong{
-							max-width: 130px;
-						}
-					}
-				}
-				&.food-vendors{
-					& a{
-						padding-left: 1.5em;
-						padding-right: 1.5em;
-						& .icon{
-							@include main-sprite;
-							background-position: -69px -508px;
-							width: 22px;
-							height: 46px;
-							padding-right: 0.5em;
-						}
-						& strong{
-							max-width: 85px;
-						}
-					}
-				}
-				&.q-as{
-					& a{
-						padding-left: 1.25em;
-						padding-right: 1em;
-						& .icon{
-							@include main-sprite;
-							background-position: -104px -508px;
-							width: 31px;
-							height: 45px;
-							padding-right: 0.5em;
-						}
-					}
-				}
-	
 			}
 		}
 	}
 }
 
-.lte7 nav{
-	&#access{
+.lte7{
+	& #topNav{
+		& .clearfix{
+			height: 0px;
+		}
 		
-		
-		& .menu{
-
+		& nav{
+			
 			& li{
-				margin-top: -1px;
-				margin-bottom: 1px;
+								
 				& a{
-					@include adjust-font-size-to( 20px, 1.5 );					
-					& strong{
-						
+				}
+			}
+			
+			&#access{
+				
+				
+				& .menu{
+		
+					& li{
+						& a{
+							@include adjust-font-size-to(18px, 1.25);
+						}
 					}
 				}
 			}
+		}
+	}
+		
+}
+
+
+
+.social{
+	@include margin-leader(2);
+	@include margin-trailer(1.75);
+	text-align: right;
+	
+	& .fb-like, & a{
+		@include inline-block;
+		vertical-align: middle;
+		text-align: left;
+		margin-right: 0.75em;
+	}
+	
+	& a{
+		@include main-sprite;
+		height: 35px;
+		width: 36px;
+		text-indent: -9999em;
+		
+		@include hover-opacity;
+		
+		&.fb{
+			background-position: -36px -236px;
+		}
+		&.tw{
+			background-position: 0 -236px;
 		}
 	}	
 }

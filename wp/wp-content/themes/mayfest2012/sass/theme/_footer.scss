@@ -5,9 +5,11 @@
 	
 	& .foot-left{
 		@include float-left;
+		padding-left: 2em;
 	}
 	& .foot-right{
 		@include float-right;
+		padding-right: 2em;
 	}
 	& a{
 		color: $base-color;
@@ -16,11 +18,8 @@
 			color: $guru-color;
 		}
 	}
+
+	@include padding-trailer();
+
 	
-	& .inner{
-		@include padding-leader();
-		@include padding-trailer();
-		padding-left: 2em;
-		padding-right: 2em;
-	}
 }

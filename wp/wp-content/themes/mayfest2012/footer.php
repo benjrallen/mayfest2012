@@ -10,19 +10,22 @@
  * @since Boilerplate 1.0
  */
 ?>
-			</div><!-- .box -->
-			<div class="shadow"></div>
-		</section><!-- #main -->
+				</div><!-- .box -->
+				<div class="shadow"></div>
+			</section><!-- #main -->
+			
+		</div><!-- #mainRight -->	
+	</div><!-- #mainWrap -->
+	<div class="clearfix"></div>
 
 		<?php 
-			if ( !is_front_page() )
-				get_template_part('footer','sponsors-slider');
+			//if ( !is_front_page() )
+			//	get_template_part('footer','sponsors-slider');
 		?>
 
 		<?php get_template_part('nav','footer'); ?>
 						
-		<footer id="footer" class="wrap box" role="contentinfo">
-				<div class="inner">
+		<footer id="footer" class="wrap" role="contentinfo">
 					
 					<?php
 						$fDate = '&copy; 2012';
@@ -31,8 +34,7 @@
 					<span class="foot-left"><span>Copyright <?php echo $fDate; ?></span><span class="hyph"> </span><span><?php bloginfo('name'); ?>. </span><span>All Rights Reserved.</span></span>
 					<span class="foot-right">Site by: <a href="http://www.gurustugroup.com" id="guruLink" title="GuRuStu. Branding, Marketing & Web Design." target="_blank">GuRuStu Group</a></span>
 					<div class="clearfix"></div>
-				</div>
-				<div class="shadow"></div>
+
 		</footer><!-- footer -->
 
 

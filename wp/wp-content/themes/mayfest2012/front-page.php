@@ -25,10 +25,54 @@ get_header(); ?>
 
 <?php /* Sidebar before rotator on owasso */ ?>
 
-<?php get_template_part('front-page','sponsors-slider'); ?>
+<?php //get_template_part('front-page','sponsors-slider'); ?>
 
 <article id="front-page-entry" <?php post_class(); ?>>
 
+	<div class="col first">
+		<div class="in">
+			<?php get_template_part('front-page', 'news'); ?>
+
+<?php if ( have_posts() ) : while( have_posts() ) : the_post(); ?>
+
+			<section class="entry">
+				<header class="purple">
+					<h2 class="entry-title"><?php the_title(); ?></h2>
+				</header>
+				<div class="entry-content">
+					<?php 
+						the_content();
+					?>
+					<div class="clearfix"></div>
+				</div>
+			</section>			
+
+<?php endwhile; endif; ?>
+
+			<nav id="fp-mid">			
+				<header class="red">
+					<h2>Get Involved!</h2>
+				</header>
+				<?php 
+					wp_nav_menu( array( 
+						'theme_location' => 'fp-col-mid'
+					)); 
+				?>
+			</nav><!-- #access -->
+
+
+
+		</div>
+	</div>
+	<div class="col last">
+		<div class="in">
+				<?php get_template_part('front-page', 'twitter'); ?>
+				<?php get_template_part('front-page', 'facebook'); ?>
+		</div>	
+	</div>
+
+
+<?php /* ?>
 	<div class="col first">
 		<div class="in">
 			<nav id="fp-left">			
@@ -87,6 +131,9 @@ get_header(); ?>
 				<?php get_template_part('front-page', 'twitter'); ?>
 		</div>	
 	</div>
+	
+<?php */ ?>
+
 <?php //if ( have_posts() ) : while( have_posts() ) : the_post(); ?>
 
 <?php //the_content(); ?>

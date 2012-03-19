@@ -12,7 +12,7 @@ body{
 	width:100%;
 	display:block;
 	
-	@include box-bg-textured;
+	//@include box-bg-textured;
 	
 	@include open-sans; //font stack
 	color:$base-color;
@@ -25,7 +25,8 @@ body{
 	width: 100%;
 	background: $base-bg;
 	
-	@include base-bg-textured;
+	//@include base-bg-textured;
+	@include box-bg-textured;
 	
 	@include padding-trailer(4);
 
@@ -36,6 +37,27 @@ body{
 #top, #access, #mainWrap, #content, #subfooter, #footer{
 	position: relative;
 	z-index: 2;
+}
+
+
+#mainWrap{
+	& #header{
+		//margin-left: 2.25em;
+		//margin-right: 2.75em;
+		@include margin-trailer( 3 );
+	}
+}
+
+#mainLeft, #mainRight{
+	@include padding-leader( 3 );
+}
+
+#mainLeft{
+	@include float-left;
+}
+#mainRight{
+	width: $content-width;
+	@include float-right;
 }
 
 
@@ -63,6 +85,9 @@ h1, h2, h3, h4, h5, h6{
 		}
 		&:visited{
 			color: $base-header-color;
+			&:hover{ 
+				color: darken( $base-header-color, 10% ) 
+			}
 		}
 	}
 }
@@ -81,7 +106,7 @@ a{
 }
 
 b,strong{
-	font-weight: 600;	
+	font-weight: 600;
 }
 
 p{
@@ -90,34 +115,84 @@ p{
 	//@include adjust-font-size-to(14px);
 }
 
+
 input, textarea{
-	
+	border: 1px solid $base-grey;
+	background: $base-grey;
+
 	&:focus{
-		background: lighten( $base-button-color, 55% );
+		background: darken( $base-grey, 20% );
 	}
+
 }
 
+
+input, textarea, button{
+	@include open-sans;
+	
+	&.placeholder{
+		color: $base-black;
+	}
+}
 
 button{
 	@include pie;
-	@include base-gradient( lighten( $base-header-color, 20% ), $base-header-color );
-	border: 1px solid lighten( $base-header-color, 10% );
-	@include border-radius( 3px );
-	@include adjust-font-size-to(14px);
-	padding-left: 1em;
-	padding-right: 1em;
+	@include base-gradient( lighten( $base-red, 10% ), $base-red );
+	border: 1px solid lighten( $base-red, 10% );
+	//@include border-radius( 3px );
+	@include adjust-font-size-to(15px, 1.25);
+	//padding-left: 1em;
+	//padding-right: 1em;
 	@include margin-trailer(0.25);
 	
-	color: #fff;
-	font-weight: 700;
+		@include border-radius( 3px );
+
+		font-weight: 300;
+		color: $base-white !important;
+		@include base-gradient( lighten( $base-red, 10% ), $base-red );
+		border: 1px solid lighten( $base-red, 10% );
+		
+		&:hover{
+			background: lighten( $base-red, 5% );
+		}
+		&:active{
+			@include base-gradient( $base-red, lighten( $base-red, 10% ) );
+		}
+
+}
+
+
+/* mailchimp js notifications */
+.mcError{
+//	@include float-left;
+//	width: 55%;
+	display: block;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	@include margin-leader(0.25);
 	
-	&:hover{
-		background: lighten( $base-header-color, 10% );
+	position: absolute;
+	left: 1em;;
+	bottom: -2em;
+	width: 15em;
+	min-height: 3em;
+	
+	&.error{
+		border: 1px solid $base-red;
+		background: lighten( $base-red, 30% );
 	}
-	&:active{
-		@include base-gradient( $base-header-color, lighten( $base-header-color, 20% ) );
+	&.success{
+		background: lighten( $base-blue, 30% );
+		border: 1px solid $base-blue;	
 	}
 }
+
+
+::-webkit-input-placeholder  { color: $base-black; }
+input:-moz-placeholder { color: $base-black; }
+textarea:-moz-placeholder { color: $base-black; }
+
+
 
 /* Parts */
 
@@ -135,12 +210,13 @@ $sidebar-width: 180px;
 @import "theme/footer";
 @import "theme/page_post";
 @import "theme/page_contact_us";
-	//@import "theme/contact_form";
+@import "theme/contact_form";
 	//@import "theme/mailchimp_subscribe";
 	//@import "theme/photo_gallery";
 
 
 /* End Parts */
+
 
 
 .wrap{
@@ -179,239 +255,6 @@ $mobile-menu-color: #E7E9EF;
 
 /* --- less than main size --- */
 @media screen and (max-width: 979px) {
-	.wrap{
-		width:90%;
-		padding:0 5%;
-	}
-	
-	#header{
-		margin-top: $mobile-menu-height;
-		text-align: center;
-		@include padding-leader(1.5);
-		@include padding-trailer(1.5);
-		margin-bottom: 0;
-		
-		& a#logo, & #logo-right{
-			display:block;
-			float: none;
-		}
-		
-		& a#logo{
-			margin-left: auto;
-			margin-right: auto;
-		}
-		
-		& #logo-right{}
-	}
-	
-	nav#access{
-		@include pie;
-		position: absolute !important;
-		border-bottom: 1px solid $base-color;
-		top: 0;
-		padding-left:0;
-		padding-right:0;
-		width:100%;
-		@include min-height( $mobile-menu-height );
-		background: $guru-color;
-		@include background(
-			linear-gradient(
-				top,
-				lighten( $guru-color, 30% ) 0%,
-				$guru-color 4%,
-				darken( $guru-color, 20% ) 100%
-			)
-		);
-		
-		& > div{
-			
-			& .menu {
-				display: none;
-				background: #fff;
-				position: absolute;
-				top: $mobile-menu-height;
-				width: 100%;
-				margin-top: 1px;
-				@include padding-leader(0.5);
-				z-index: 30;
-				
-				//&.showing{
-				//	//display: inline-block;
-				//	display: block;
-				//}
-				
-				& li{
-					display: block;
-					margin-right: 1em !important;
-					margin-left: 1em !important;
-					@include margin-leader( 0.25 );
-					
-					//&.menu-item-last{}
-					
-					&.current_page_item a{
-					}
-					
-					&.current_page_item, &:active, &:hover{
-						& a{
-							color: $mobile-menu-color;
-							background: darken( $guru-color, 10% );
-						}
-					}
-				}
-				
-				& a{
-					@include adjust-font-size-to( 18px, 2 );
-					display: block;
-					padding-left: 1em;
-					background: lighten( $guru-color, 50% );
-					border: 1px solid darken( $guru-color, 30% );
-					@include border-radius( 3px );
-				}
-			}
-
-		}
-		
-		& #guruMenuBtn{
-			display: block;
-			padding-right: 2em;
-			border-right: 1px solid darken($mobile-menu-color, 20% );
-			position: absolute;
-			top: 0;
-			left: 0;
-			//@include background( rgba( 255,255,255, 0.3 ) );
-			
-			& > span{
-				@include background( url("../images/nav-menu-icon.png") no-repeat left center );
-				display:block;
-				height:100%;
-				margin-left: 22px;
-				padding-left:32px;
-				font-weight: bold;
-				color: $mobile-menu-color;
-				@include adjust-font-size-to( 18px, 2.7 );
-			}
-			
-			&:hover{
-				//background-color: darken( $guru-color, 10% );
-			}
-			&:active, &.pressed{
-				background-color: darken( $guru-color, 20% );
-				@include background( 
-					linear-gradient(
-						top,
-						lighten( $guru-color, 10% ) 0%,
-						darken( $guru-color, 20% ) 4%,
-						$guru-color 100%
-					)		
-				);
-			}
-		}
-	}
-	
-	#content{
-		margin-top:0;
-	}
-
-	.project-year{
-		width: 100% !important;
-	}
-
-	.projects.thead{		
-		width: 100% !important;
-	}
-	
-	article.hentry{
-		width: 100%;
-		display:block;
-		float: none;
-		
-		&#front-page-entry{
-			text-align:center;
-			width: 100%;
-		}
-		
-		& header{
-			@include padding-leader(1);
-			& .entry-title{
-				@include margin-trailer(0.5);
-			}
-		}
-		
-		& .entry-content {
-			& .pic{
-				//max-width: 45% !important;
-				display: block;
-				float: none;
-				@include margin-trailer;
-				
-				& img{
-					margin-left: auto;
-					margin-right: auto;
-					max-width: 100% !important;
-					height: auto !important;
-				}
-			}			
-		}
-	}
-	
-	
-	#sidebar{
-		display:block;
-		position:relative;
-		height:auto;
-		width: 100%;
-		float:none;
-		@include margin-leader(2);
-	
-		& #guru-addy{
-			position:relative;
-			display:block;
-			@include margin-leader(3);
-			margin-left: auto;
-			margin-right: auto;
-			text-align:center;
-		}
-	}
-	
-	#guruGraph{
-		display:block;
-		width:100%;
-		@include margin-leader(2);
-		margin-left: 0;
-	}
-	
-	#fallbackGraph{
-		@include margin-leader(2);
-		@include margin-trailer(2);
-		display:block;
-		width: 100%;
-		margin-left: 0;
-	}
-
-
-	#footer{
-		text-align:center;
-		& span.foot-left, & span.foot-right{
-			display:block;
-			float:none;
-		}
-		& span.foot-left{
-			@include adjust-font-size-to(12px);
-			& span{
-				display:block;
-				&.hyph{
-					display:none;
-				}
-			}
-		}
-		& span.foot-right{
-			@include margin-leader;
-			& a{
-				color: $guru-color;
-				font-weight: bold;
-			}
-		}
-	}
 }
 
 /* --- iPad Portrait --- */

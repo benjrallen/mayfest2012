@@ -14,7 +14,15 @@
  */
 
 get_header(); ?>
-<?php get_sidebar(); ?>
+<?php //get_sidebar(); ?>
+<article id="archiveHeader" class="hentry">
+		<header class="parent-title">
+			<h1 class="entry-title">
+				<span class="icon"></span>
+				<span>Latest News</span>
+			</h1>
+		</header>
+</article>
 
 			<?php
 			/* Run the loop to output the posts.

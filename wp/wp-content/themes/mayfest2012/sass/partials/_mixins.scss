@@ -30,6 +30,13 @@
 }
 
 
+@mixin base-shadow(){
+	@include box-shadow( darken($font-color, 30%), 0, 0px, 12px, -4px );
+	
+	.ie9 &{
+		@include box-shadow( darken($font-color, 30%), 0, 0px, 20px, -4px );
+	}
+}
 
 @mixin base-gradient( $light: $base-button-color, $dark: darken($base-button-color, 30%) ){
 	background: $dark;

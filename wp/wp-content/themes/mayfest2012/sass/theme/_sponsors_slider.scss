@@ -4,6 +4,100 @@
 
 /** Slider **/
 
+$max-slide-height: 80px;
+$max-slide-width: 197px;
+$slide-vertical-padding: 12px;
+
+$visible-slides: 5;
+
+.verticalSlider{
+	//width: 100%;
+	overflow:hidden;
+	position: relative;
+	//height: 116px;
+	
+	padding-left: 1em;
+	padding-right: 1em;
+	
+	height: floor( $max-slide-height * $visible-slides + $slide-vertical-padding * $visible-slides * 2  );
+	
+	//background: #fff;
+	
+	& .mask{
+		height: $slide-vertical-padding;
+		width: 100%;
+		left: 0;
+		position: absolute;
+		z-index: 3;
+		
+		//background: #bada55;
+		
+		
+		&.top{
+			top: 0;
+			@include background(
+				linear-gradient( top, rgba( 255, 255, 255, 1), rgba(255,255,255,0) )
+			);
+			-ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffffff,endColorstr=#00ffffff);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffffff,endColorstr=#00ffffff);
+			zoom: 1;
+		}
+		&.bottom{
+			bottom: 0;
+			@include background(
+				linear-gradient( bottom, rgba( 255, 255, 255, 1), rgba(255,255,255,0) )
+			);
+			-ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff,endColorstr=#ffffffff);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff,endColorstr=#ffffffff);
+			zoom: 1;
+		}
+	}
+	
+	& .slides{
+		//@include padding-leader();
+		//@include padding-trailer();
+		height: 9999em;
+		position: absolute;
+		z-index: 2;
+		top: 0;
+		
+		//background: #bada55;
+		
+		& .slide{
+			//@include inline-block;
+			//vertical-align: middle;
+			
+			display: block;
+			
+			& a{
+				display: block;
+				//padding-left: 2em;
+				//padding-right: 2em;
+				
+				padding-top: $slide-vertical-padding;
+				padding-bottom: $slide-vertical-padding;
+				
+				& img{
+					display: block;
+					margin-left: auto;
+					margin-right: auto;
+				}
+			}
+		}
+	}
+}
+
+.lte7{
+	.verticalSlider{
+		@include margin-leader(1);
+
+		& .slides{
+			left: 0;
+			
+		}
+	}
+}
+
 #slider, .slider{
 	width: 100%;
 	overflow:hidden;

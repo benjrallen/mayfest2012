@@ -261,7 +261,7 @@ try{
 			//move page up to see map?
 			if ( me.scrollToMapOnClick ){
 				//finding the target element is not 'smart' (enough) right now, make it smarter later.
-				var target = $(me.cont).closest('article'),
+				var target = $(me.cont).closest('section'),
 					off = target.offset(),
 					//different browsers use different elements to calculate the scrolltop ( webkit=body, mozilla=html, par example )
 					sTop = $('body').scrollTop() || $('html').scrollTop();
@@ -449,7 +449,7 @@ try{
 		var tweetBlock = null;
 		
 		var apiSuccess = function(json, textStatus, jqXHR){
-						
+			//console.log( 'API SUCCESS', json);
 			if (me.FIRST_CALL){
 				me.FIRST_CALL = false;
 			}
@@ -539,6 +539,9 @@ try{
 	
 })(jQuery);
 
+
+
+
 (function($){
 
 	var GuruSlider = function(config){
@@ -547,7 +550,8 @@ try{
 				container: [],
 				slider: [],
 				transition_time: 500,
-				timeout_time: 2000
+				timeout_time: 2000,
+				vertical: false
 			};
 			
 		for (var key in config) {
@@ -562,18 +566,23 @@ try{
 		
 		me.current_slide = [];
 		me.current_left = 0;
+		me.current_top = 0;
 		
 		me.running = false;
 		
 		me.timeout_id = null;
 		
 		me.init();
+		
 	};
 	
 	GuruSlider.prototype.init = function(){
 		
 		if( !this.container.length || !this.slider.length || !this.slider.children().length )
 			return false;
+		
+		
+		//console.log('slider init', this.vertical);
 		
 		//tell the controller it is running
 		this.running = true;
@@ -584,6 +593,9 @@ try{
 		//initialize the current left to start in the center of it all
 		this.current_left = this.getCenter() - this.getSlideCenter();
 		
+		//initialize the current top to start at top of slider
+		//this.current_top = 0;
+		
 		this.moveSlides();
 				
 		//console.log( this.getSlideCenter(), 'center' );
@@ -592,6 +604,11 @@ try{
 	
 	GuruSlider.prototype.getCenter = function(){
 		return Math.floor( this.container.width() / 2 );
+		
+//		return ( this.vertical ?
+//			Math.floor( this.container.height() / 2 ) :
+//			Math.floor( this.container.width() / 2 )
+//		);
 	};
 	
 	GuruSlider.prototype.getSlideCenter = function(){
@@ -599,23 +616,35 @@ try{
 	};
 	
 	GuruSlider.prototype.moveSlides = function(){
-		var me = this;
-		
+		var me = this,
+			animateConfig = ( this.vertical ? 
+				{ top: this.current_top } :
+				{ left: this.current_left }
+			);
+					
 		//console.log( me );
-		return me.slider.stop( true, true ).animate({ left: this.current_left }, this.transition_time, function(){ me.timeoutFunction.call( me ) });
+		//return me.slider.stop( true, true ).animate({ left: this.current_left }, this.transition_time, function(){ me.timeoutFunction.call( me ) });
+		return me.slider.stop( true, true ).animate( animateConfig , this.transition_time, function(){ me.timeoutFunction.call( me ) });
 	};
 	
 	GuruSlider.prototype.shiftSlide = function(){
 		//width of the first slide
 		var first = this.slider.children().first(),
-			w = first.outerWidth();
+			w = first.outerWidth(),
+			h = first.outerHeight();
+		
+		//console.log( 'shift Slide', h, this.current_top, this.current_top + h );
 		
 		//condition to determine if slide is hidden
-		if( this.current_left + w <= 0 ) {
+		if( !this.vertical && this.current_left + w <= 0 ) {
 			//insert it after the last one
 			first.appendTo( this.slider );
 			this.current_left = this.current_left + w;
 			this.slider.css({ left: this.current_left });
+		} else if ( this.current_top + h <= 0 ) {
+			first.appendTo( this.slider );
+			this.current_top = this.current_top + h;
+			this.slider.css({ top: this.current_top });
 		}
 	};
 	
@@ -623,6 +652,9 @@ try{
 		
 		//return this.current_left - this.getCenter() + this.current_slide.position().left - this.getSlideCenter();
 		return this.getCenter() - ( this.current_slide.position().left + this.getSlideCenter() );
+	};
+	GuruSlider.prototype.setNewTop = function(){
+		return this.current_slide.position().top * -1;
 	};
 	
 	GuruSlider.prototype.timeoutFunction = function(){
@@ -647,7 +679,13 @@ try{
 		//me.current_left = me.current_left - me.current_slide.outerWidth();
 		//me.current_left = me.current_left + me.current_slide.position().left * -1/2;
 		//console.log( 'offset left', me.current_slide.position().left, me.current_left )
-		me.current_left = me.setNewLeft();
+		
+		if( !me.vertical ){
+			me.current_left = me.setNewLeft();
+		} else {
+			me.current_top = me.setNewTop();
+		}
+		
 		
 		//animate it
 		me.timeout_id = setTimeout( function(){ me.moveSlides.call(me) }, me.timeout_time );
@@ -698,9 +736,9 @@ try{
 		if ( this.sliders.length ) {
 			for ( var i=0, j=this.sliders.length; i < j; i++ ){
 				//find the jquery container
-				this.sliders[i].container =	$( this.container_selector );
+				this.sliders[i].container =	$( this.sliders[i].container_selector );
 				//find the slider container
-				this.sliders[i].slider = 	this.sliders[i].container.find( this.slider_selector );
+				this.sliders[i].slider = 	this.sliders[i].container.find( this.sliders[i].slider_selector );
 				//make a new instance and track it in the sliders array
 				this.sliders[i] = 			new GuruSlider( this.sliders[i] );
 			}

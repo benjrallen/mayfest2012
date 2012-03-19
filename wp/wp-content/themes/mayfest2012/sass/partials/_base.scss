@@ -39,7 +39,8 @@ $selected-background-color: #999;  // bg-color for selected text
 
 $guru-color: #0761E2;
 
-$base-color: #5d0000;
+//$base-color: #5d0000;
+$base-color: #222;
 
 $base-orange: #EC7625;
 $base-green: #9EE072;
@@ -47,18 +48,37 @@ $base-green: #9EE072;
 $base-green-light: #CBFBA1;
 $base-green-dark: #999D43;
 
-$base-header-color: #BF8300;
+//$base-header-color: #BF8300;
+
+$base-header-color: #D38C00;
 
 $base-button-color: #bada55;
 
 $base-grey: #999;
 
+$base-white: #fff;
+
+$base-black: #333;
+
+//$base-grey: #E9E3E4;
+$base-grey: #E9E9E9;
 
 $base-hover-opacity: 0.7;
 
 $base-width: 980px;
 
 $base-transition-time: 0.1s;
+
+$content-width: 710px;
+
+
+$base-blue:		#14A4CA;
+$base-purple:	#9E4199;
+$base-teal:		#00B4B7;
+$base-orange: 	#E27F00;
+$base-yellow: 	#E5D700;
+$base-red: 		#D93C38;
+
 
 
 $base-bg: #D3C49E;

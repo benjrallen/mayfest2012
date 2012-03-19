@@ -1,5 +1,5 @@
 <section class="twitter-box">
-	<header>
+	<header class="teal">
 		<span class="icon"></span>
 		<h2>Twitter</h2>
 	</header>

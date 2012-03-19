@@ -47,6 +47,7 @@
 				
 				echo '<div class="slide" gid="'.$pageID.'">';
 					echo '<a href="'.$pageUrl.'" title="'.$pageTitle.'"'.$blank.'>';
+						echo '<div class="line"></div>';
 						echo '<img src="'.$banner['url'].'" width="'.$banner['width'].'" height="'.$banner['height'].'" />';
 						echo '<div class="description">';
 							echo '<span class="title">'.$thumbPost->post_title.'</span>';
