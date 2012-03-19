@@ -78,7 +78,7 @@ get_header(); ?>
 					?>
 					<div class="clearfix"></div>
 				</div>
-			</section>
+			</section>			
 		</div>
 	</div>
 	<div class="col last">

@@ -155,7 +155,7 @@ class NewPostType{
 		//print_r($taxonomies);
 		
 		// find out if its a taxonomy
-		if( array_key_exists( $column, $taxonomies ) ){
+		if( isset( $taxonomies ) && array_key_exists( $column, $taxonomies ) ){
 			//echo 'column is tax!';
 			$tax_slug = $column;
 			$column = 'taxonomy';
@@ -274,6 +274,7 @@ class MetaBoxTemplate{
 				case 'text':
 					echo '<input type="text" name="', $field['id'], '" class="', $field['id'], '" value="', $meta ? $meta : $field['std'], '" size="30" style="width:75%" />', '<div style="display:block;margin-left:20%;">', $field['desc'], '</div>';
 					break;
+
 				case 'textarea':
 					echo '<textarea name="', $field['id'], '" class="', $field['id'], '" cols="60" rows="4" style="width:75%">', $meta ? $meta : $field['std'], '</textarea>', '<div style="display:block;margin-left:20%;">', $field['desc'], '</div>';
 					break;
@@ -291,6 +292,7 @@ class MetaBoxTemplate{
 					}	
 					echo '</select>';
 					break;
+								
 				case 'radio':
 					foreach ($field['options'] as $option) {
 						echo '<input type="radio" name="', $field['id'], '" value="', $option['value'], '"', $meta == $option['value'] ? ' checked="checked"' : '', ' />', $option['name'];
@@ -365,7 +367,7 @@ class MetaBoxTemplate{
 		
 		foreach ($this->fields as $field) {
 			$old = get_post_meta($post_id, $field['id'], true);
-			$new = $_POST[$field['id']];
+			$new = ( isset($_POST[$field['id']] ) ? $_POST[$field['id']] : '' );
 			
 			
 			//this is for the multiple select box
@@ -481,7 +483,7 @@ class TaxonomyTemplate{
 			'parent_item' => sprintf( __( 'Parent Genre' ), $this->taxonomy_single ),
 			'parent_item_colon' => sprintf( __( 'Parent Genre:' ), $this->taxonomy_single),
 			'edit_item' => sprintf( __( 'Edit %s' ), $this->taxonomy_single ), 
-			'update_item' => sprintf( __( 'Update %s' ), $this->ta_single ),
+			'update_item' => sprintf( __( 'Update %s' ), $this->taxonomy_single ),
 			'add_new_item' => sprintf( __( 'Add New %s' ), $this->taxonomy_single ),
 			'new_item_name' => sprintf( __( 'New %s Name' ), $this->taxonomy_single ),
 			'separate_items_with_commas' => sprintf( __( 'Separate %s with commas' ),strtolower( $this->taxonomy_plural ) ),
