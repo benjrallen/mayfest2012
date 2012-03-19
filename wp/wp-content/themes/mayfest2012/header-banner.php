@@ -11,10 +11,11 @@
 	<div class="times">
 		<div class="marker"></div>
 		<div class="content">
-			<p>When:</p>
-			<p>May 19th - May 21st<br />11 am - 11 pm</p>
+			<p>When: May 17 - 20</p>
+			<p>Th, Fri, Sat:<br />&nbsp;&nbsp;&nbsp;11 am - 11 pm<br />Sun:<br />&nbsp;&nbsp;&nbsp;11 am - 6 pm</p>
 			<p>Where:</p>
-			<p>Between Main and Boston</p>	
+			<p>Downtown Tulsa</p>
+			<p>Main Street between 3rd &amp; 6th Streets</p>	
 		</div>
 	</div>
 	
