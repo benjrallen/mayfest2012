@@ -764,7 +764,9 @@ function get_term_hierchy($term){
 	
 	//then build hierarchical tree
 	$term_tree = array();
-	add_terms_to_bag( $terms_by_parent, $term_tree, $terms_by_parent[0] );
+	if (count($terms_by_parent)) {
+		add_terms_to_bag( $terms_by_parent, $term_tree, $terms_by_parent[0] );
+	}
 	
 	//$clean_tree = array();
 	
@@ -789,8 +791,11 @@ function get_term_hierchy($term){
   		return $new;
   	}
   }
-	$clean_tree = remove_array_keys( $term_tree );
-	
+	if( count( $term_tree ) ){
+		$clean_tree = remove_array_keys( $term_tree );
+	} else {
+		$clean_tree = array();
+	}
 	
 	unset($terms);
 	unset($terms_by_parent);
