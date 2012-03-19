@@ -11,6 +11,8 @@
     query_posts(array(
       'paged' => get_query_var('paged'),
       'post_type' => 'mayfest_attraction',
+      'orderby' => 'title',
+      'order' => 'ASC',
     	'tax_query' => array(
     		//'relation' => 'AND',
     		array(
