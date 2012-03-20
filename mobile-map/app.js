@@ -2,7 +2,7 @@ Ext.Loader.setConfig({
 	enabled: true
 });
 
-Ext.ns('Mayfest', 'Mayfest.data.remotePath', 'Mayfest.ui.nav', 'Mayfest.ui.navBar');
+Ext.ns('Mayfest', 'Mayfest.data.remotePath', 'Mayfest.ui.nav', 'Mayfest.ui.navBar', 'Mayfest.ui.templates');
 
 Mayfest.data.remotePath = 'http://gurustudev.com/~ben/mayfest2012/wp/wp-content/themes/mayfest2012/app_cache/';
 

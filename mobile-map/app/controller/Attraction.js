@@ -37,9 +37,20 @@ Ext.define('Mayfest.controller.Attraction', {
 		var me = this;
 		//console.log( 'controller init 2', me.getViewport(), Ext.getCmp('viewport'), me.getContactForm(),me.getAttractionslist() );
 		//setTimeout( function(){ console.log( 'controller init timeout', me.getViewport(), Ext.getCmp('viewport'), me.getContactForm(),me.getAttractionslist() ); }, 0 );
+		
+		
+		//Set up a template for the leaf
+		Mayfest.ui.templates.attractionLeaf = new Ext.Template(
+			'herro',
+			//a configuration object
+			{
+				compiled: true //compile immediately (Turns template into internal function, eliminates RegEx overhead)
+			}
+		);
+		
 	},
 
-	onAttractionLeafShow: function(a, b){
+	onAttractionLeafShow: function(leaf, nav){
 		Mayfest.ui.navBar.show();
 		console.log('onAttractionsLEAFShow', this, a, b);
 	},
@@ -72,11 +83,17 @@ Ext.define('Mayfest.controller.Attraction', {
         var view = Mayfest.ui.AttractionLeaf;
         //view.setData(this.currentAttraction);
 
-
+		//apply the record's data to the template
+		Mayfest.ui.templates.attractionLeaf.apply( record.data );
+		//set the templates returned html for the leaf
+		view.setHtml( Mayfest.ui.templates.attractionLeaf );
+		//push it into the nav view(shows it);
 		Mayfest.ui.nav.push( view );
 		
+		
+		
 
-		console.log( Mayfest.ui.nav.getItems() );
+		//console.log( Mayfest.ui.nav.getItems() );
 
 		//view.show();  
 
