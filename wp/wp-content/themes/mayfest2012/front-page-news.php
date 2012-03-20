@@ -1,6 +1,6 @@
 <section id="fp-news">
-	<header>
-		<h2>News</h2>
+	<header class="red">
+		<h2>Latest News</h2>
 	</header>
 <?php
 	$news = new WP_Query(array(
@@ -23,6 +23,9 @@
 		endwhile;
 	
 	echo '</ul>';
+	
+	echo '<a class="read-more" href="'.get_bloginfo('url').'/news">More</a>';
+	echo '<div class="clearfix"></div>';
 	
 	endif;
 	wp_reset_query(); 

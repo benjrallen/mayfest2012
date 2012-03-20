@@ -10,7 +10,7 @@
 
 get_header(); ?>
 
-<?php get_sidebar(); ?>
+<?php //get_sidebar(); ?>
 
 <?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 	<div id="mapWrap">
@@ -22,7 +22,10 @@ get_header(); ?>
 			echo get_location_list();
 		?>
 		<header class="parent-title">
-			<h1 class="entry-title"><?php the_title(); ?></h1>
+			<h1 class="entry-title">
+				<span class="icon"></span>
+				<span><?php the_title(); ?></span>
+			</h1>
 		</header>
 		<div class="entry-content">
 		

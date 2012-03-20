@@ -37,20 +37,23 @@
 			Guru.TemplateUrl = '<?php bloginfo('template_directory'); ?>';
 			Guru.isFrontPage = <?php if(is_front_page()) { echo 'true'; }else{ echo 'false'; } ?>;
 			Guru.wpVersion = '<?php echo trim(get_bloginfo("version")); ?>';
-			Guru.postID = '<?php echo get_the_ID(); ?>';
 		</script>
 		<script src="<?php bloginfo('template_directory'); ?>/js/modernizr.js"></script>
 		<script type="text/javascript">
 			<?php /* On Mobile Platforms, choose not to load the typekit fonts */ ?>
-//			Modernizr.fontface && Modernizr.touch ? 
-//				document.documentElement.className += " tk-loaded wf-inactive" : 
-//				window.setTimeout(function(){ document.documentElement.className += " tk-loaded wf-active"; }, 3000);
+			<?php /* ?>
+			Modernizr.fontface && Modernizr.touch ? 
+				document.documentElement.className += " tk-loaded wf-inactive" : 
+				window.setTimeout(function(){ document.documentElement.className += " tk-loaded wf-active"; }, 3000);
+			<?php */ ?>
 			
 			Modernizr.load([
-//				{ test: Modernizr.fontface && !Modernizr.touch,
-//				  yep: 'http://use.typekit.com/zba1fth.js',
-//				  callback: function(){ try{Typekit.load();}catch(e){} }
-//				},
+			<?php /* ?>
+				{ test: Modernizr.fontface && !Modernizr.touch,
+				  yep: 'http://use.typekit.com/zba1fth.js',
+				  callback: function(){ try{Typekit.load();}catch(e){} }
+				},
+			<?php */ ?>
 				{ load: ['//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'],
 				  complete: function(){ if(!window.jQuery){ Modernizr.load(Guru.TemplateUrl+'/js/jquery.js'); } }
 				},
@@ -59,10 +62,11 @@
 				  nope: Guru.TemplateUrl+'/js/placeholder.jquery.js'
 				},
 				<?php /* plugins.js & common.js fordevelopment */ ?>
-				{ load: Guru.TemplateUrl+'/js/plugins.js' },
-				{ load: Guru.TemplateUrl+'/js/common.js' }
+				//{ load: Guru.TemplateUrl+'/js/plugins.js' },
+				//{ load: Guru.TemplateUrl+'/js/common.js' },
 				<?php /* concatenate and optimize seperate script files for deployment using google closure compiler (compiler.jar) in js folder */ ?>
-				//{ load : Guru.TemplateUrl+'/js/theme.js' }
+				{ load : Guru.TemplateUrl+'/js/theme.js' },
+				{ load: '//connect.facebook.net/en_US/all.js#xfbml=1' }
 			]);
 		</script>
 		
@@ -82,22 +86,47 @@
 ?>
 	</head>
 	<body <?php body_class(); ?>>
+
+	<div id="fb-root"></div>
 		
 	  <div id="outer">
 		
 		<?php get_template_part('featured','background'); ?>
-		
-		<?php get_template_part('nav','top'); ?>
-		
-		<?php 
-		if ( is_front_page() ) {
-			echo '<div id="mainWrap" class="wrap">';
-			get_template_part('header','banner');
-			get_template_part('front-page','rotator');
-			echo '</div>';
-		}
-		?>
-		
-		<section id="content" class="box wrap" role="main">
-			<div class="inner">
-			<?php get_template_part('nav','primary'); ?>
+				
+		<div id="mainWrap" class="wrap">
+			<div id="mainLeft">
+			<?php 
+			//if ( is_front_page() ) {
+				//echo '<div id="mainWrap" class="wrap">';
+				get_template_part('header','banner');
+				//echo '</div>';
+			//}
+			?>
+			</div>
+			
+			<div id="mainRight">
+				<div id="topNav">
+					<?php get_template_part('nav','primary'); ?>
+					<?php get_template_part('nav','top'); ?>
+				</div>
+				
+				<?php
+				
+					global $post;
+					
+				?>
+				
+				<div class="social">
+					<div class="fb-like" data-href="<?php echo get_permalink($post->ID); ?>" data-send="true" data-layout="button_count" data-width="90" data-show-faces="false"></div>
+					<a class="tw" href="http://twitter.com/mayfest" title="Tulsa International Mayfest on Twitter" target="_blank">Tulsa International Mayfest on Twitter</a>
+					<a class="fb" href="http://www.facebook.com/tulsainternationalmayfest" title="Tulsa International Mayfest on Facebook" target="_blank">Tulsa International Mayfest on Facebook</a>
+				</div>
+				
+				<?php 				
+				if ( is_front_page() ) {
+					get_template_part('front-page','rotator');
+					
+				}
+				?>
+				<section id="content" class="box" role="main">
+					<div class="inner">

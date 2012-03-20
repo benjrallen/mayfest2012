@@ -2,29 +2,23 @@
 // CSS for the specific theme header
 //
 
-$header-width: 240px;
-
-#mainWrap{
-	& #header{
-		margin-left: 2.25em;
-		margin-right: 0.75em;
-		@include margin-trailer( 3 );
-	}
-}
+$header-width: 221px;
 
 #header{
 	
-	@include inline-block;
-	vertical-align: middle;
+	//@include inline-block;
+	//vertical-align: middle;
+		
 	width: $header-width;
 	background: #fff;
 	@include padding-leader(1.5);
 	
-	@include box-shadow( $font-color, 0, 12px, 20px, -8px );
+	@include base-shadow();
+	
 	@include pie;
 	//position: relative;
 
-	& a#logo, & #sublogo, & .banner-bottom{
+	& a#logo, & #sublogo{
 		text-indent: -9999em;
 		@include main-sprite;
 	}
@@ -32,11 +26,11 @@ $header-width: 240px;
 	& a#logo{
 		@include single-transition( opacity, $base-transition-time, ease-in-out );
 		display: block;
-		height: 133px;
-		width: 214px;
+		height: 123px;
+		width: 198px;
 		margin-left: auto;
 		margin-right: auto;
-		background-position: -162px 0;
+		background-position: -162px -1px;
 		@include margin-trailer( 1 );
 		
 		&:hover{
@@ -44,115 +38,238 @@ $header-width: 240px;
 		}
 	}
 	
-	& #sublogo{
-		height: 220px;
-		width: 239px;
-		display: block;
-		background-position: -430px 0;
+	& h3{
+		@include adjust-font-size-to(22px);
+		font-weight: bold;
+		color: $base-black;
+	}
+	
+	& #bannerWhen{
+		padding-left: 0.65em;
+		padding-right: 0.65em;
+		@include margin-leader(-0.25);
+		@include margin-trailer(0.25);
+		text-align: center;
+	}
+	
+	& #header-nav{
+		
+		& li{
+	
+			@include padding-trailer(0.5);
+
+			
+			$flag-width: 21px;
+			$flag-height: 12px;
+			$li-padding: 12px;
+	
+			& a{
+				color: $base-white;
+				display: block;
+				position: relative;
+				width: $header-width + $flag-width;
+								
+				& strong{
+					display: block;
+					//width: 100%;
+					padding-left: 1em;
+					padding-right: 1em;
+					
+					position: relative;
+					//@include pie;
+					z-index: 2;
+					
+					@include adjust-font-size-to( 18px, 1.5 );
+					@include padding-leader( 0.5 );
+					@include padding-trailer( 0.5 );
+					
+					font-weight: 700;
+					
+					@include text-shadow( darken( $base-white, 60% ) 1px 1px 1px );
+					@include box-shadow( darken( $base-grey, 100% ) -21px 0 36px -21px );
+				}
+				
+				& .icon{
+					height: $flag-height;
+					width: $flag-width;
+					display: block;
+					position: absolute;
+					right: 0;
+					bottom: -$flag-height;
+					z-index: 1;
+					
+					@include main-sprite;
+					background-position: -50px 0;
+				}
+			}
+
+			& strong{
+					@include single-transition( background, $base-transition-time, ease-in-out );
+			}
+			
+			&:hover{
+				& strong{
+					@include single-transition( background, $base-transition-time, ease-in-out );
+				}
+			}
+			
+			$hover-pct: 10%;
+			&.purple{
+				& strong{
+					background: $base-purple;
+				}
+				
+				&:hover{
+					& strong{
+						background: darken( $base-purple, $hover-pct );
+					}
+				}
+			}
+			&.teal{
+				& strong{
+					background: $base-teal;
+				}
+				
+				&:hover{
+					& strong{
+						background: darken( $base-teal, $hover-pct );
+					}
+				}
+			}
+			&.orange{
+				& strong{
+					background: $base-orange;
+				}
+				
+				&:hover{
+					& strong{
+						background: darken( $base-orange, $hover-pct );
+					}
+				}
+			}
+			&.yellow{
+				& strong{
+					background: $base-yellow;
+				}
+				
+				&:hover{
+					& strong{
+						background: darken( $base-yellow, $hover-pct );
+					}
+				}
+			}
+			&.red{
+				& strong{
+					background: $base-red;
+				}
+				
+				&:hover{
+					& strong{
+						background: darken( $base-red, $hover-pct );
+					}
+				}
+			}
+		}
+
+	}
+	
+	
+	& .times, & .newsletter{
 	}
 	
 	& .times{
-		background: $base-orange;
 		padding-left: 1em;
 		padding-right: 1em;
-		color: #fff;
-		font-weight: 700;
 		@include margin-leader(0.125);
 		@include padding-leader(0.25);
-		@include padding-trailer(0.125);
+		@include padding-trailer(0.25);
 		
-		& .marker, & .content{
-			@include inline-block;
-			vertical-align: middle;
+		& p{
+			font-weight: 400;
+			color: $base-red;
+			@include adjust-font-size-to(19px, 1.25);
 		}
-		
-		& .marker{
-			height: 82px;
-			width: 48px;
-			@include main-sprite;
-			background-position: 0 -79px;
-		}
-		& .content{
-			margin-left: 1em;
-			width: 145px;
-			
-			& p{
-				@include adjust-font-size-to(14px, 0.9);
-				@include margin-leader(0.25);
-				@include margin-trailer(0.125);
-			}
-		}
-		
 	}
 	
-	& .social{
-		@include padding-leader( 0.375 );
-		@include padding-trailer( 0.75 );
-		padding-left: 1.5em;
-		padding-right: 1.5em;
+	& .newsletter{
+		@include padding-trailer();
+		padding-left: 1em;
+		padding-right: 1em;
+		position: relative;
+		z-index: 100;
 		
-		& h3{
-			color: $base-green;
-			text-align: center;
-			font-weight: 700;
-			letter-spacing: 1px;
-			@include padding-trailer( 0.5 );
+		& label{
+			color: $base-black;
+			@include adjust-font-size-to(18px);
+			font-weight: 400;
 		}
-		& a{
-			//@include inline-block;
+		& input{
+			width: 95%;
+			padding-left: 2.5%;
+			padding-right: 2.5%;
+			//@include adjust-font-size-to(16px);
+			font-size: 16px;
+			padding-top: 3px;
+			padding-bottom: 3px;
 			display: block;
-			float: left;
-			height: 32px;
-			width: 32px;
-			@include main-sprite;
-			text-indent: -9999em;
-			margin-left: 1.8em;
+			//border: 1px solid $base-grey;
+			//background: $base-grey;
 			
-			&.fb{
-				margin-left: 0;
-				background-position: 0 -236px;
-				&:hover{
-					background-position: 0 -268px;
-				}	
-			}
-			&.flickr{
-				background-position: -64px -236px;
-				&:hover{
-					background-position: -64px -268px;
-				}	
-			}
-			&.tw{
-				background-position: -32px -236px;
-				&:hover{
-					background-position: -32px -268px;
-				}	
-			}
-			&.my{
-				background-position: -96px -236px;
-				&:hover{
-					background-position: -96px -268px;
-				}	
+			&:focus{
+				outline: none;
+				background: darken( $base-grey, 10% );
 			}
 		}
-		
+		& button{
+			@include float-right;
+			@include margin-leader(0.25);
+		}
 	}
 	
-	& .banner-bottom{
-		height: 50px;
-		width: 240px;
-		display: block;
-		position: absolute;
-		left: 0;
-		bottom: -50px;
-		background-position: 0 -344px;
+	
+}
+
+.lte7{
+	
+	.mcError{
+		bottom: -3.25em;
+	}
+	
+	& #header{
+		& #header-nav{	
+			& li{
+				@include padding-trailer(0.25);
+				@include margin-leader(-0.75);
+				
+				& a{
+					//@include adjust-font-size-to( 12px, 1.25 );	
+				}
+			}
+		}		
+
+		& .newsletter{
+			
+			& label{
+			}
+			& input{
+			}
+			& button{
+				padding-right: 0.5em;
+				padding-left: 0.5em;
+				background: $base-red;
+				behavior: none;
+				
+				&:hover{
+					background: lighten( $base-red, 10% );
+				}
+			}
+		}
+
 	}
 }
 
 .lte8{
 	& #header{
-		& .banner-bottom{
-			bottom: -49px;
-		}
 	}
 }
 

@@ -1,3 +1,5 @@
+/*	Preface:  I know that this is some pretty ugly javascript, but this admin interface needs to get done pronto, so I copy, and thus I paste */
+
 /*
  * Try/Catch the console
  */
@@ -19,6 +21,8 @@ try{
 		
 		locationSelect();
 		attractionSelect();
+		categorySelect();
+		eventTypeSelect();
 		
 		datePickers();
 	});
@@ -31,6 +35,187 @@ try{
 			});
 		}
 	}
+
+
+	//uses json api plugin to get event types and fill in an autocomplete select box
+	function eventTypeSelect(){
+		if( $('#event_category_select').length ){
+
+			//set api path.
+			var apiUrl = GuruAdmin.TemplateDirectory + '/app_cache/',
+				fieldName = 'mayfest_event_category_id',
+				file = 'event_category.json',
+				loadingMsg = $('<div />', {
+								id: 'loadingMsg',
+								html: 'Loading Attraction Categories...'
+							 }),
+				locSelect = $('<select />', {
+								id: 'mayfestEventCategorySelect',
+								html: '<option value="">Choose One:</option>'
+							 }),
+//				toggle = $('<button />', { id:"comboToggle", text: 'Show underlying select' }),
+				//find the input of interest
+				locInput = $('#event_category_select').find('input[name="'+fieldName+'"]'),
+				currentVal = parseInt(locInput.val(), 10);
+
+
+			//hide input
+			locInput.hide();
+
+			//show a loading message
+			loadingMsg.insertAfter(locInput);
+			//
+
+			//make a simple call
+			$.get( 
+				apiUrl + file,
+				function(data){
+
+					//hide the loading message
+					loadingMsg.hide();
+
+					data = flattenNestedData( data, 'children' );
+
+					$.each(data, makeOption);
+
+					//console.log( 'data gotten', data);
+
+					locSelect.insertAfter( locInput ).change(function(e){
+						locInput.val( $(this).val() );
+					}).combobox();
+
+
+					//console.log( 'data gotten', data, locSelect );
+
+//					toggle.insertAfter(locSelect).click(function(){
+//						locSelect.toggle();
+//					});		
+				}
+			);
+
+			//this is used to flatten the nested category data used for the sencha app
+			var flattenNestedData = function( data, childKey ){
+
+				var flatData = [];
+
+				var extractChildren = function(i){
+					flatData.push( this );
+					if( this[childKey] && this[childKey].length )
+						$.each( this[childKey], extractChildren );
+				};
+
+				if( data[childKey] && data[childKey].length )
+					$.each( data[childKey], extractChildren);
+
+				return flatData;
+			}
+
+
+			var makeOption = function(){
+				var opt = $('<option />', {
+								value: this.term_id,
+								text: this.name
+						  });
+
+				if ( this.term_id == currentVal )
+					opt.attr('selected', 'selected');
+
+				opt.appendTo(locSelect);
+			};
+
+		}	
+	}
+
+
+	//uses json api plugin to get attractions and fill in an autocomplete select box
+	function categorySelect(){
+		if( $('#attraction_category_select').length ){
+
+			//set api path.
+			var apiUrl = GuruAdmin.TemplateDirectory + '/app_cache/',
+				fieldName = 'mayfest_attraction_category_id',
+				file = 'attraction_category.json',
+				loadingMsg = $('<div />', {
+								id: 'loadingMsg',
+								html: 'Loading Attraction Categories...'
+							 }),
+				locSelect = $('<select />', {
+								id: 'mayfestAttractioCategorySelect',
+								html: '<option value="">Choose One:</option>'
+							 }),
+//				toggle = $('<button />', { id:"comboToggle", text: 'Show underlying select' }),
+				//find the input of interest
+				locInput = $('#attraction_category_select').find('input[name="'+fieldName+'"]'),
+				currentVal = parseInt(locInput.val(), 10);
+
+
+			//hide input
+			locInput.hide();
+
+			//show a loading message
+			loadingMsg.insertAfter(locInput);
+			//
+
+			//make a simple call
+			$.get( 
+				apiUrl + file,
+				function(data){
+
+					//hide the loading message
+					loadingMsg.hide();
+
+					data = flattenNestedData( data, 'children' );
+
+					$.each(data, makeOption);
+
+
+
+					locSelect.insertAfter( locInput ).change(function(e){
+						locInput.val( $(this).val() );
+					}).combobox();
+
+
+					//console.log( 'data gotten', data, locSelect );
+
+//					toggle.insertAfter(locSelect).click(function(){
+//						locSelect.toggle();
+//					});		
+				}
+			);
+
+			//this is used to flatten the nested category data used for the sencha app
+			var flattenNestedData = function( data, childKey ){
+				
+				var flatData = [];
+				
+				var extractChildren = function(i){
+					flatData.push( this );
+					if( this[childKey] && this[childKey].length )
+						$.each( this[childKey], extractChildren );
+				};
+
+				if( data[childKey] && data[childKey].length )
+					$.each( data[childKey], extractChildren);
+
+				return flatData;
+			}
+
+
+			var makeOption = function(){
+				var opt = $('<option />', {
+								value: this.term_id,
+								text: this.name
+						  });
+
+				if ( this.term_id == currentVal )
+					opt.attr('selected', 'selected');
+
+				opt.appendTo(locSelect);
+			};
+
+		}	
+	}
+
 
 	//uses json api plugin to get attractions and fill in an autocomplete select box
 	function attractionSelect(){
@@ -65,11 +250,11 @@ try{
 			$.get( 
 				apiUrl + file,
 				function(data){
-					//console.log( 'data gotten', data );
+					//console.log( 'data gotten', data, flatData );
 					
 					//hide the loading message
 					loadingMsg.hide();
-					
+										
 					$.each(data, makeOption);
 					
 					locSelect.insertAfter( locInput ).change(function(e){
@@ -81,7 +266,7 @@ try{
 //					});		
 				}
 			);
-			
+						
 			var makeOption = function(){
 				var opt = $('<option />', {
 								value: this.id,

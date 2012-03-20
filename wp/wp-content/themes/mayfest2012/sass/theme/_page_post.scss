@@ -17,20 +17,184 @@ article.hentry{
 	
 	padding-left: 2em;
 	padding-right: 2em;
-	//@include padding-trailer();
+	@include padding-leader(0.75);
+	@include padding-trailer(0.75);
 	
-	
-
-	& h1.entry-title, h2.entry-title{
-		@include adjust-font-size-to( 24px );
-		@include margin-leader(0.5);
-		//@include margin-trailer(0.25);
+	&.post{
+		@include padding-trailer(0);
 	}
 	
-	.entry-content{
-		width: $article-width;
+	& .more-link{
+		//@include float-right;
+		@include margin-leader(0.75);
+		//@include margin-trailer(0.75);
+		//font-weight: 600;
 		
-		@include margin-leader(0.5);
+		width: auto;
+		@include float-right;
+		padding-left: 0.75em;
+		padding-right: 0.75em;
+		@include padding-leader(0.125);
+		@include padding-trailer(0.125);
+		@include border-radius( 3px );
+
+		@include pie;
+		@include base-gradient( lighten( $base-blue, 10% ), $base-blue );
+		border: 1px solid lighten( $base-blue, 10% );
+		@include adjust-font-size-to(12px, 1.25);
+		
+		color: $base-white;
+		font-weight: 300;
+		
+		&:hover{
+			background: lighten( $base-blue, 5% );
+		}
+		&:active{
+			@include base-gradient( $base-blue, lighten( $base-blue, 10% ) );
+		}
+	}
+
+	& a{
+		color: $base-header-color;
+		
+		&:hover{
+			color: darken( $base-header-color, 20% );
+		}
+	}
+
+	
+	&#archiveHeader{
+		@include float-left;	
+	}
+	
+	& h1.entry-title{
+		@include adjust-font-size-to( 30px );
+		@include margin-leader(0.25);
+		.single &{
+			@include adjust-font-size-to( 26px );
+		}
+		
+		& span{
+			@include inline-block;
+
+			&.icon{
+				width: 67px;
+				height: 43px;
+				background-position: 0 -81px;
+				margin-right: 0.25em;
+			}
+		}
+	}
+
+	& h2.entry-title{
+		@include adjust-font-size-to( 20px );
+				
+		font-weight: 600;
+		
+		& a{
+			//color: $base-black;
+		}
+		
+		& span{
+			@include inline-block;
+			&.icon{
+				width: 33px;
+				height: 22px;
+				background-position: 0 0;
+				margin-right: 0.25em;
+			}
+		}
+	}
+
+	& h1.entry-title, h2.entry-title{
+		//@include margin-leader(0.5);
+		//@include margin-trailer(0.25);
+		
+		//color: lighten( $base-orange, 10% );
+		
+		@include padding-trailer(0.25);
+		
+		& span{
+			display: inline;
+			
+			&.icon{
+				@include inline-block;
+				vertical-align: middle;
+				@include main-sprite;
+			}
+		}
+	}
+	
+	& .attraction-meta{
+		//@include margin-leader(0.5);
+		@include padding-trailer(0.75);
+	
+		& .piece{
+			@include padding-leader( 0.25 );
+			
+			& span{
+				@include inline-block;
+				vertical-align: baseline;
+				
+				&.label{
+					font-weight: 600;
+					@include adjust-font-size-to( 14px );
+					margin-right: 0.5em;
+					min-width: 4.5em;
+				}
+				&.value{
+					
+				}
+			}
+		}
+	}
+	
+	& .entry-meta{
+		@include adjust-font-size-to( 12px);
+	}
+	
+	& header{
+		& .entry-meta{
+			@include adjust-font-size-to( 13px );
+			@include padding-trailer(0.5);
+			@include margin-trailer(0.25);
+			//border-bottom: 1px solid darken($base-bg, 20%);
+		}
+	}
+	
+	& .entry-time{
+		@include adjust-font-size-to( 15px, 1 );
+		@include margin-trailer( 0.5 );
+	}
+	
+	& .entry-summary{
+		@include adjust-font-size-to( 14px, 1.25 );
+		//padding-left: 1em;
+		
+		& .more-link{
+			@include margin-leader( 1.25 );	
+		}
+	}
+	
+	& .entry-utility{
+		//&.archive{
+		//	padding-left: 1em;
+		//}
+	}
+	
+	& .entry-content{
+		//width: $article-width;
+		@include adjust-font-size-to( 14px, 1.25 );
+		
+		//@include margin-leader(0.5);
+		
+		& .entry-full{
+		}
+		
+		& strong, b{
+			color: darken( $base-black, 100% );	
+		}
+
 		
 		.pic{
 			//display:inline;
@@ -57,14 +221,17 @@ article.hentry{
 	
 	
 	& .col{
-		@include inline-block;
-		vertical-align: top;
+		//@include inline-block;
+		//vertical-align: top;
+		
+		@include float-left;
 		
 		min-height: 1em;
-		width: 33%;
+		width: 50%;
+		//background: #bad;
 		
 		& .in{
-			padding-left: 1em;
+			//padding-left: 1em;
 			padding-right: 1em;
 		}
 		
@@ -82,13 +249,17 @@ article.hentry{
 			& li{
 				border-top: 1px solid lighten( $base-bg, 20% );
 				border-bottom: 1px solid $base-bg;
+				
+				&:first-child{
+					border-top: none;
+				}
 			}
 		}
 		
 		&.first{
 			& .in{
-				padding-left: 0;
-				padding-right: 2em;
+				//padding-left: 0;
+				//padding-right: 2em;
 			}
 		}
 		&.mid{
@@ -97,8 +268,8 @@ article.hentry{
 		}
 		&.last{
 			& .in{
-				padding-right: 0;
-				padding-left: 1em;
+				//padding-right: 0;
+				//padding-left: 1em;
 			}
 		}
 	}
@@ -106,22 +277,47 @@ article.hentry{
 }
 
 
-#nav-below, #nav-above{
-	padding-left:1.5em;
-	padding-right: 1.5em;
+.navigation{
+	//padding-left:1.5em;
+	//padding-right: 1.5em;
 	@include margin-leader(0.25);
 	@include margin-trailer(-1);
-	@include adjust-font-size-to(16px);
+	//@include adjust-font-size-to(16px);
 	
-	width: $article-width;
+	//width: $article-width;
 	
 	& a{
-		color: darken( $base-header-color, 20% );
+		//color: $base-header-color;
+		
+		//&:hover{
+		//	color: darken( $base-header-color, 20% );
+		//}
+		
+		width: auto;
+		//@include float-right;
+		padding-left: 0.75em;
+		padding-right: 0.75em;
+		@include padding-leader(0.125);
+		@include padding-trailer(0.125);
+		@include border-radius( 3px );
+
+		@include pie;
+		@include base-gradient( lighten( $base-blue, 10% ), $base-blue );
+		border: 1px solid lighten( $base-blue, 10% );
+		@include adjust-font-size-to(12px, 1.25);
+		
+		color: $base-white !important;
+		font-weight: 300;
+		
 		&:hover{
-			color: $base-header-color;
+			background: lighten( $base-blue, 5% );
 		}
+		&:active{
+			@include base-gradient( $base-blue, lighten( $base-blue, 10% ) );
+		}
+
 	}
-	
+		
 	& .nav-previous{
 		@include float-left;	
 	}
@@ -132,6 +328,134 @@ article.hentry{
 
 
 /** End Default Page Template **/
+
+.pagination{
+	@include float-right;
+	
+	display: block;
+	padding-left: 2em;
+	padding-right: 2em;
+	
+	@include margin-leader( 0.75 );
+	
+	& span, & a{
+		border: 1px solid transparent;
+		@include padding-leader(0.25);
+		@include padding-trailer(0.25);
+		padding-left: 0.75em;
+		padding-right: 0.75em;
+		@include inline-block;
+		vertical-align: middle;
+		color: $base-white;
+		background: $base-teal;
+		margin-left: 0.5em;
+		@include margin-trailer(0.25);
+		
+		@include pie;
+		@include border-radius(2px);
+		@include box-shadow(
+			$base-color 0px 3px 6px -3px
+		);
+		
+		&.text{
+			background: $base-purple;
+		}
+		&.first{
+			background: $base-blue;
+
+			&:hover{
+				//color: $base-blue;
+				//border: 1px solid $base-blue;
+				background: darken( $base-blue, 10% );
+			}
+		}
+		&.prev{
+			background: $base-red;
+
+			&:hover{
+				//color: $base-red;
+				//border: 1px solid $base-red;
+				background: darken( $base-red, 10% );
+			}
+		}
+		&.next{
+			background: $base-red;
+
+			&:hover{
+				//color: $base-red;
+				//border: 1px solid $base-red;
+				background: darken( $base-red, 10% );
+			}
+		}
+		&.last{
+			background: $base-blue;
+
+			&:hover{
+				//color: $base-blue;
+				//border: 1px solid $base-blue;
+				background: darken( $base-blue, 10% );
+			}
+		}
+	}
+	
+	& a{
+		@include single-transition( all, $base-transition-time, ease-in-out );
+
+		&:hover{
+			@include single-transition( all, $base-transition-time, ease-in-out );
+			//color: $base-teal;
+			//border: 1px solid $base-teal;
+			background: darken( $base-teal, 10% );
+		}
+	}
+}
+
+#pageLoop{
+	&.events{
+		
+		&.notSingle{
+			//background: lighten( $base-blue, 30% );
+			
+			& article.hentry{
+				//@include inline-block;
+				//width: 40%;
+			}
+		}
+		
+		&.single{}
+	}
+	
+	&.sponsors{
+		padding-left: 2em;
+		padding-right: 2em;
+		
+		& .sponsor{
+			//@include inline-block;
+			//vertical-align: middle;
+			@include float-left;
+			display: block;
+			width: 31%;
+			margin-left: 1%;
+			margin-right: 1%;
+			text-align: center;
+			
+			& a{
+				@include hover-opacity;
+			}
+			
+			border: 1px solid $base-grey;
+			
+			height: 12em;
+			
+			@include margin-trailer(0.75);
+			
+			& .line, & .link{
+				@include inline-block;
+			}
+			
+		}
+	}
+}
 
 
 /** 404 Page Template **/

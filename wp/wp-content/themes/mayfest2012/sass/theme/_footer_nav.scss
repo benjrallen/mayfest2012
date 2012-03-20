@@ -12,14 +12,70 @@ $nav-block-width: floor( ($foot-nav-width / $foot-nav-columns) - $nav-block-padd
 nav#subfooter{
 	position:relative;
 	z-index:6;
-	@include margin-leader(2);
-	@include margin-trailer(2);
+	@include margin-leader(0);
+	//@include margin-trailer(2);
 	
 	& .inner{
-		@include padding-leader(0.5);
-		@include padding-trailer(1.5);
+		//@include padding-leader(0.5);
+		@include padding-trailer(0.75);
 		padding-left: 2em;
 		padding-right: 2em;
+		@include margin-trailer(0.5);
+		overflow:hidden;
+	}
+	
+	$cHeight: 24px;
+	& .colors{
+		height: $cHeight;
+
+		margin-left: -2em;
+		margin-right: -2em;
+		width: 107%;
+		
+		@include base-shadow();
+		
+		@include pie;
+		
+		& div{
+			height: $cHeight;
+			@include float-left;
+			display: block;
+			width: 33%;
+
+			//@include bg-texture();
+						
+			//@include opacity(0.7);
+
+			
+			@include box-shadow(
+				$base-black 0 0px 12px -4px inset
+			);
+			
+			@include pie;
+				
+			&.red{
+				background-color: $base-red;
+			}
+			&.green{
+				background-color: $base-green;
+			}
+			&.orange{
+				background-color: $base-orange;
+			}
+			&.purple{
+				background-color: $base-purple;
+			}
+			&.teal{
+				background-color: $base-teal;
+			}
+			&.blue{
+				background-color: $base-blue;
+			}
+			&.yellow{
+				background-color: $base-yellow;
+			}
+			
+		}
 	}
 	
 	& a{}
@@ -33,12 +89,17 @@ nav#subfooter{
 		}
 	}
 	
+	& .menu-footer-nav-container{
+		@include padding-leader(0.75);
+	}
+
+	
 	& .menu{
 		@include inline-block-list;
 		//@include inline-block-list-container;
 		
 		@include adjust-font-size-to( 12px, 0.9 );
-		
+				
 		& li{
 		
 			//@include inline-block-list-item;
@@ -47,7 +108,7 @@ nav#subfooter{
 			padding-left: $nav-block-padding;
 			
 			&.food{
-				width: 60px;
+				width: 100px;
 			}
 			&.sponsors{
 				width: 130px;
@@ -56,7 +117,7 @@ nav#subfooter{
 				width: 80px;
 			}
 			&.volunteer{
-				width: 150px;
+				width: 110px;
 			}
 			&.artists{
 				width: 150px;
@@ -73,12 +134,13 @@ nav#subfooter{
 			}
 			
 			& a{
-				color: $base-color;
+				color: darken($base-grey, 50% );
 				//@include adjust-font-size-to( 16px, 1 );
 				//@include single-text-shadow( lighten( $box-bg, 10% ), 1px, 1px, 1px );
 				
 				&:hover{
-					color: lighten( $base-color, 20% );
+					//color: lighten( $base-color, 20% );
+					color: darken( $base-purple, 100% );
 				}
 			}
 			

@@ -19,7 +19,7 @@
          });
 		
 		
-		accessFix();
+		//accessFix();
 
 		var mySlider = new GuruSliderController({
 //			sliders: [
@@ -32,9 +32,21 @@
 //					transition_time: 800
 //				}
 //			],
-			container_selector: '.slider',
-			timeout_time: 3000,
-			transition_time: 1000
+			sliders: [
+//				{
+//					container_selector: '.slider',
+//					slider_selector: '.slides',
+//					timeout_time: 3000,
+//					transition_time: 1000
+//				},
+				{
+					container_selector: '#mainLeft .verticalSlider',
+					slider_selector: '.slides',
+					timeout_time: 3000,
+					transition_time: 1000,
+					vertical: true
+				}
+			]
 		});
 		
 		//console.log( mySlider );
@@ -48,26 +60,99 @@
 					
 		contactPage();
 
+		newsletterSignup();
 	});	
 	
-	function accessFix(){
-		if( $('nav#access').length ){
-			var nav = $('nav#access'),
-				lis = nav.find('li'),
-				navW = nav.width(),
-				adjust = ( Guru.ie ? 0 : 1 ),
-				w = 0;
+
+
+	function newsletterSignup(){
+		if ( $('form.newsletter').length > 0 ) {
+
+			var form 	= $('form.newsletter'),
+				input	= form.find('input'),
+				button	= form.find('button'),
+				errorCls = 'mcError',
+				sending = false,
+				timeoutTime = 2500,
+				fadeTime = 900;
+
+			//console.log(container, input, button);
+			var onFormSubmit = function(e){
+				e.preventDefault();
 				
-			$.each( lis, function(i){
-				w += $(this).outerWidth();
-			});			
+				var email = input.val(),
+					subUrl = Guru.TemplateUrl + '/mailchimp_subscribe.php';
+
+				var mcError = function(msg, success){
+					if( typeof msg === 'undefined' || !msg )
+						var msg = 'Well, something went wrong.';
+					
+					var cls = ( !success ? errorCls+' error' : errorCls+' success' );
+						
+					$('<span />', { text: msg }).addClass(cls).insertAfter( button );
+					
+					var timeoutFunc = function(){
+						var el = form.find('.'+errorCls);
+						if( el.length ){
+							el.fadeOut( fadeTime, function(e){
+								$(this).remove();
+							});
+						}
+					};
+					
+					return setTimeout( timeoutFunc, timeoutTime );
+				};
 			
-			lis.last().css('padding-right', Math.floor( navW - w - adjust ) );
+				//remove any old errors
+				form.find('.'+errorCls).remove();
+
+				if ( email === '' ){
+					mcError('We need an email address, please.');
+					return false;
+				}
 				
-			//console.log( 'accessFix', navW, w );
-		}
+				if( !sending ){
+					sending = true;
+					//send the address
+					$.get(
+						subUrl,
+						'email='+email,
+						function(data){
+							
+							sending = false;
+							
+							var json = JSON.parse(data);						
+							
+							if( json.error ){
+
+								var msg = json.error;
+
+								switch (true) {								
+									case json.error.indexOf('already subscribed') !== -1 :
+										msg = 'That email\'s already on our list!';
+										break;
+
+									case json.error.indexOf('Invalid Email Address') !== -1 :
+										msg = 'We need a proper email address, please.';
+										break;
+								}
+
+								return mcError( msg );
+							
+							}
+						
+							return mcError('You have been signed up!', true);
+						}
+					);
+				}
+			};
+			
+			button.click(onFormSubmit);
+			form.submit(onFormSubmit);
+		}//the wrap condition
 	}
-	
+
+
 
 	function contactPage(){
 		if( $('#gMap').length ){
@@ -94,60 +179,6 @@
 			//	e.preventDefault();
 			//});
 		}	
-	}
-	
-//	function autoMenu(){
-//		if ( $('nav#access').length ) {
-//			
-//			var nav = $('nav#access'),
-//				btn = $('<div />', { id: 'guruMenuBtn', html: '<span>Menu</span>' }),
-//				lis = nav.find('li');
-//						
-//			var sizeItUp = function(){
-//				if ( $(window).width() >= maxWidth ){
-//				
-//					//to make total item width
-//					var	lisW = 0;
-//					
-//					lis.each(function(){
-//						lisW += $(this).width();
-//					});
-//					
-//					//now calculate the right margin for the lis
-//					var margin = Math.floor( ( nav.width() - lisW ) / (lis.length - 1) - 3 );
-//					
-//					lis.not(':last').css({ marginRight: margin });
-//					
-//					//console.log('fit those nav items', nav, nav.width(), lisW, margin);
-//				}
-//			};
-//
-//			//button click handler
-//			var btnPress = function(e){
-//				console.log('btnPress', e);
-//				
-//				$(this).toggleClass('pressed');
-//				$(this).parent().find('.menu').toggle( 150 );
-//								
-//			};
-//
-//			//attach handler to button and insert it into the dom.
-//			//btn.bind('mousedown mouseup', btnPress ).prependTo( nav );
-//			btn.bind('click', btnPress ).prependTo( nav );
-//
-//			//size up the menu		
-//			$(window).resize( sizeItUp );
-//			$(window).resize();
-//			
-//			
-//			//find the current_page item if it is a special post type archive
-//			lis.each(function(){				
-//				if ( $(this).find('a').attr('href') === window.location.href ) {
-//					$(this).addClass('current-menu-item current_page_item');
-//				}
-//			});
-//		}
-//	}
-	
+	}	
 	
 })(jQuery);

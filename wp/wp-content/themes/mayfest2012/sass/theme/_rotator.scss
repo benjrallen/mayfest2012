@@ -19,14 +19,16 @@
 	-pie-background: rgba(0,0,0,0.4); 
 }
 
-
+$rWidth: 710px;
+$rHeight: 387px;
 #rotator{
 	@include inline-block;
 	vertical-align: middle;
 	height: 387px;
-	width: 680px;
+	width: $rWidth;
 
-	@include margin-trailer(3.75);
+	@include margin-leader(-1.75);
+	@include margin-trailer(1.75);
 	position:relative;
 
 	
@@ -35,7 +37,7 @@
 	& .slides{
 		display:inline-block;
 		height: 387px;
-		width: 680px;
+		width: $rWidth;
 		overflow:hidden;
 		position:relative;
 		//@include float-left;
@@ -44,7 +46,7 @@
 		& .slide{
 			display:block;
 			height: 387px;
-			width: 680px;
+			width: $rWidth;
 			//background: $box-bg;
 			
 			@include opacity(0);
@@ -54,11 +56,22 @@
 			left: 0;
 			z-index:1;
 			
+			& .line, & img{
+				@include inline-block;
+				vertical-align: middle;
+			}
+			
+			& .line{
+				height: 100%;
+				width: 1px;
+				margin-left: -1px;
+			}
+			
 			& img{
-				display:block;
-				position:absolute;
-				bottom: 0;
-				left: 0;
+				//display:block;
+				//position:absolute;
+				//bottom: 0;
+				//left: 0;
 			}
 			
 			& .description{
@@ -102,14 +115,12 @@
 	$ctrl-margin: 4px;
 	
 	.controls{
-		@include inline-block;
+		//@include inline-block;
+		display: block;
 		@include margin-trailer(0.75);
-		margin-right:1.25em;
-		position:absolute;
-		bottom:0;
-		right:0;
-		z-index:999999;
-		
+		margin-right: 0.75em;
+		text-align: right;
+				
 		& div{
 			//color: $base-button-color;
 			//@include pie;
@@ -118,10 +129,14 @@
 			//line-height: 18px;
 			//text-align: center;
 	
-			background: darken( $base-green, 20% );
-			border: $ctrl-border-width solid darken( $base-green, 26% );
-			@include float-left;
-			display: block;
+			background: darken( $base-teal, 0% );
+			border: $ctrl-border-width solid darken( $base-teal, 6% );
+			//@include float-right;
+			
+			
+			//display: block;
+			
+			@include inline-block;
 			margin-left: $ctrl-margin;
 			//@include margin-leader( 0.25 );
 			
@@ -129,26 +144,23 @@
 			height: 14px;
 			@include border-radius( 2px );
 	
-			@include single-box-shadow( darken( $base-green, 26% ), 0, 0, 5px, 2px, true);
+			@include single-box-shadow( darken( $base-teal, 6% ), 0, 0, 5px, 2px, true);
 	
-			
+			text-align: left;
 			text-indent: -9999em;
 			
 			cursor: default;
 			
 			&:hover{
-				border: $ctrl-border-width solid darken( $base-orange, 11% );
-				//color: darken( $base-button-color, 15% );
-				//background: darken( $box-bg, 15% );
-				background: darken($base-orange, 5%);
-				@include single-box-shadow( darken( $base-orange, 11% ), 0, 0, 5px, 2px, true);
+				border: $ctrl-border-width solid darken( $base-teal, 11% );
+				background: darken($base-teal, 5%);
+				@include single-box-shadow( darken( $base-teal, 11% ), 0, 0, 5px, 2px, true);
 				
 			}
 			&.active{
-				border: $ctrl-border-width solid darken($base-orange, 16%);
-				//color: darken($base-grey, 50%);
-				background: darken($base-orange, 10%);
-				@include single-box-shadow( darken( $base-orange, 16% ), 0, 0, 5px, 2px, true);
+				border: $ctrl-border-width solid darken($base-purple, 16%);
+				background: darken($base-purple, 10%);
+				@include single-box-shadow( darken( $base-purple, 16% ), 0, 0, 5px, 2px, true);
 			}
 		}
 	}

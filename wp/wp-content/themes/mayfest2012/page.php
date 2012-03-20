@@ -14,13 +14,16 @@
 
 get_header(); ?>
 
-<?php get_sidebar(); ?>
+<?php //get_sidebar(); ?>
 
 <?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 	
 	<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 		<header class="parent-title">
-			<h1 class="entry-title"><?php the_title(); ?></h1>
+			<h1 class="entry-title">
+				<span class="icon"></span>
+				<span><?php the_title(); ?></span>
+			</h1>
 		</header>
 		<div class="entry-content">
 			<?php
@@ -53,6 +56,9 @@ get_header(); ?>
 		</div><!-- .entry-content -->
 	</article><!-- #post-## -->
 <?php endwhile; ?>
+
+<?php get_template_part('attraction-category', 'loop'); ?>
+<?php get_template_part('event-category', 'loop'); ?>
 
 <?php //get_template_part('front-page','sponsors-slider'); ?>
 

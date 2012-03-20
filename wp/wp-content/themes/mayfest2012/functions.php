@@ -260,7 +260,7 @@ add_filter( 'excerpt_length', 'boilerplate_excerpt_length' );
  * @return string "Continue Reading" link
  */
 function boilerplate_continue_reading_link() {
-	return ' <a href="'. get_permalink() . '">' . __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'boilerplate' ) . '</a>';
+	return ' <a href="'. get_permalink() . '" class="more-link">' . __( 'Read More <span class="meta-nav">&rarr;</span>', 'boilerplate' ) . '</a>';
 }
 
 /**
@@ -509,9 +509,18 @@ endif;
 // add category nicenames in body and post class
 	function boilerplate_category_id_class($classes) {
 	    global $post;
-	    foreach((get_the_category($post->ID)) as $category)
-	        $classes[] = $category->category_nicename;
-	        return $classes;
+	    
+	    if( isset($post) ){ 
+	    
+		    $cat = get_the_category($post->ID);
+		    if( !empty( $cat ) ){
+		    
+			    foreach((get_the_category($post->ID)) as $category)
+			        $classes[] = $category->category_nicename;
+		    }
+	    }
+	    
+	    return $classes;
 	}
 	add_filter('post_class', 'boilerplate_category_id_class');
 	add_filter('body_class', 'boilerplate_category_id_class');
@@ -597,8 +606,8 @@ if (class_exists('MultiPostThumbnails')) {
 //add image sizes
 add_image_size( 'page-thumb', 314, 314, false );
 add_image_size( 'project-thumb', 180, 120, true );
-add_image_size( 'banner', 680, 387, true );
-add_image_size( 'sponsor-thumb', 400, 80, false );
+add_image_size( 'banner', 710, 387, true );
+add_image_size( 'sponsor-thumb', 197, 80, false );
 add_image_size( 'ico', 20, 20, false );
 add_image_size( 'app-thumb', 120, 120, false );
 
@@ -614,6 +623,85 @@ function nav_menu_first_last( $items ) {
 	return $items;
 }
 add_filter( 'wp_nav_menu_items', 'nav_menu_first_last' );
+
+
+class Color_Walker extends Walker_Nav_Menu
+{
+	var $counter = 0;
+	var $colors = array(
+		'purple',
+		'teal',
+		'orange',
+		'yellow',
+		'red'
+	);
+
+	/**
+	 * @see Walker::start_el()
+	 * @since 3.0.0
+	 *
+	 * @param string $output Passed by reference. Used to append additional content.
+	 * @param object $item Menu item data object.
+	 * @param int $depth Depth of menu item. Used for padding.
+	 * @param int $current_page Menu item ID.
+	 * @param object $args
+	 */
+	function start_el(&$output, $item, $depth, $args) {
+		global $wp_query;
+		
+		//check counter vs list of colors
+		if( $this->counter >= count( $this->colors ) )
+			$this->counter = 0;
+				
+		$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
+
+		$class_names = $value = '';
+
+		$classes = empty( $item->classes ) ? array() : (array) $item->classes;
+		$classes[] = 'menu-item-' . $item->ID;
+		//BA - ADD THE COLOR
+		$classes[] = $this->colors[$this->counter];
+
+		$class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args ) );
+		$class_names = ' class="' . esc_attr( $class_names ) . '"';
+
+		$id = apply_filters( 'nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args );
+		$id = strlen( $id ) ? ' id="' . esc_attr( $id ) . '"' : '';
+
+		$output .= $indent . '<li' . $id . $value . $class_names .'>';
+
+		$attributes  = ! empty( $item->attr_title ) ? ' title="'  . esc_attr( $item->attr_title ) .'"' : '';
+		$attributes .= ! empty( $item->target )     ? ' target="' . esc_attr( $item->target     ) .'"' : '';
+		$attributes .= ! empty( $item->xfn )        ? ' rel="'    . esc_attr( $item->xfn        ) .'"' : '';
+		$attributes .= ! empty( $item->url )        ? ' href="'   . esc_attr( $item->url        ) .'"' : '';
+
+		$item_output = $args->before;
+		$item_output .= '<a'. $attributes .'>';
+		$item_output .= $args->link_before . apply_filters( 'the_title', $item->title, $item->ID ) . $args->link_after;
+		$item_output .= '</a>';
+		$item_output .= $args->after;
+
+		$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+		
+		//BA - increment the counter
+		$this->counter++;
+	}
+
+}
+
+
+//add numbered classes to nav items
+function nav_menu_item_numbers( $items ) {
+	$position = strrpos($items, 'class="menu-item', -1);
+	$items=substr_replace($items, 'menu-item-last ', $position+7, 0);
+	$position = strpos($items, 'class="menu-item');
+	$items=substr_replace($items, 'menu-item-first ', $position+7, 0);
+	
+	
+	return $items;
+}
+add_filter( 'wp_nav_menu_items', 'nav_menu_item_numbers' );
+
 
 //to add slug of item to classes for each nav menu item
 function slug_nav_class( $classes, $item ){
@@ -660,46 +748,54 @@ function get_term_hierchy($term){
 		$terms_by_parent[$parent_id][] = $term;
 	}
 
-	function add_terms_to_bag(&$parent_bag, &$child_bag, &$children){
-		foreach( $children as $child_term ){
-			$child_id = $child_term->term_id;
+  if( !function_exists('add_terms_to_bag') ) {
+  	function add_terms_to_bag(&$parent_bag, &$child_bag, &$children){
+  		foreach( $children as $child_term ){
+  			$child_id = $child_term->term_id;
 			
-			if ( array_key_exists($child_id, $parent_bag) ){
-				$child_term->children = array();
-				add_terms_to_bag( $parent_bag, $child_term->children, $parent_bag[$child_id] );
-			}
-			$child_bag[$child_id] = $child_term;
-		}
-	}
-
+  			if ( array_key_exists($child_id, $parent_bag) ){
+  				$child_term->children = array();
+  				add_terms_to_bag( $parent_bag, $child_term->children, $parent_bag[$child_id] );
+  			}
+  			$child_bag[$child_id] = $child_term;
+  		}
+  	}
+  }
 	
 	//then build hierarchical tree
 	$term_tree = array();
-	add_terms_to_bag( $terms_by_parent, $term_tree, $terms_by_parent[0] );
+	if (count($terms_by_parent)) {
+		add_terms_to_bag( $terms_by_parent, $term_tree, $terms_by_parent[0] );
+	}
 	
 	//$clean_tree = array();
 	
-	//then take out all the ids.	
-	function remove_array_keys( &$arrayToClean ){
-		$new = array();
-		foreach( $arrayToClean as $id => $data ){
-			$thisData = $data;
+	//then take out all the ids.
+	if( !function_exists('remove_array_keys') ){
+  	function remove_array_keys( &$arrayToClean ){
+  		$new = array();
+  		foreach( $arrayToClean as $id => $data ){
+  			$thisData = $data;
 			
-			if ( isset( $data->children ) ){
-				$thisData->children = remove_array_keys( $data->children );
+  			if ( isset( $data->children ) ){
+  				$thisData->children = remove_array_keys( $data->children );
 				
-			} else {
-				$thisData->leaf = true;
-				//error_log( 'no children: '.$thisData->leaf );
-			}
+  			} else {
+  				$thisData->leaf = true;
+  				//error_log( 'no children: '.$thisData->leaf );
+  			}
 			
-			$new[] = $thisData;
-		}
+  			$new[] = $thisData;
+  		}
 		
-		return $new;
+  		return $new;
+  	}
+  }
+	if( count( $term_tree ) ){
+		$clean_tree = remove_array_keys( $term_tree );
+	} else {
+		$clean_tree = array();
 	}
-	$clean_tree = remove_array_keys( $term_tree );
-	
 	
 	unset($terms);
 	unset($terms_by_parent);
@@ -859,11 +955,11 @@ if( class_exists( 'NewPostType' )){
     ));
 
 
-    NewPostType::instance()->add(array(
+  NewPostType::instance()->add(array(
 		'post_type' => $prefix.'attraction',
 		'post_type_name' => 'Attraction',
 		'args' => array(
-		    //'rewrite' => array( 'slug' => 'attractions' ),
+		    'rewrite' => array( 'slug' => 'attractions' ),
 		    'public' => false,
 		    'has_archive' => false,
 		    'supports' => array( 'title', 'editor', 'thumbnail' )
@@ -883,7 +979,7 @@ if( class_exists( 'NewPostType' )){
 		)   
 	))->add_taxonomy( 'attraction_category', array(
 		'taxonomy_single' => 'Attraction Category',
-		'taxonomy_plural' => 'Attraction Category',
+		'taxonomy_plural' => 'Attraction Categories',
 		'args' => array(
 			'hierarchical' => true
 		)
@@ -928,19 +1024,25 @@ if( class_exists( 'NewPostType' )){
 		        'id' => $prefix . 'att_last_name_partner',
 		        'type' => 'text',
 		        'std' => ''
-		    ),
+		    )
 		)   
-    ));
+  ));
     
 
-    NewPostType::instance()->add(array(
+  NewPostType::instance()->add(array(
 		'post_type' => $prefix.'event',
 		'post_type_name' => 'Event',
 		'args' => array(
-		    //'rewrite' => array( 'slug' => 'attractions' ),
+		    'rewrite' => array( 'slug' => 'events' ),
 		    'public' => false,
 		    'has_archive' => false,
 		    'supports' => array( 'title', 'editor', 'thumbnail' )
+		)
+	))->add_taxonomy( 'event_category', array(
+		'taxonomy_single' => 'Event Category',
+		'taxonomy_plural' => 'Event Categories',
+		'args' => array(
+			'hierarchical' => true
 		)
 	))->add_meta_box(array(
 		'id' => 'map_attraction_select',
@@ -992,7 +1094,7 @@ if( class_exists( 'NewPostType' )){
 	 *	MAYFEST ARTISTS, VENDORS, and EVERYTHING ELSE
 	 *	ARE BROKEN DOWN BY CATEGORY INTO ATTRACTIONS
 	 */
-    NewPostType::instance()->add(array(
+  NewPostType::instance()->add(array(
 		'post_type' => $prefix.'map_location',
 		'post_type_name' => 'Map Location',
 		'args' => array(
@@ -1156,27 +1258,32 @@ if( class_exists( 'NewPostType' )){
 				
 			fclose($file);
 			
-			//also write the attraction categories
+			//also write the attraction & event categories
 			//get_term_hierchy('attraction_category')
 			//check for the file
-			$term = 'attraction_category';
-			$filename = TEMPLATEPATH . '/app_cache/'.$term.'.json';	
+			//array( $term1, $term2)
+			$categories = array(
+			  'attraction_category',
+			  'event_category'
+			);
 			
-			//check if file exists
-			//$file = ( file_exists( $filename ) ? fopen( $filename, 'w+' ) : fopen( $filename, 'x+' ) );			
-			if ( file_exists( $filename ) ) {
-				$file = fopen( $filename, 'w+' );
-			} else {
-				$file = fopen( $filename, 'x+' );
-			}			
+      foreach( $categories as $term ){
+  			$filename = TEMPLATEPATH . '/app_cache/'.$term.'.json';	
 			
-			
-			
-			if( fwrite( $file, json_encode( array( 'children' => get_term_hierchy($term) ) ) ) === FALSE ){
-				error_log('ERROR WRITING POSTS TO CACHE FILE IN FUNCTIONS.PHP ~line 1106: '.$filename);
-			}
+  			//check if file exists
+  			//$file = ( file_exists( $filename ) ? fopen( $filename, 'w+' ) : fopen( $filename, 'x+' ) );			
+  			if ( file_exists( $filename ) ) {
+  				$file = fopen( $filename, 'w+' );
+  			} else {
+  				$file = fopen( $filename, 'x+' );
+  			}			
+						
+  			if( fwrite( $file, json_encode( array( 'children' => get_term_hierchy($term) ) ) ) === FALSE ){
+  				error_log('ERROR WRITING POSTS TO CACHE FILE IN FUNCTIONS.PHP ~line 1106: '.$filename);
+  			}
 				
-			fclose($file);
+  			fclose($file);
+      }
 			
 			return;		
 					
@@ -1270,20 +1377,52 @@ if( class_exists( 'NewPostType' )){
 //
 if( class_exists( 'MetaBoxTemplate' )){
 	$bannerLink = new MetaBoxTemplate(array(
-					'page' => 'mayfest_banner',
-					'id' => 'custom-banner-link',
-					'title' => 'Custom Banner Link: ',
-					'context' => 'normal',
-					'priority' => 'low',
-					'fields' => array(
-						array(
-							'name' => 'Filling in this field overrides linking the banner directly to this page',
-							'id' => 'mayfest_banner_link',
-							'type' => 'text',
-							'std' => ''
-						)
-					)
-				));
+		'page' => 'mayfest_banner',
+		'id' => 'custom-banner-link',
+		'title' => 'Custom Banner Link: ',
+		'context' => 'normal',
+		'priority' => 'low',
+		'fields' => array(
+			array(
+				'name' => 'Filling in this field overrides linking the banner directly to this page',
+				'id' => 'mayfest_banner_link',
+				'type' => 'text',
+				'std' => ''
+			)
+		)
+	));
+
+	$categorySelect = new MetaBoxTemplate(array(
+		'page' => 'page',
+		'id' => 'attraction_category_select',
+		'title' => 'Select Attraction Category:',
+		'context' => 'side',
+		'priority' => 'core',
+		'fields' => array(
+		    array(
+		        'name' => 'Attraction Category:',
+		        'id' => $prefix . 'attraction_category_id',
+		        'type' => 'text',
+		        'std' => ''
+		    )
+		)
+	));
+
+  $categorySelect = new MetaBoxTemplate(array(
+  	'page' => 'page',
+  	'id' => 'event_category_select',
+  	'title' => 'Select Event Category:',
+  	'context' => 'side',
+  	'priority' => 'core',
+  	'fields' => array(
+  	    array(
+  	        'name' => 'Event Category:',
+  	        'id' => $prefix . 'event_category_id',
+  	        'type' => 'text',
+  	        'std' => ''
+  	    )
+  	)
+  ));
 
 
 //	$pageMeta = new MetaBoxTemplate(array(
@@ -1302,6 +1441,7 @@ if( class_exists( 'MetaBoxTemplate' )){
 //					)
 //				));
 
+}
 
 
 	
@@ -1408,9 +1548,203 @@ if( class_exists( 'MetaBoxTemplate' )){
 		return $html;
 	}
 
-				
-}
+	//THIS ENABLES PAGINATION ON THE CUSTOM TAXONOMY TEMPLATES
+	//http://wordpress.org/support/topic/custom-types-category-pagination-404
+	//changed his is_category() to is_tax()
+	add_action( 'parse_query','changept' );
+	function changept() {
+		if( is_tax() && !is_admin() ){
+			set_query_var( 'post_type', array( 'post', 'mayfest_attraction', 'mayfest_event' ) );
+		}
+		return;
+	}
 
+  //WP Pages
+  function guruPagination($pages = '', $range = 3){ 
+    $showitems = ($range * 2)+1;
+    global $paged; 
+    
+    if(empty($paged)) 
+      $paged = 1;
+    
+    if($pages == '') {
+      global $wp_query;
+      $pages = $wp_query->max_num_pages; 
+      if(!$pages){ 
+        $pages = 1; 
+      } 
+    }
+    if(1 != $pages){ 
+      echo "<div class=\"pagination\"><span class=\"text\">Page ".$paged." of ".$pages."</span>";
+      
+      if($paged > 2 && $paged > $range+1 && $showitems < $pages) 
+        echo "<a href='".get_pagenum_link(1)."' class=\"first\">&laquo; First</a>";
+   
+      if($paged > 1 && $showitems < $pages) 
+        echo "<a href='".get_pagenum_link($paged - 1)."' class=\"prev\">&lsaquo; Previous</a>";
+   
+      for ($i=1; $i <= $pages; $i++){ 
+        if (1 != $pages &&( !($i >= $paged+$range+1 || $i <= $paged-$range-1) || $pages <= $showitems )){ 
+          echo ($paged == $i) ? 
+            "<span class=\"current\">".$i."</span>":
+            //"<span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span><span class=\"current\">".$i."</span>":
+            "<a href='".get_pagenum_link($i)."' class=\"inactive\">".$i."</a>";
+        } 
+      } 
+      if ($paged < $pages && $showitems < $pages) 
+        echo "<a href=\"".get_pagenum_link($paged + 1)."\" class=\"next\">Next &rsaquo;</a>";
+   
+      if ($paged < $pages-1 &&  $paged+$range-1 < $pages && $showitems < $pages) 
+        echo "<a href='".get_pagenum_link($pages)."' class=\"last\">Last &raquo;</a>";
+      
+      echo "</div>"; 
+    }
+    //always clearfix
+    echo '<div class="clearfix"></div>';
+  }
+
+
+  if ( ! function_exists( 'mayfest_attraction_posted_in' ) ) :
+  /**
+   * Prints HTML with meta information for the current post (Attraction Category, Genre).
+   *
+   * @since Twenty Ten 1.0
+   */
+  function mayfest_attraction_posted_in() {
+    global $post;
+  	// Retrieves tag list of current post, separated by commas.
+  	$tag_list = get_the_term_list( $post->ID, 'genre', '', ', ', '' );
+  	
+  	if ( $tag_list ) {
+  		$posted_in = __( 'Category: %1$s <span class="sep">|</span> Genre: %2$s.', 'boilerplate' );
+  	} elseif ( is_object_in_taxonomy( get_post_type(), 'attraction_category' ) ) {
+  		$posted_in = __( 'Category: %1$s.', 'boilerplate' );
+  	} else {
+  		$posted_in = __( '', 'boilerplate' );
+  	}
+  	// Prints the string, replacing the placeholders.
+  	printf(
+  		$posted_in,
+    	get_the_term_list( $post->ID, 'attraction_category', '', ', ', '' ),
+  		$tag_list
+  	);
+  }
+  endif;
+
+  if ( ! function_exists( 'mayfest_event_posted_in' ) ) :
+  /**
+   * Prints HTML with meta information for the current post (Event Category, Genre).
+   *
+   * @since Twenty Ten 1.0
+   */
+  function mayfest_event_posted_in() {
+    global $post;
+  	// Retrieves tag list of current post, separated by commas.
+  	$tag_list = get_the_term_list( $post->ID, 'genre', '', ', ', '' );
+  	
+  	if ( $tag_list ) {
+  		$posted_in = __( 'Category: %1$s <span class="sep">|</span> Genre: %2$s.', 'boilerplate' );
+  	} elseif ( is_object_in_taxonomy( get_post_type(), 'event_category' ) ) {
+  		$posted_in = __( 'Category: %1$s.', 'boilerplate' );
+  	} else {
+  		$posted_in = __( '', 'boilerplate' );
+  	}
+  	// Prints the string, replacing the placeholders.
+  	printf(
+  		$posted_in,
+    	get_the_term_list( $post->ID, 'event_category', '', ', ', '' ),
+  		$tag_list
+  	);
+  }
+  endif;
+
+	
+	//GET THE ASSOCIATED ATTRACTION WITH THE CURRENT EVENT
+  	if ( ! function_exists( 'mayfest_event_where' ) ) :
+	function mayfest_event_where(){
+		
+		global $post;
+		global $prefix;
+		
+    	$att_id = get_post_meta($post->ID, $prefix . 'attraction_uid', true);
+		
+		if( !empty( $att_id ) ){
+			
+			//the attraction
+			$att = get_post( $att_id );
+			
+			if( !empty($att) ){
+				
+				$att_title = apply_filters('the_title', $att->post_title );
+				
+				echo 	' <span class="sep at">@</span> '.
+					 	'<a href="'.get_permalink($att_id).'" title="'.$att_title.'">'.$att_title.'</a>';
+				
+				//echo $att_id;
+			}
+		}
+		
+	}
+	endif;
+
+	//GET META TIME INFO ABOUT ANY EVENT
+  if( !function_exists( 'mayfest_event_time') ) :
+  function mayfest_event_time(){
+    global $post;
+    global $prefix;
+    $day = get_post_meta($post->ID, $prefix . 'event_day', true);
+    $time = get_post_meta($post->ID, $prefix . 'event_time', true);
+    
+    //get_post_meta($post->ID, $v, true)
+    
+    if( !empty( $day ) ){
+      
+      //echo( $day );
+      
+      if( !empty($time) ) {
+        $day .= ' '.$time;
+        $format = 'm-d-Y g:iA';
+        $date = DateTime::createFromFormat( $format, $day );
+        echo $date->format( 'g:iA' ).' - '.$date->format( 'l, F g' );
+      } else {
+        $format = 'm-d-Y';
+        $date = DateTime::createFromFormat( $format, $day );
+        //echo $day;
+        //print_r( $date );
+        
+        echo $date->format( 'l, F g' );
+      }
+      
+    } else {
+    	if( !empty($time ) ){
+	        $format = 'g:iA';
+	        $date = DateTime::createFromFormat( $format, $time );
+	        echo $date->format( 'g:iA' );
+    	}
+    }
+  }
+  endif;
+
+
+  //used for single template next and previous navigation
+  function mayfest_post_nav(){ 
+    ?>
+      <nav id="nav-below" class="navigation">
+      	<div class="nav-previous"><?php previous_post_link( '%link', '<span class="meta-nav">' . _x( '&larr;', 'Previous post link', 'boilerplate' ) . '</span> %title' ); ?></div>
+      	<div class="nav-next"><?php next_post_link( '%link', '%title <span class="meta-nav">' . _x( '&rarr;', 'Next post link', 'boilerplate' ) . '</span>' ); ?></div>
+      	<div class="clearfix"></div>
+      </nav>
+    <?php 
+  }
+
+
+//use this to add a keyed value to the beginning of an array
+function array_unshift_assoc(&$arr, $key, $val) { 
+    $arr = array_reverse($arr, true); 
+    $arr[$key] = $val; 
+    array_reverse($arr, true); 
+	return;
+}
 
 /** END GuRu Theme Specific Functions **/
 

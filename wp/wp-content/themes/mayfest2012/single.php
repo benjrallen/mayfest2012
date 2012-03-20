@@ -9,16 +9,19 @@
 
 get_header(); ?>
 
-<?php get_sidebar(); ?>
+<?php //get_sidebar(); ?>
 
 <?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 	
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<header class="parent-title">
-		<h1 class="entry-title"><?php the_title(); ?></h1>
-					<div class="entry-meta">
-						<?php boilerplate_posted_on(); ?>
-					</div><!-- .entry-meta -->
+		<h1 class="entry-title">
+			<span class="icon"></span>
+			<span><?php the_title(); ?></span>
+		</h1>
+		<div class="entry-meta">
+			<?php boilerplate_posted_on(); ?>
+		</div><!-- .entry-meta -->
 	</header>
 	<div class="entry-content">
 		<?php
@@ -42,17 +45,17 @@ get_header(); ?>
 
 		<div class="entry-full">
 			<?php 
-				$readMore = '<a href="'.get_permalink().'" class="base bttn page-read-more" title="Read More">Read More</a>';
-				the_content($readMore);
+				//$readMore = '<a href="'.get_permalink().'" class="base bttn page-read-more" title="Read More">Read More</a>';
+				the_content('Read More');
 			?>
 		</div>			
+		<div class="clearfix"></div>
 	</div><!-- .entry-content -->
-</article><!-- #post-## -->
 
-<nav id="nav-below" class="navigation">
-	<div class="nav-previous"><?php previous_post_link( '%link', '<span class="meta-nav">' . _x( '&larr;', 'Previous post link', 'boilerplate' ) . '</span> %title' ); ?></div>
-	<div class="nav-next"><?php next_post_link( '%link', '%title <span class="meta-nav">' . _x( '&rarr;', 'Next post link', 'boilerplate' ) . '</span>' ); ?></div>
-</nav><!-- #nav-below -->
+	<footer class="entry-utility">
+  		<?php mayfest_post_nav(); ?>
+	</footer>
+</article><!-- #post-## -->
 
 <?php endwhile; ?>
 
