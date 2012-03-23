@@ -27,7 +27,7 @@ article.hentry .locationList{
 	@include float-right;
 	
 	& .locationItem{
-		padding: 0 2em;
+		padding: 0 1em;
 		@include padding-leader;
 		@include padding-trailer;
 		
