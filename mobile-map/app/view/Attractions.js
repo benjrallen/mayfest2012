@@ -15,7 +15,12 @@ Ext.define('Mayfest.view.Attractions', {
 		
 		store: 'CategoryAttractions',
 		
-		itemTpl: '{title}'
+		itemTpl: '{title}',
+
+		//ITEM DISCLOSURE GIVES LITTLE ARROW.  USE THAT TO GET DIRECTLY TO MAP
+		//  http://www.sencha.com/forum/archive/index.php/t-152217.html?s=109dcbbce482464eff59cf213791b3d4
+		//  control the disclose function in the controller (currently Attraction.js)
+		onItemDisclosure: true
 
 		//grouped: true,
 		

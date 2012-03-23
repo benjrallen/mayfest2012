@@ -8,15 +8,16 @@ Ext.define('Mayfest.view.AttractionLeaf', {
 	
 	config: {
 		//fullscreen: true,
-		title: 'Attraction',
+		title: 'Details',
 		iconCls: 'attraction',
 		cls: 'attraction',
+		styleHtmlContent: true,
+		scrollable: {
+			direction: 'vertical',
+			directionLock: true
+		}
 				
-		html: [
-			'<h1>Hey, welcome home</h1>',
-			'<p>This is some real html</p>'
-		].join('')
-	},
+	}
 	
 	
 });

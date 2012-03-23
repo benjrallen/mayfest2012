@@ -47,9 +47,10 @@ $header-width: 221px;
 	& #bannerWhen{
 		padding-left: 0.65em;
 		padding-right: 0.65em;
-		@include margin-leader(-0.25);
+		@include margin-leader(-0.75);
 		@include margin-trailer(0.25);
 		text-align: center;
+		@include adjust-font-size-to(18px);
 	}
 	
 	& #header-nav{

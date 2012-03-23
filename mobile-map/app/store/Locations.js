@@ -6,7 +6,7 @@ Ext.define('Mayfest.store.Locations', {
         proxy: {
         	type: 'ajax',
         	//url: '../wp/wp-content/themes/mayfest2012/app_cache/mayfest_map_location.json',
-        	url: Mayfest.data.remotePath + 'mayfest_map_location.json',
+        	url: Mayfest.paths.data() + 'mayfest_map_location.json',
         	reader: {
         		type: 'json'
         	}

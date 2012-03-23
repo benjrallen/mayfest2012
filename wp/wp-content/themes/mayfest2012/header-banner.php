@@ -4,7 +4,7 @@
 	<a id="logo" href="<?php echo home_url( '/' ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a>
 	<?php if (is_front_page()) { echo '</h1>'; } else { echo '</h2>'; } ?>	
 	
-	<h3 id="bannerWhen">May 17th - 20th</h3>
+	<h3 id="bannerWhen">May 17th - 20th, 2012</h3>
 	
 	<nav id="header-nav">
 	<?php 

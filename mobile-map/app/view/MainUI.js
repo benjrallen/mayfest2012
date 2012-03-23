@@ -17,9 +17,6 @@ Ext.define('Mayfest.view.MainUI', {
 				xtype: 'homepanel'
 			},
 			{
-				xtype: 'productspage'	
-			},
-			{
 				xtype: 'categoriespage',
 				
 				//id: 'categoriesList',	        
@@ -39,7 +36,10 @@ Ext.define('Mayfest.view.MainUI', {
 		        
 			},
 			{
-				xtype: 'contactform'
+				xtype: 'productspage'	
+			},
+			{
+				xtype: 'canvasmap'
 			}
 		]
 	}

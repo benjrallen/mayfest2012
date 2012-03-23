@@ -8,7 +8,7 @@
  */
 
 get_header(); ?>
-<?php get_sidebar(); ?>
+<?php //get_sidebar(); ?>
 	<article id="post-0" class="post error404 not-found hentry" role="main">
 		<header class="parent-title">
 			<h3>404 Page Not Found</h3>

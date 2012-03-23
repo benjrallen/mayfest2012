@@ -1198,7 +1198,7 @@ if( class_exists( 'NewPostType' )){
 				$p = array(
 					'id' => $post->ID,
 					'title' => $post->post_title,
-					'content' => $post->post_content
+					'content' => apply_filters( 'the_content', $post->post_content )
 				);
 
 				foreach( $types[$post_type] as $field ){

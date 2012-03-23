@@ -7,7 +7,8 @@ Ext.define('Mayfest.controller.Attraction', {
 		control: {
 			'#attractionsList' : {
 				activate: 'onAttractionsListShow',
-				itemtap: 'onAttractionTap'
+				itemtap: 'onAttractionTap',
+				disclose: 'onAttractionDisclosure'
 			},
 			'#attractionLeaf' : {
 				activate: 'onAttractionLeafShow'
@@ -16,43 +17,84 @@ Ext.define('Mayfest.controller.Attraction', {
 	},
 	
 	init: function(){
-		
-
-		console.log( 'Attractions Controller Inited' );
-		
-		
-//		this.control({
-//			'categorieslist': {
-//				render: this.onCategoriesListRender,
-//				show: function(){
-//					console.log('categorieslist show');
-//				},
-//				leafitemtap: this.onCategoriesLeafitemtap,
-//				itemtap: this.onCategoriesItemTap
-//			}
-//		});
-		
-		//test out auto loading of component in the code.
-		//console.log( 'controller init', Mayfest, this.getStores() );
+		//console.log( 'Attractions Controller Inited' );
+				
 		var me = this;
-		//console.log( 'controller init 2', me.getViewport(), Ext.getCmp('viewport'), me.getContactForm(),me.getAttractionslist() );
-		//setTimeout( function(){ console.log( 'controller init timeout', me.getViewport(), Ext.getCmp('viewport'), me.getContactForm(),me.getAttractionslist() ); }, 0 );
-		
 		
 		//Set up a template for the leaf
-		Mayfest.ui.templates.attractionLeaf = new Ext.Template(
-			'herro',
-			//a configuration object
-			{
-				compiled: true //compile immediately (Turns template into internal function, eliminates RegEx overhead)
-			}
-		);
+		//	.from method Creates a template from the passed element's value (display:none textarea, preferred) or innerHTML.
+		//	Elements defined in index.php
+		Mayfest.ui.templates.attractionLeaf =	Ext.XTemplate.from(
+													Ext.get('attraction-leaf-template'),
+													{
+														getThumbnail: function( thumb ){
+															
+															var atts = thumb['app-thumb'];
+															console.log( 'GET THUMBNAIL', thumb );
+															
+															return '<img src="'+atts[0]+'" width="'+atts[1]+'" height="'+atts[2]+'" />';
+														},
+														hasName: function( first, last ){
+															return ( (first && first !== '') || (last && last !== '') ) ? true : false;
+														},
+														buildName: function( first, last ){
+															//fix those strings
+															var name = false;
+															
+															if( first && first !== '' ){
+																name = first;
+															}
+															if( last && last !== '' ){
+																if ( name ) {
+																	name += ' '+last;
+																} else {
+																	name = last;
+																}
+															}
+															
+															return name || '';
+														}
+													}
+												);
 		
 	},
+	
+	//use the disclose event to open directly to the map and stop the itemtap event
+	onAttractionDisclosure: function( list, record, target, index, e, eOpts ){
+		console.log( 'onAttractionDisclosure DISCLOSE EVENT FIRED', list, record, target, index, e, eOpts );
+		
+		e.stopPropagation();
+	},
 
+	onMapMePress: function( evt, t, o ){
+		console.log('onMapMePress', this);
+	},
+	onMapMeTap: function( evt, t, o ){
+		console.log('onMapMeTap', this.currentAttraction);
+	},
 	onAttractionLeafShow: function(leaf, nav){
 		Mayfest.ui.navBar.show();
-		console.log('onAttractionsLEAFShow', this, a, b);
+		//console.log('onAttractionsLEAFShow', this, leaf, nav );
+		console.log('onAttractionsLEAFShow');
+
+		//think I need to make a reference to current scope
+		var me = this;
+		
+		//set handler on mapMe button
+		Ext.select('#mapMe').each(function(el){
+			el.clearListeners();
+			
+			el.on({
+				//touchstart: me.handlers.onMapMePress,
+				//touchend: me.handlers.onMapMePress,
+				//tap: function(evt, t, o){ me.handlers.onMapMeTap.apply(me, arguments); }
+				touchstart: me.onMapMePress,
+				touchend: me.onMapMePress,
+				tap: function(evt, t, o){ me.onMapMeTap.apply(me, arguments); }
+			});
+		});
+		
+		
 	},
 	
 	onAttractionsListShow: function(a,b){
@@ -72,7 +114,8 @@ Ext.define('Mayfest.controller.Attraction', {
 
         this.currentAttraction.mapLocation = this.getAttractionLocation();
         
-        console.log('this.currentAttraction.mapLocation', this.currentAttraction.mapLocation);
+        //console.log('this.currentAttraction.mapLocation', this.currentAttraction.mapLocation);
+        console.log('Mayfest.ui.nav', Mayfest.ui.nav, Mayfest.root.getNavigationBar() );
         
         //var attraction = Ext.getCmp('attractionLeaf');
         
@@ -81,45 +124,16 @@ Ext.define('Mayfest.controller.Attraction', {
         }
         
         var view = Mayfest.ui.AttractionLeaf;
-        //view.setData(this.currentAttraction);
-
+        //Mayfest.ui.navBar.titleComponent.setTitle('herro');
+        //view.setTitle('herro');
+		
+		//console.log( 'title?', Mayfest.ui.navBar );
+		
 		//apply the record's data to the template
-		Mayfest.ui.templates.attractionLeaf.apply( record.data );
 		//set the templates returned html for the leaf
-		view.setHtml( Mayfest.ui.templates.attractionLeaf );
+		view.setHtml( Mayfest.ui.templates.attractionLeaf.apply( this.currentAttraction ) );
 		//push it into the nav view(shows it);
-		Mayfest.ui.nav.push( view );
-		
-		
-		
-
-		//console.log( Mayfest.ui.nav.getItems() );
-
-		//view.show();  
-
-
-//        
-//        Ext.getStore('Locations').load({
-//            params: {
-//                bioguide_id: this.currentLegislator.bioguide_id
-//            }
-//        });
-//
-//        var legislator = Ext.getCmp('legislatorTabPanel');
-//        Ext.getCmp('splashScreen').animateTo('left');
-//
-//        if (legislator) {
-//            legislator.setData(this.currentLegislator);
-//            Ext.getCmp('viewport').setActiveItem(1);
-//        } else {
-//            Ext.getCmp('viewport').setActiveItem({
-//                xclass: 'GeoCon.view.legislator.TabPanel'
-//            });
-//        }
-//
-//        Ext.getCmp('legislatorBio').setData(this.currentLegislator);
-//        Ext.getCmp('legislatorToolbar').setTitle(this.currentLegislator.title + " " + this.currentLegislator.lastname)
-//        Ext.getCmp('legislatorTabPanel').setActiveItem(0);
+		Mayfest.ui.nav.push( view );		
 	},
 	
 	//pass in map location id or default to currentLocation

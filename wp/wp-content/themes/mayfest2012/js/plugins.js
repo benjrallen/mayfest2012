@@ -427,8 +427,20 @@ try{
 		
 		if (!this.container.length)
 			return false;
-		
+				
 		return this.makeApiCall();
+	};
+	
+	//return a simple link string
+	GuruTwitter.prototype.makeLink = function( href, text, blank ){
+		if( !blank ){
+			var blank = '';
+		} else {
+			var blank = ' target="_blank"';
+		}
+		
+		return '<a href="'+href+'"'+blank+'>'+text+'</a>';
+		
 	};
 	
 	GuruTwitter.prototype.makeApiCall = function(){
@@ -455,13 +467,26 @@ try{
 			}
 			
 			if( json.length ) {
-				tweetBlock = $('<div />').addClass('tweetBlock').prependTo( me.container )			
+				tweetBlock = $('<div />').addClass('tweetBlock').prependTo( me.container );		
 				$.each( json, makeTweet );
 				me.SINCE_ID = json[0].id;
 			}
 			
 						
 			//return me.TIMEOUT = setTimeout( function(){ me.makeApiCall.call(me) }, me.interval );
+		};
+
+		var parseTweet = function( tweet ){
+			//check for urls in the tweet
+			if( tweet.entities ){
+				if( tweet.entities.urls.length ){
+					$.each(tweet.entities.urls, function(i){
+						tweet.text = tweet.text.replace( this.url, me.makeLink( this.expanded_url, this.url, true ) );
+					});
+				}
+			}
+			
+			return tweet.text;
 		};
 
 		var makeTweet = function(i){
@@ -482,7 +507,8 @@ try{
 					});
 				}
 				if( tweetBlock ) {
-					var tweet = $('<div />', { text: this.text })
+					//var tweet = $('<div />', { html: this.text })
+					var tweet = $('<div />', { html: parseTweet( this ) })
 						.addClass('tweet')
 						.hide()
 						.appendTo( tweetBlock );
@@ -507,7 +533,7 @@ try{
 		);
 		
 	};
-		
+			
 	GuruTwitter.prototype.makeRequestObj = function(){
 		var me = this,
 			obj = {

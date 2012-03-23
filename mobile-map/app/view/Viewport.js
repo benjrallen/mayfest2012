@@ -11,9 +11,9 @@ Ext.define('Mayfest.view.Viewport', {
         autoDestroy: false,
 		fullscreen: true,
 		//tabBarPosition: 'bottom',	
-		title: 'Main Nav View',	
+		//title: 'Main Nav View',	
 		//useTitleForBackButtonText: true,		
-		
+				
         navigationBar: {
             //ui: 'sencha',
             items: [

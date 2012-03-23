@@ -4,7 +4,7 @@
 		<h2>Facebook</h2>
 	</header>
 
-	<div class="fb-like-box" data-href="http://www.facebook.com/tulsainternationalmayfest" data-width="337" data-height="412" data-show-faces="true" data-stream="true" data-header="false"></div>
+	<div class="fb-like-box" data-href="http://www.facebook.com/tulsainternationalmayfest" data-width="337" data-height="412" data-show-faces="true" data-stream="false" data-header="false"></div>
 
 </section>
 

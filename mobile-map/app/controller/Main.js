@@ -3,9 +3,9 @@ Ext.define('Mayfest.controller.Main', {
 
 	config: {
 		refs: {
-			contactForm: {
+			canvasMap: {
 				//specifying the ref automatically creates a few functions, including 'getContactForm'
-				selector: '#contactForm',
+				selector: 'canvasmap',
 				//autoCreate: true
 			},
 			attractionslist: {
@@ -42,12 +42,12 @@ Ext.define('Mayfest.controller.Main', {
 //            load: this.onEventsStoreLoad
 //        });
 //
-//        Ext.getStore('Categories').on({
-//            //scope: this,
-//
-//            beforeload: this.onBeforeCategoriesStoreLoad,
-//            load: this.onCategoriesStoreLoad
-//        });
+        Ext.getStore('Categories').on({
+            //scope: this,
+
+            beforeload: this.onBeforeCategoriesStoreLoad,
+            load: this.onCategoriesStoreLoad
+        });
 
 //		this.control({
 //			'button[action=submitContact]': {
@@ -64,7 +64,8 @@ Ext.define('Mayfest.controller.Main', {
 				//activate: this.onCategoriesListActivate,
 				//show: this.onCategoriesListShow,
 				leafitemtap: this.onCategoriesLeafitemtap,
-				itemtap: this.onCategoriesItemTap
+				itemtap: this.onCategoriesItemTap,
+				back: this.onCategoriesListBack
 			},
 			'navui': {
 				render: this.onNavUIRender,
@@ -86,6 +87,13 @@ Ext.define('Mayfest.controller.Main', {
 		
 		
 		console.log( Ext.Viewport );
+	},
+
+	onCategoriesListBack: function( nestedList, node, lastActiveList, detailCardActive, dataview, eOpts ){
+		//console.log( 'onCategoriesListBack', nestedList, node, lastActiveList, detailCardActive, dataview, eOpts );
+		//console.log( 'more list back', nestedList.getStore() );
+	
+		//nestedList.getStore().sort('name', 'ASC');
 	},
 	
 	onNavUIRender: function(){
@@ -123,7 +131,7 @@ Ext.define('Mayfest.controller.Main', {
 	
 	onCategoriesItemTap: function(nestedList, list, index, target, record, e, eOpts){
 		//e.stopEvent();
-		//console.log('categoriesItemTap', this);
+		console.log('categoriesItemTap', this, nestedList, list, index, target, record, e, eOpts);
 	},
 	
 	onCategoriesListRender: function(){
@@ -142,11 +150,13 @@ Ext.define('Mayfest.controller.Main', {
 		
 		var store = list.getStore(),
 			record = store.getAt(index),
-			cat_id = record.data.term_id,
+			cat_id = record.data.term_id,			
 			cat_store = Ext.getStore('CategoryAttractions'),
 			//attractions = Ext.getStore('Attractions');
 			attractions = this.getAttractionsByCatID( cat_id );
 			//detailCard = me.getDetailCard();
+
+			//console.log( 'CAT_ID', cat_id );
 			
 			//detailCard.setStore( attractions );
 			
@@ -162,9 +172,15 @@ Ext.define('Mayfest.controller.Main', {
 				if( record.data.attraction_category.length ){
 					for (var i=0; i < record.data.attraction_category.length; i++){
 						//check the category on the attraction item.  return true to add it to return from query						
-						return ( record.data.attraction_category[i].term_id == cat_id ? true : false );
+						if ( record.data.attraction_category[i].term_id == cat_id ) {
+							return true;
+						}
+						
+						//return ( record.data.attraction_category[i].term_id == cat_id ? true : false );
 					}
 				}
+				
+				return false;
 			});
 		
 		//console.log( 'getAttractionsByCatID', attractions );
@@ -232,6 +248,7 @@ Ext.define('Mayfest.controller.Main', {
 	onCategoriesStoreLoad: function(store, records, successful, operation, eOpts){
 		console.log('controller.onCategoriesStoreLoad', store, records, successful, operation, eOpts);
 		
+		//store.sort('name', 'ASC')
 		//console.log( 'store.getData()', store.getData() );
 		
 	},
