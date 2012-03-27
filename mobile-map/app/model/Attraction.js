@@ -30,16 +30,17 @@ Ext.define('Mayfest.model.Attraction', {
         	{name: "attraction_category",				type: "auto"},
         	{name: "genre",								type: "auto"},
         	{name: "thumbnail",							type: "auto"}
-//            {name: "description",    type: "string", mapping: "description.texts.en"},
-//            {name: "image", type: "string", mapping: "image.id", convert: function(value, record) {
-//                return "http://kiva.org/img/w80h80/" + value + ".jpg";
-//            }},
-//            'terms', 'location',
-//            {
-//                name: 'percent_funded', convert: function(v, record) {
-//                    return parseInt(record.data.funded_amount / record.data.loan_amount * 100, 10);
-//                }
-//            }
+
+
+			//should work, but throws known bug
+			//	http://www.sencha.com/forum/showthread.php?184392-Conditional-hiding-of-Disclosure-icon-in-list&p=745739&viewfull=1        	
+//        	{name: "disclosure",	
+//        	 type: "boolean",	
+//        	 convert: function( value, record ){
+//        		console.log( value, record, record.data.mayfest_ml_uid );
+//        		return ( record.data.mayfest_ml_uid ? true : false );
+//        	 }
+//        	}
         ]
     }       
 

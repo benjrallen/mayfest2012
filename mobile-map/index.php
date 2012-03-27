@@ -16,18 +16,23 @@
     <script type="text/javascript" src="app/store/Attractions.js"></script>
     <script type="text/javascript" src="app/store/Categories.js"></script>
     <script type="text/javascript" src="app/store/CategoryAttractions.js"></script>
+    <script type="text/javascript" src="app/store/CategoryEvents.js"></script>
     <script type="text/javascript" src="app/store/Events.js"></script>
+    <script type="text/javascript" src="app/store/EventList.js"></script>
     <script type="text/javascript" src="app/store/Locations.js"></script>
     <script type="text/javascript" src="app/view/AttractionLeaf.js"></script>
     <script type="text/javascript" src="app/view/Attractions.js"></script>
     <script type="text/javascript" src="app/view/Categories.js"></script>
     <script type="text/javascript" src="app/view/Map.js"></script>
     <script type="text/javascript" src="app/view/Home.js"></script>
-    <script type="text/javascript" src="app/view/Products.js"></script>
+    <script type="text/javascript" src="app/view/EventTabs.js"></script>
+    <script type="text/javascript" src="app/view/Events.js"></script>
+    <script type="text/javascript" src="app/view/EventCategories.js"></script>
     <script type="text/javascript" src="app/view/MainUI.js"></script>
     <script type="text/javascript" src="app/view/Viewport.js"></script>
     <script type="text/javascript" src="app/controller/Main.js"></script>
     <script type="text/javascript" src="app/controller/Attraction.js"></script>
+    <script type="text/javascript" src="app/controller/Event.js"></script>
     <script type="text/javascript" src="app/controller/Map.js"></script>
 
 </head>

@@ -1,8 +1,8 @@
-Ext.define('Mayfest.store.CategoryAttractions', {
+Ext.define('Mayfest.store.CategoryEvents', {
     extend: 'Ext.data.Store',
 
     config: {
-        model: 'Mayfest.model.Attraction',
+        model: 'Mayfest.model.Event',
         //autoLoad: true
         //remoteFilter: true,
 		//groupField: 'title'

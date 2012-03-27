@@ -2,7 +2,7 @@ Ext.Loader.setConfig({
 	enabled: true
 });
 
-Ext.ns('Mayfest', 'Mayfest.paths', 'Mayfest.ui.nav', 'Mayfest.ui.navBar', 'Mayfest.ui.templates');
+Ext.ns('Mayfest', 'Mayfest.paths', 'Mayfest.ui.nav', 'Mayfest.ui.navBar', 'Mayfest.ui.mainPanel', 'Mayfest.ui.map', 'Mayfest.ui.mapController', 'Mayfest.ui.templates');
 
 Mayfest.paths.base = function(){
 	if( window.location.href.indexOf( 'gurustudev' ) > -1 ){
@@ -26,12 +26,31 @@ Mayfest.paths.data = function(){
 Ext.application({	
 	name: 'Mayfest',
 	
-	controllers: ['Main','Attraction','Map'],
+	controllers: ['Main','Attraction','Map', 'Event'],
 
-	views: ['Home', 'Products', 'Attractions', 'Categories', 'Map', 'AttractionLeaf', 'MainUI'],
+	views: [
+		'Home', 
+		'Products', 
+		'Attractions', 
+		'Categories', 
+		'EventTabs', 
+		//'EventCategories',
+		'Events', 
+		'Map', 
+		'AttractionLeaf', 
+		'MainUI', 
+		//'CategoryFieldSelect'
+	],
 	
 	models: ['Location', 'Attraction', 'Event', 'Category'],
-	stores: ['Locations', 'Attractions', 'Events', 'Categories', 'CategoryAttractions'],
+	stores: [
+		'Locations', 
+		'Attractions', 
+		'EventList', 
+		'Events', 
+		'Categories', 
+		'CategoryAttractions', 
+		'CategoryEvents'],
 	
 	viewport: {
 		//hide the browser bar
