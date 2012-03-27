@@ -19,6 +19,7 @@ Ext.define('Mayfest.controller.Map', {
 				
 		var me = this;
 		
+		Mayfest.ui.mapController = me;
 		
 		//console.log('Map Controller Init', this.getMapPanel() );
 		
@@ -35,6 +36,7 @@ Ext.define('Mayfest.controller.Map', {
 	// "static" variables
 	tileSize:	256,
 	maxZ:		5, //minimum is 0
+	minZ:		1, //not yet in use
 	
 	//maxX & maxY are the size of the untiled image, and provide the bounds for the movement
 	maxX:		5632,
@@ -48,7 +50,7 @@ Ext.define('Mayfest.controller.Map', {
 	//initial map positions
 	posX:		2687, // Current position in the map in pixels at the maximum zoom level (5)
 	posY:		2304, // The range is 0-67108864 (2^maxZ * tileSize)... actually, it's smaller - ba
-	posZ:		3.0, // This can be fractional if we are between zoom levels....
+	posZ:		3, // This can be fractional if we are between zoom levels....
 	
 	//controller reference to canvas element, get set on render
 	canvasEl:	null,
@@ -63,6 +65,7 @@ Ext.define('Mayfest.controller.Map', {
 
 	//variables for moveTo function
 	arrow:		false,
+	arrowDrawn: false,
 	moving:		false,
 	targetX:	0,
 	targetY:	0,
@@ -77,14 +80,18 @@ Ext.define('Mayfest.controller.Map', {
 	moveTimeout:	 null,
 
     //for pinching
-    mXprev:		0,
-    mYprev:		0,
-    //pinchScale:	1,
-	pinchEndBuffer:	750, //for the pinchend timeout function
-	//prevPinchScale: 1,
-    //prevDScale:	0, //do not think this is necessary
-    dScale:		0,
+//    midpointPrev: {
+//    	x: 0,
+//    	y: 0
+//    },
+        
+	pinchEndBuffer:	250, //for the pinchend timeout function
     scale:		1,
+    prevScale:	1,
+    
+	//cache the canvas size / 2 for the bounds checking functions
+	halfCanvasWidth:	0,
+	halfCanvasHeight:	0,
     
     //for zooming
     zooming:	false,
@@ -133,6 +140,32 @@ Ext.define('Mayfest.controller.Map', {
 
 	//render
 	render: function(){
+		
+		//clear the canvas		
+		this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+		
+		if( this.zooming ){
+			
+			this.ctx.save();
+			
+	    	this.ctx.translate( 
+	    		Math.floor( -1 * ( this.canvas.width  * ( this.scale ) - this.canvas.width  ) / 2 ), 
+	    		Math.floor( -1 * ( this.canvas.height * ( this.scale ) - this.canvas.height ) / 2 ) 
+	    	);
+		    
+		    //scale the canvas image based on the pinch
+		    //	TODO: make this not corp the image when zooming out.
+		    this.ctx.scale( this.scale, this.scale );		    
+		}
+				
+		this.drawTiles();
+		
+			
+		if( this.zooming )
+			this.ctx.restore();
+	},
+	
+	drawTiles: function(){
 		var me = this;
 		
 		var z = me.posZ; // TODO: Round.
@@ -144,33 +177,10 @@ Ext.define('Mayfest.controller.Map', {
 		var yMin = me.posY - h/2;
 		var xMax = me.posX + w/2;
 		var yMax = me.posY + h/2;
-		
-		
-		//instead of clearing the canvas every draw, make the current tile scale to the zoom level
-		me.ctx.clearRect(0,0,me.canvas.width,me.canvas.height);
-		
-		if( me.zooming ){
-			//var pS = me.pinchScale;
-			//var pDS = me.prevDScale;
-			//var dS = me.dScale;
-			var cW = me.canvas.width,
-			    cH = me.canvas.height;
-			
-			me.ctx.save();
-//	    	me.ctx.translate( -( ( cW * (1+dS) - cW ) / 2 ), -( ( cH * (1+dS) - cH ) / 2 ) );
-//		    me.ctx.scale(1+dS, 1+dS);
-	    	me.ctx.translate( -( ( cW * ( this.scale ) - cW ) / 2 ), -( ( cH * ( this.scale ) - cH ) / 2 ) );
-		    me.ctx.scale( this.scale, this.scale );
-		}
-		
-		
-		//console.log( 'RENDER()', me.canvas.width, me.canvas.height, me.tileSize );
+
 		
 		// Go through all the tiles we want. If any of them aren't loaded or being loaded, do so.
-		
-		//console.log('xLoop: '+Math.floor(xMin / sz)+' => '+Math.ceil(xMax / sz));
-		//console.log('yLoop: '+Math.floor(yMin / sz)+' => '+Math.ceil(yMax / sz));
-
+				
 		for (var x = Math.floor(xMin / sz); x < Math.ceil(xMax / sz); ++x)
 		{
 			for (var y = Math.floor(yMin / sz); y < Math.ceil(yMax / sz); ++y)
@@ -192,7 +202,6 @@ Ext.define('Mayfest.controller.Map', {
 							//console.log(e);
 							//console.log('image error');
 							//console.log(this);
-							
 							this.src = me.guruLogoString;
 						};
 						me.tiles[tileKey].src = me.getTileString(x, y, me.posZ);
@@ -209,48 +218,38 @@ Ext.define('Mayfest.controller.Map', {
 			}
 		}
 		
-		if( me.zooming )
-			me.ctx.restore();
+		//watch that arrow
+		if( me.arrowDrawn )
+			me.drawArrow( me.canvas.width/2, me.canvas.height/2 );		
+		
 	},
 	
     goTo: function(x, y, zoom){
         //console.log('GO TO ' + x + ', ' + y + ', ' + zoom);
         
-        //console.log( this.dScale );
-        
         if (!x || !y)
             return false;
     
-        //if(!zoom){
-            this.posX = x;
-            this.posY = y;
-            
-            this.render();
-        //} else {
-        //    this.posX = x;
-        //    this.posY = y;
-        //    console.log('OLD CODE RENDERED ZOOM HERE!');
-            //me.renderZoom();
-        //}
+        this.posX = x;
+        this.posY = y;
+        
+        this.render();
     },
     
+    
+    //z not in use.
     moveTo: function(x,y,z){
         if (!x || !y)
             return false;
         
         var me = this;
-        
-//        me.targetX = x;
-//        me.targetY = y;
 
         me.targetX = this.checkBoundsX( x );
         me.targetY = this.checkBoundsY( y );
         
-        
         me.moving = true;
         
         me.moveTimeoutFunc = function(){
-            //var change = Math.floor( me.targetTime / me.targetMove );
             
             if (me.moving) {
                 var x = Math.floor( me.posX + ((me.targetX - me.posX) / me.movePx) );
@@ -265,9 +264,9 @@ Ext.define('Mayfest.controller.Map', {
                 
                 if ( me.lastX === x && me.lastY === y ){
                     if(me.arrow){
-                        //me.drawArrow(me.canvas.width/2, me.canvas.height/2);
-                        console.log('DRAW ARROW!');
-                        
+                        me.drawArrow( me.canvas.width/2, me.canvas.height/2 );
+                        //console.log('DRAW ARROW!');
+                        me.arrowDrawn = true;
                         me.arrow = false;
                     }
                     return;
@@ -284,94 +283,103 @@ Ext.define('Mayfest.controller.Map', {
     },
 
 
-	onMapInitialize: function( a, b, c ){
+    drawArrow: function(pointX, pointY){
+		//console.log( 'drawArrow', pointX, pointY );
+    	
+        if (!pointX || !pointY)
+            return false;
+        
+        //arrow is 44x80px, approx.
+        var me = this,
+        	w = 34,
+            h = 80,
+            x = pointX - w/2,
+            y = pointY - h;
+        
+        // layer1/Path
+        me.ctx.save();
+        me.ctx.beginPath();
+        me.ctx.moveTo(x+33.5, y+43.1);
+        me.ctx.bezierCurveTo(x+32.7, y+42.6, x+32.0, y+42.1, x+31.2, y+41.6);
+        me.ctx.bezierCurveTo(x+30.5, y+41.2, x+29.8, y+40.7, x+29.0, y+40.2);
+        me.ctx.bezierCurveTo(x+29.0, y+40.2, x+28.1, y+39.7, x+28.1, y+39.7);
+        me.ctx.bezierCurveTo(x+26.1, y+43.4, x+24.1, y+47.2, x+22.3, y+51.0);
+        me.ctx.bezierCurveTo(x+21.8, y+51.9, x+21.4, y+52.8, x+20.9, y+53.8);
+        me.ctx.bezierCurveTo(x+20.9, y+47.3, x+20.9, y+40.8, x+21.1, y+34.4);
+        me.ctx.bezierCurveTo(x+21.3, y+24.8, x+21.6, y+15.2, x+22.0, y+5.7);
+        me.ctx.bezierCurveTo(x+22.0, y+4.8, x+22.1, y+4.0, x+22.1, y+3.2);
+        me.ctx.bezierCurveTo(x+19.6, y+2.9, x+17.2, y+2.0, x+14.7, y+1.7);
+        me.ctx.bezierCurveTo(x+14.5, y+6.7, x+14.3, y+11.7, x+14.2, y+16.8);
+        me.ctx.bezierCurveTo(x+13.8, y+26.3, x+13.6, y+35.8, x+13.6, y+45.3);
+        me.ctx.bezierCurveTo(x+13.5, y+47.3, x+13.5, y+49.3, x+13.6, y+51.2);
+        me.ctx.bezierCurveTo(x+12.8, y+49.6, x+12.1, y+47.9, x+11.4, y+46.2);
+        me.ctx.bezierCurveTo(x+10.4, y+44.0, x+9.5, y+41.8, x+8.6, y+39.6);
+        me.ctx.bezierCurveTo(x+8.6, y+39.6, x+7.7, y+39.9, x+7.6, y+39.9);
+        me.ctx.bezierCurveTo(x+6.7, y+40.2, x+5.9, y+40.4, x+5.1, y+40.7);
+        me.ctx.bezierCurveTo(x+4.2, y+41.0, x+3.4, y+41.2, x+2.6, y+41.5);
+        me.ctx.bezierCurveTo(x+2.6, y+41.5, x+1.5, y+41.9, x+1.5, y+41.9);
+        me.ctx.bezierCurveTo(x+3.2, y+45.8, x+4.8, y+49.7, x+6.5, y+53.6);
+        me.ctx.bezierCurveTo(x+8.2, y+57.5, x+10.0, y+61.3, x+11.9, y+65.0);
+        me.ctx.bezierCurveTo(x+13.0, y+67.1, x+14.1, y+69.1, x+15.3, y+71.1);
+        me.ctx.lineTo(x+19.0, y+79.0);
+        me.ctx.lineTo(x+20.9, y+72.8);
+        me.ctx.bezierCurveTo(x+22.2, y+68.9, x+23.8, y+65.1, x+25.5, y+61.3);
+        me.ctx.bezierCurveTo(x+27.3, y+57.5, x+29.2, y+53.7, x+31.1, y+49.9);
+        me.ctx.bezierCurveTo(x+32.2, y+47.8, x+33.3, y+45.8, x+34.4, y+43.7);
+        me.ctx.bezierCurveTo(x+34.4, y+43.6, x+33.5, y+43.1, x+33.5, y+43.1);
+        me.ctx.closePath();
+        me.ctx.fillStyle = "rgb(239, 73, 53)";
+        me.ctx.fill();
+        me.ctx.lineWidth = 3.0;
+        me.ctx.strokeStyle = "rgb(255, 255, 255)";
+        me.ctx.stroke();
+        me.ctx.restore();
+        /*
+        // layer1/Group
+        me.ctx.save();
 
-		//console.log('MAP INITIALIZE', a, b, c, this.getMapPanel(), this.canvasEl );
+        // layer1/Group/Path
+        me.ctx.save();
+        me.ctx.beginPath();
+        me.ctx.moveTo(x+0.0, y+41.1);
+        me.ctx.lineTo(x+10.5, y+41.1);
+        me.ctx.lineTo(x+10.5, y+0.0);
+        me.ctx.lineTo(x+32.7, y+0.0);
+        me.ctx.lineTo(x+32.7, y+41.1);
+        me.ctx.lineTo(x+43.4, y+41.1);
+        me.ctx.lineTo(x+21.7, y+78.6);
+        me.ctx.lineTo(x+0.0, y+41.1);
+        me.ctx.closePath();
+        me.ctx.fillStyle = "rgb(237, 28, 36)";
+        me.ctx.fill();
 
-		var me = this;
-		
-		this.getMapPanel().on({
-			painted: function(evt, b, c){ me.onMapActivate.call(me); }
-			//painted: this.onMapActivate
-		});
-
-
-	},
-
-	onMapFirstActivate: function( panel, newActiveItem, oldActiveItem, eOpts ){
-		//prototype a function onto Ext.util.point
-		Ext.util.Point.prototype.getMidpointOf = function( point ){
-//			var deltaX = this.x - point.x,
-//				deltaY = this.y - point.y;
-//				
-//			return {
-//				x: Math.round( deltaX / 2 ),
-//				y: Math.round( deltaY / 2 )
-//			}
-
-			//var deltaX = this.x - point.x,
-			//	deltaY = this.y - point.y;
-				
-			return {
-				x: Math.round( (this.x + point.x) / 2 ),
-				y: Math.round( (this.y + point.y) / 2 )
-			}
-				 
-		};
-		
-		
-		//set the flag
-		this.canvasIsActivated = true;
-		//get reference to elements
-		this.canvasEl =	Ext.get('canvas');
-		this.canvas = 	this.canvasEl.dom;
-		this.ctx = 		this.canvas.getContext('2d'),
-		
-		//attach orientation change handlers
-		//	http://stackoverflow.com/questions/8541485/how-to-handle-orientation-change-in-sencha-touch-v2
-		Ext.Viewport.on('resize', 'handleResize', this, { buffer: 0 });
-
-		this.handleResize();
-
-		this.canvasEl.on({
-			dragstart	: this.onDragStart,
-			drag		: this.onDrag,
-			dragend		: this.onDragEnd,
-			doubletap	: this.onDoubleTap,
-			touchstart	: this.onTouchStart,
-			pinchstart	: this.onPinchStart,
-			pinchend	: this.onPinchEnd,
-			pinch		: this.onPinch,
-			
-			scope		: this
-		});
-		
-		//console.log('FIRST MAP ACTIVATE', [ this.canvasEl, this.canvas, this.ctx ] );
-	},
-
-	
-	onMapActivate: function( panel, newActiveItem, oldActiveItem, eOpts ){
-		//only run DOM initialization once.
-		if( !this.canvasIsActivated )
-			this.onMapFirstActivate.apply( this, arguments );
-		
-		//console.log('MAP ACTIVATE', this.getMapPanel(), [ this.canvasEl, this.canvas, this.ctx ] );
-		
-		
-		
-		//draw something
-		this.render();
-		
-	},
-	
-	//cache the canvas size / 2 for the bounds checking functions
-	halfCanvasWidth:	0,
-	halfCanvasHeight:	0,
+        // layer1/Group/Path
+        me.ctx.beginPath();
+        me.ctx.moveTo(x+31.3, y+59.2);
+        me.ctx.lineTo(x+40.9, y+42.5);
+        me.ctx.lineTo(x+31.3, y+42.5);
+        me.ctx.lineTo(x+31.3, y+1.4);
+        me.ctx.lineTo(x+12.0, y+1.4);
+        me.ctx.lineTo(x+12.0, y+42.5);
+        me.ctx.lineTo(x+2.4, y+42.5);
+        me.ctx.lineTo(x+12.1, y+59.2);
+        me.ctx.lineTo(x+21.7, y+75.8);
+        me.ctx.lineTo(x+31.3, y+59.2);
+        me.ctx.closePath();
+        me.ctx.fill();
+        me.ctx.strokeStyle = "rgb(255, 255, 255)";
+        me.ctx.stroke();
+        me.ctx.restore();
+        me.ctx.restore();
+        */
+    },
 	
 	handleResize: function( e,eOpts ){
 		
 		var size = this.getMapPanel().element.getSize();
 		
+//		this.canvas.height = this.canvasHeight = size.height;
+//		this.canvas.width = this.canvasWidth = size.width;
 		this.canvas.height = size.height;
 		this.canvas.width = size.width;
 
@@ -387,7 +395,7 @@ Ext.define('Mayfest.controller.Map', {
 	onDoubleTap: function( evt, t, o ){
 		this.posZ < this.maxZ ?
             this.posZ++ :
-            this.posZ = 0;
+            this.posZ = this.minZ;
         
         this.render();
         
@@ -423,95 +431,68 @@ Ext.define('Mayfest.controller.Map', {
         
         clearTimeout(this.moveTimeout);
         
-        //me.goTo(evt.midPointX, evt.midPointY);
-        //console.log('pstart yeywo!');
-
 		var point1		= evt.touches[0].point,
 			point2		= evt.touches[1].point,
             midpoint	= point1.getMidpointOf( point2 );
         
-        this.mXprev = midpoint.x;
-        this.mYprev = midpoint.y;
-//        this.mXprev = evt.midPointX;
-//        this.mYprev = evt.midPointY;
+        //this.mXprev = midpoint.x;
+        //this.mYprev = midpoint.y;
+        
+        this.midpointPrev = midpoint;
         
         this.scale = evt.scale;
+        this.prevScale = 1;
+        
+        //erase the arrow if it is there
+        this.arrowDrawn = false;
         //console.log('PINCHSTART SCALE: '+evt.scale);
 	},
 		
 	onPinch: function( evt, t, o ){
 
-        this.dScale = evt.scale - 1;
         this.scale = evt.scale;
 
 		//I prototyped Ext.util.Point.getMidpointOf( point ) in the this.onMapFirstActivate function
 		var point1		= evt.touches[0].point,
 			point2		= evt.touches[1].point,
             midpoint	= point1.getMidpointOf( point2 ),
-//        	x       	= Math.floor( this.posX - (midpoint.x - this.mXprev) ),
-//            y       	= Math.floor( this.posY - (midpoint.y - this.mYprev) );		
-        	x       	= Math.floor( this.posX - Math.round( (midpoint.x - this.mXprev) * Math.pow(2, this.maxZ - this.posZ) / this.scale ) ),
-            y       	= Math.floor( this.posY - Math.round( (midpoint.y - this.mYprev) * Math.pow(2, this.maxZ - this.posZ) / this.scale ) );		
+        	x       	= Math.floor( this.posX - Math.round( (midpoint.x - this.midpointPrev.x) * Math.pow(2, this.maxZ - this.posZ) / this.scale ) ),
+            y       	= Math.floor( this.posY - Math.round( (midpoint.y - this.midpointPrev.y) * Math.pow(2, this.maxZ - this.posZ) / this.scale ) );		
         
-        //this.pinchScale = evt.scale;
-        //this.prevDScale = evt.previousDeltaScale;
-        
-        //me.posZ += evt.previousDeltaScale/me.maxZ
-        
-        //console.log( this.dScale * this.maxZ + this.posZ + ', ' + this.posZ );
-        //console.log( Math.pow( this.dScale, (this.maxZ - this.posZ) - 1 ) + ', ' + this.posZ );
-		
-		console.log( Math.round( ( Math.log( evt.scale ) / Math.log(2) ) ) + this.posZ );
-		
-		//Math.pow(2, me.maxZ - z)
-
-
-//pinchmap.setZoomLevelPoint(Math.round((Math.log(p.scale)/Math.log(2)) + __oldZoom), p.center.x, p.center.y);
-		        
+		//put in limit for zooming in
+		var currentZ = Math.round( ( Math.log( evt.scale ) / Math.log(2) ) ) + this.posZ;
+		if( currentZ > this.maxZ || currentZ < this.minZ ){
+			this.scale = this.prevScale;
+		} else {
+			this.prevScale = this.scale;
+		}
+				        
         this.goTo(x, y, true);
         
-        this.mXprev = midpoint.x;
-        this.mYprev = midpoint.y;
+        this.midpointPrev = midpoint;
 
 	},
 		
 	onPinchEnd: function( evt, t, o ){
 		var me = this;
 		
-        //var dScale = evt.scale - 1;
-        //var cW = me.canvas.width;
-        //var cH = me.canvas.height;
-        var startPosZ = me.posZ;
-        //console.log(dScale);
-        
-//        console.log([
-//        	'pinchEnd',
-//        	evt.scale,
-//        	this.dScale,
-//        	me.posZ
-//        ].join(', '));
-        
-        //me.posZ = Math.round( me.posZ + this.dScale );
-        //me.posZ = Math.round( me.dScale * me.maxZ + me.posZ );
+//        var startPosZ = me.posZ;
+
         me.posZ = Math.round( ( Math.log( me.scale ) / Math.log(2) ) ) + me.posZ;
         
         if (me.posZ > 5) {
             me.posZ = 5;
-        } else if (me.posZ < 0) {
-            me.posZ = 0;
+        } else if (me.posZ < me.minZ) {
+            me.posZ = me.minZ;
         }
-        //console.log('after: '+me.posZ);
         
-        //me.posX += -( ( cW * (1+dScale/me.maxZ) - cW ) / 2 );
-        //me.posY += -( ( cH * (1+dScale/me.maxZ) - cH ) / 2 );
-        
-        //me.ctx.translate( -( ( cW * (1+dS/me.maxZ) - cW ) / 2 ), -( ( cH * (1+dS/me.maxZ) - cH ) / 2 ) );
 //    	if (me.posZ !== startPosZ) {
 //    	    //console.log(['_trackEvent', 'Map', 'Zoom : Pinch', startPosZ+' to '+me.posZ]);
 //            _gaq.push(['_trackEvent', 'Map', 'Zoom : Pinch', startPosZ+' to '+me.posZ]);
 //    	}
         
         var pinchEndToFunc = function(){
+        	        	
             me.zooming = false;
             me.render();
         };
@@ -519,109 +500,12 @@ Ext.define('Mayfest.controller.Map', {
         setTimeout(pinchEndToFunc, this.pinchEndBuffer);
 
 
-//        var dScale = evt.deltaScale;
-//        var cW = me.canvas.width;
-//        var cH = me.canvas.height;
-//        var startPosZ = me.posZ;
-//        //console.log(dScale);
-//        
-//        me.posZ = Math.round( me.posZ + (dScale) );
-//        if (me.posZ > 5) {
-//            me.posZ = 5;
-//        } else if (me.posZ < 0) {
-//            me.posZ = 0;
-//        }
-//        //console.log('after: '+me.posZ);
-//        
-//        me.posX += -( ( cW * (1+dScale/me.maxZ) - cW ) / 2 );
-//        me.posY += -( ( cH * (1+dScale/me.maxZ) - cH ) / 2 );
-//        
-//        //me.ctx.translate( -( ( cW * (1+dS/me.maxZ) - cW ) / 2 ), -( ( cH * (1+dS/me.maxZ) - cH ) / 2 ) );
-////    	if (me.posZ !== startPosZ) {
-////    	    //console.log(['_trackEvent', 'Map', 'Zoom : Pinch', startPosZ+' to '+me.posZ]);
-////            _gaq.push(['_trackEvent', 'Map', 'Zoom : Pinch', startPosZ+' to '+me.posZ]);
-////    	}
-//        
-//        var pinchEndToFunc = function(){
-//            me.zooming = false;
-//            me.render();
-//        };
-//        
-//        setTimeout(pinchEndToFunc, this.pinchEndBuffer);
 	},
-		
-//    me.onPinchstart = function(evt, t, o){ 
-//        me.zooming = true;
-//        globalMoving = false;
-//        me.dragging = false;
-//        
-//        globalMoving = false;
-//        clearTimeout(me.moveTimeout);
-//        
-//        //me.goTo(evt.midPointX, evt.midPointY);
-//        //console.log('pstart yeywo!');
-//        
-//        me.mXprev = evt.midPointX;
-//        me.mYprev = evt.midPointY;
-//        
-//        //console.log('PINCHSTART SCALE: '+evt.scale);
-//    };
-//    me.onPinchend = function(evt, t, o){ 
-//        
-//        var dScale = evt.deltaScale;
-//        var cW = me.canvas.width;
-//        var cH = me.canvas.height;
-//        var startPosZ = me.posZ;
-//        //console.log(dScale);
-//        
-//        me.posZ = Math.round( me.posZ + (dScale) );
-//        if (me.posZ > 5) {
-//            me.posZ = 5;
-//        } else if (me.posZ < 0) {
-//            me.posZ = 0;
-//        }
-//        //console.log('after: '+me.posZ);
-//        
-//        me.posX += -( ( cW * (1+dScale/me.maxZ) - cW ) / 2 );
-//        me.posY += -( ( cH * (1+dScale/me.maxZ) - cH ) / 2 );
-//        
-//        //me.ctx.translate( -( ( cW * (1+dS/me.maxZ) - cW ) / 2 ), -( ( cH * (1+dS/me.maxZ) - cH ) / 2 ) );
-//    	if (me.posZ !== startPosZ) {
-//    	    //console.log(['_trackEvent', 'Map', 'Zoom : Pinch', startPosZ+' to '+me.posZ]);
-//            _gaq.push(['_trackEvent', 'Map', 'Zoom : Pinch', startPosZ+' to '+me.posZ]);
-//    	}
-//        
-//        var pinchEndToFunc = function(){
-//            me.zooming = false;
-//            me.render();
-//        };
-//        
-//        setTimeout(pinchEndToFunc, 750);
-//    }
-//    me.onPinch = function(evt, t, o){
-//        
-//        //var scale   = evt.scale,
-//        var scale   = evt.scale,
-//            dScale  = evt.deltaScale,
-//            mX      = evt.midPointX,
-//            mY      = evt.midPointY,
-//            x       = Math.floor( me.posX - (mX - me.mXprev) ),
-//            y       = Math.floor( me.posY - (mY - me.mYprev) );
-//        
-//        me.pinchScale = scale;
-//        me.prevDScale = evt.previousDeltaScale;
-//        me.dScale = evt.deltaScale;
-//        //me.posZ += evt.previousDeltaScale/me.maxZ
-//            
-//        me.goTo(x, y, true);
-//        
-//        me.mXprev = mX;
-//        me.mYprev = mY;
-//    };
-
 
 	onDragStart: function( evt, t, o ){
 		this.dragging = true;
+        //erase the arrow if it is there
+        this.arrowDrawn = false;
 	},
 	
 	onDrag: function( evt, t, o ){
@@ -680,27 +564,7 @@ Ext.define('Mayfest.controller.Map', {
 		//passed check
 		return y;
 	},
-	
-//	checkBounds: function(){
-//		
-//		//check x min
-//		if( this.posX - this.halfCanvasWidth < 0 )
-//			this.posX = this.halfCanvasWidth;
-//		
-//		//check y min
-//		if( this.posY - this.halfCanvasHeight < 0 )
-//			this.posY = this.halfCanvasHeight;
-//			
-//		//check x max
-//		if( this.maxX - this.halfCanvasWidth < this.posX )
-//			this.posX = this.maxX - this.halfCanvasWidth;
-//
-//		//check y max
-//		if( this.maxY - this.halfCanvasHeight < this.posY )
-//			this.posY = this.maxY - this.halfCanvasHeight;
-//
-//	},
-	
+		
 	onDragEnd: function( evt, t, o ){
         this.dragging = false;
         
@@ -718,6 +582,110 @@ Ext.define('Mayfest.controller.Map', {
             //function not defined yet.  temporarily commented out.
             this.moveTo(tX, tY);
         }
+	},
+	
+	zoomIn: function(){
+        if (this.posZ < this.maxZ){
+            ++this.posZ;
+            this.render();
+        }
+    },
+    
+    zoomOut: function(){
+        if (this.posZ > this.minZ){
+            --this.posZ;
+            this.render();
+        }
+    },
+
+
+	onMapInitialize: function( panel ){
+
+		//console.log('MAP INITIALIZE', a, b, c, this.getMapPanel(), this.canvasEl );
+
+		var me = this;
+		
+		Mayfest.ui.map = panel;
+		
+		this.getMapPanel().on({
+			painted: function(evt){ me.onMapActivate.call(me); }
+			//painted: this.onMapActivate
+		});
+
+
+	},
+
+	
+	onMapActivate: function( panel, newActiveItem, oldActiveItem, eOpts ){
+		//only run DOM initialization once.
+		if( !this.canvasIsActivated )
+			this.onMapFirstActivate.apply( this, arguments );
+		
+		//console.log('MAP ACTIVATE', this.getMapPanel(), [ this.canvasEl, this.canvas, this.ctx ] );
+		
+		//draw the map
+		this.render();
+	},
+
+	onMapFirstActivate: function( panel, newActiveItem, oldActiveItem, eOpts ){
+		
+		var me = this;
+		
+		//prototype a function onto Ext.util.point
+		Ext.util.Point.prototype.getMidpointOf = function( point ){				
+			return {
+				x: Math.round( (this.x + point.x) / 2 ),
+				y: Math.round( (this.y + point.y) / 2 )
+			}
+		};
+		
+		//set the flag
+		this.canvasIsActivated = true;
+		//get reference to elements
+		this.canvasEl =	Ext.get('canvas');
+		this.canvas = 	this.canvasEl.dom;
+		this.ctx = 		this.canvas.getContext('2d'),
+		
+		//attach orientation change handlers
+		//	http://stackoverflow.com/questions/8541485/how-to-handle-orientation-change-in-sencha-touch-v2
+		Ext.Viewport.on('resize', 'handleResize', this, { buffer: 0 });
+
+		this.handleResize();
+
+		this.canvasEl.on({
+			dragstart	: this.onDragStart,
+			drag		: this.onDrag,
+			dragend		: this.onDragEnd,
+			doubletap	: this.onDoubleTap,
+			touchstart	: this.onTouchStart,
+			pinchstart	: this.onPinchStart,
+			pinchend	: this.onPinchEnd,
+			pinch		: this.onPinch,
+			
+			scope		: this
+		});
+		
+		
+		//attach handlers to zoom buttons
+        Ext.get('zoomIn').on({ 
+        	tap : function(){
+			    me.zoomIn();
+			    
+			    //console.log(['_trackEvent', 'Map', 'Zoom In : Button', me.posZ]);
+			    //_gaq.push(['_trackEvent', 'Map', 'Zoom In : Button', me.posZ]);
+			}
+        });
+        Ext.get('zoomOut').on({ 
+        	tap : function(){
+				me.zoomOut();
+				
+				//console.log(['_trackEvent', 'Map', 'Zoom Out : Button', me.posZ]);
+				//_gaq.push(['_trackEvent', 'Map', 'Zoom Out : Button', me.posZ]);
+			}
+        });
+		
+		
+		//console.log('FIRST MAP ACTIVATE', [ this.canvasEl, this.canvas, this.ctx ] );
 	}
 			
 });

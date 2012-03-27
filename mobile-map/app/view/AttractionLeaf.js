@@ -17,7 +17,9 @@ Ext.define('Mayfest.view.AttractionLeaf', {
 			directionLock: true
 		}
 				
-	}
+	},
+	
+	hasBeenActivated: false
 	
 	
 });

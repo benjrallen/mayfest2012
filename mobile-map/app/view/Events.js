@@ -1,34 +1,28 @@
-Ext.define('Mayfest.view.Attractions', {
+Ext.define('Mayfest.view.Events', {
 	extend: 'Ext.List',
 	
-	id: 'attractionsList',
+	//id: 'eventsList',
 	
-	xtype: 'attractionslist',
+	xtype: 'eventslist',
 	
-	alias: 'widget.attractionslist',
+	alias: 'widget.eventslist',
 	
 	config:{
 		//title: 'Attraction',
 		//iconCls: 'star',
-		//fullscreen: true,
+		fullscreen: true,
 		//html: 'herro',
 		
-		store: 'CategoryAttractions',
 		
-		itemTpl: 	'<tpl if="mayfest_ml_uid">'+
-						'<div class="has_location"></div>'+
-					'</tpl>'+
-					'{title}',
+		//store: 'CategoryEvents',
+		
+		itemTpl: 	'{title}',
 
-//				<tpl if="this.hasName( values.mayfest_att_first_name, values.mayfest_att_last_name )">
-//					<div class="field">
-//						<label>Name:</label>
-//						<span>{[ this.buildName( values.mayfest_att_first_name, values.mayfest_att_last_name ) ]}</span>
-//					</div>
-//				</tpl>
+		
+		
+		store: 'EventList',
 
-
-		grouped: true,
+		//grouped: true,
 		
 		//provides alphabet on the side
 		//indexBar: true,

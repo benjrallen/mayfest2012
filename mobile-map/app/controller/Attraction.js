@@ -6,12 +6,14 @@ Ext.define('Mayfest.controller.Attraction', {
 		},
 		control: {
 			'#attractionsList' : {
-				activate: 'onAttractionsListShow',
+				activate: 'onAttractionsListActivate',
 				itemtap: 'onAttractionTap',
-				disclose: 'onAttractionDisclosure'
+				disclose: 'onAttractionDisclosure',
+				refresh: 'onAttractionsListRefresh'
 			},
+			
 			'#attractionLeaf' : {
-				activate: 'onAttractionLeafShow'
+				show: 'onAttractionLeafShow'
 			}
 		}
 	},
@@ -64,41 +66,104 @@ Ext.define('Mayfest.controller.Attraction', {
 		console.log( 'onAttractionDisclosure DISCLOSE EVENT FIRED', list, record, target, index, e, eOpts );
 		
 		e.stopPropagation();
+
+        this.currentAttraction = record.data;
+
+        this.currentAttraction.mapLocation = this.getAttractionLocation();
+
+		this.goToMapLocation();
+	},
+	onMapMeTap: function( evt, t, o ){
+		//console.log('YOU BETTER FIX THE FACT THAT THE EVENT CALLBACK GETS FIRED TWICE!!!  onMapMeTap', this.currentAttraction);
+		
+		Mayfest.ui.navBar.hide();
+
+		Mayfest.ui.nav.pop();		
+		
+		this.goToMapLocation();
+	},
+
+	goToMapLocation: function(){
+		
+		if( this.currentAttraction.mapLocation ){
+			
+			var location = this.currentAttraction.mapLocation.data;
+			
+			Mayfest.ui.mainPanel.setActiveItem( Mayfest.ui.map );
+			
+			Mayfest.ui.mapController.arrow = true;
+			Mayfest.ui.mapController.arrowDrawn = false;
+			Mayfest.ui.mapController.moveTo( location.mayfest_ml_x, location.mayfest_ml_y );
+
+		}
+
+//		Mayfest.ui.nav.push( Mayfest.ui.map );
+//		Mayfest.ui.navBar.show();
 	},
 
 	onMapMePress: function( evt, t, o ){
 		console.log('onMapMePress', this);
 	},
-	onMapMeTap: function( evt, t, o ){
-		console.log('onMapMeTap', this.currentAttraction);
-	},
-	onAttractionLeafShow: function(leaf, nav){
+
+	onAttractionLeafShow: function(leaf, opts){
 		Mayfest.ui.navBar.show();
 		//console.log('onAttractionsLEAFShow', this, leaf, nav );
-		console.log('onAttractionsLEAFShow');
 
-		//think I need to make a reference to current scope
-		var me = this;
-		
-		//set handler on mapMe button
-		Ext.select('#mapMe').each(function(el){
-			el.clearListeners();
+		var bttn = Ext.select('#mapMe');
+
+		if( bttn.elements.length && !leaf.hasBeenActivated ){
 			
-			el.on({
-				//touchstart: me.handlers.onMapMePress,
-				//touchend: me.handlers.onMapMePress,
-				//tap: function(evt, t, o){ me.handlers.onMapMeTap.apply(me, arguments); }
-				touchstart: me.onMapMePress,
-				touchend: me.onMapMePress,
-				tap: function(evt, t, o){ me.onMapMeTap.apply(me, arguments); }
+			leaf.hasBeenActivated = true;
+			
+			//think I need to make a reference to current scope
+			var me = this;
+			
+			//set handler on mapMe button
+			Ext.select('#mapMe').each(function(el){
+				el.clearListeners();
+				
+				el.on({
+					//touchstart: me.handlers.onMapMePress,
+					//touchend: me.handlers.onMapMePress,
+					//tap: function(evt, t, o){ me.handlers.onMapMeTap.apply(me, arguments); }
+					touchstart: me.onMapMePress,
+					touchend: me.onMapMePress,
+					tap: function(evt, t, o){ me.onMapMeTap.apply(me, arguments); }
+				});
 			});
-		});
+		}
+		console.log('onAttractionsLEAFShow', leaf, bttn);
+
+		
 		
 		
 	},
 	
-	onAttractionsListShow: function(a,b){
-		console.log('onAttractionsListShow', this, a, b);
+	onAttractionsListActivate: function(list, newActiveItem, oldActiveItem, eOpts){
+		console.log('onAttractionsListActivate', this, list, newActiveItem, oldActiveItem, eOpts);
+		
+		
+		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
+		//  if there is none, then the disclosure icon it removed.
+		var disclosures = Ext.select('#attractionsList .x-list-disclosure');
+		
+		if( disclosures.elements.length ){
+//			var i = 0;
+			
+			disclosures.each( function( a, b ){
+//				console.log(i+' a disclosure', this, this.getParent().down('.has_location'));
+//				i++;
+				
+				if( !this.getParent().down('.has_location') )
+					this.hide();
+			});
+		}
+		
+	},
+
+	onAttractionsListRefresh: function( list, eOpts ){
+		console.log('onAttractionsListRefresh', this, list);
+		//console.log( 'list items', list.getItems() );
 	},
 	
 	onAttractionTap: function(dataview, index, target, record){

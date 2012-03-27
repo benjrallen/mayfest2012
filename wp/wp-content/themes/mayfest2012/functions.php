@@ -1171,6 +1171,7 @@ if( class_exists( 'NewPostType' )){
 			),
 			$prefix.'event' => array(
 				'genre',
+				'event_category',
 				'thumbnail',
 				$prefix . 'event_day',
 				$prefix . 'event_time',
@@ -1224,6 +1225,9 @@ if( class_exists( 'NewPostType' )){
 					} elseif( $field == 'attraction_category' ) {
 						//specific case for attraction category
 						$cf = wp_get_object_terms( $post->ID, $field );
+					} elseif( $field == 'event_category' ) {
+						//specific case for attraction category
+						$cf = wp_get_object_terms( $post->ID, $field );
 					} else {
 						//normal get custom field
 						$cf = get_post_meta( $post->ID, $field, true );
@@ -1234,6 +1238,11 @@ if( class_exists( 'NewPostType' )){
 						
 					$p[$field] = $cf;
 				}
+//				
+//				//special case to convert the day and time fields into a date string
+//				if ( $post_type == $prefix.'event' ) {
+//					$p['date'] = $p[$prefix . 'event_day'].' '.$p[$prefix . 'event_time'];
+//				}
 				
 				$full[] = $p;
 				unset( $p );

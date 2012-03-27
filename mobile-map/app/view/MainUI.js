@@ -36,7 +36,7 @@ Ext.define('Mayfest.view.MainUI', {
 		        
 			},
 			{
-				xtype: 'productspage'	
+				xtype: 'eventtabs'
 			},
 			{
 				xtype: 'canvasmap'

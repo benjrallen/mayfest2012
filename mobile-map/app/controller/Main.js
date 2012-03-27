@@ -35,12 +35,6 @@ Ext.define('Mayfest.controller.Main', {
 //            load: this.onAttractionsStoreLoad
 //        });
 //		
-//        Ext.getStore('Events').on({
-//            //scope: this,
-//
-//            beforeload: this.onBeforeEventsStoreLoad,
-//            load: this.onEventsStoreLoad
-//        });
 //
         Ext.getStore('Categories').on({
             //scope: this,
@@ -49,6 +43,7 @@ Ext.define('Mayfest.controller.Main', {
             load: this.onCategoriesStoreLoad
         });
 
+		
 //		this.control({
 //			'button[action=submitContact]': {
 //				tap: 'submitContactForm'
@@ -76,6 +71,9 @@ Ext.define('Mayfest.controller.Main', {
 				pop: this.onNavPop,
 				back: this.onNavBack,
 				activeItemChange: this.onNavActiveItemChange
+			},
+			'mainPanel': {
+				initialize: this.onMainPanelInit
 			}
 		});
 		
@@ -87,6 +85,10 @@ Ext.define('Mayfest.controller.Main', {
 		
 		
 		console.log( Ext.Viewport );
+	},
+
+	onMainPanelInit: function(panel){
+		Mayfest.ui.mainPanel = panel;
 	},
 
 	onCategoriesListBack: function( nestedList, node, lastActiveList, detailCardActive, dataview, eOpts ){
@@ -228,17 +230,7 @@ Ext.define('Mayfest.controller.Main', {
 //		});
 
 	},
-	
-	//doesn't really fire cause it loads fast?
-	onBeforeEventsStoreLoad: function(){
-		console.log('controller.onBeforeEventsStoreLoad');
-	},
-	
-	//can probably take a lot of this out of use.
-	onEventsStoreLoad: function(store, records, successful, operation, eOpts){
-		console.log('controller.onEventsStoreLoad', store, successful, operation, eOpts);
-	},
-	
+		
 	//doesn't really fire cause it loads fast?
 	onBeforeCategoriesStoreLoad: function(){
 		console.log('controller.onBeforeCategoriesStoreLoad');
