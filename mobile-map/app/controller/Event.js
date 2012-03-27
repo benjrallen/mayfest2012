@@ -39,6 +39,15 @@ Ext.define('Mayfest.controller.Event', {
             load: this.onEventsStoreLoad
         });
 
+		Ext.getStore('EventList').on({
+			load: this.onListStoreLoad
+		});
+
+        Ext.getStore('Attractions').on({
+            scope: this,
+            load: this.onAttractionsStoreLoad
+        });
+
 
 //		Ext.getStore('EventCategories').on({
 //			beforeload: this.onEventCategoriesBeforeLoad,
@@ -54,6 +63,9 @@ Ext.define('Mayfest.controller.Event', {
 			},
 			'categoryselect': {
 				change: this.onCatSelectChange
+			},
+			'eventslist': {
+				updatedata: this.onListUpdateData
 			}
 		});
 
@@ -110,6 +122,14 @@ Ext.define('Mayfest.controller.Event', {
 //		console.log( this );
 //	},
 
+
+	attractionStoreLoaded: false,
+	
+	onAttractionsStoreLoad: function(){
+		return this.attractionStoreLoaded = true;
+	},
+
+
 	//doesn't really fire cause it loads fast?
 	onBeforeEventsStoreLoad: function(){
 		console.log('controller.onBeforeEventsStoreLoad');
@@ -122,6 +142,23 @@ Ext.define('Mayfest.controller.Event', {
 	
 	//Events are ready so make the panels
 	onEventsStoreLoad: function(store, records, successful, operation, eOpts){
+		var controller = Mayfest.ui.EventController;
+		
+		if( controller.attractionStoreLoaded ){
+			return controller.processEventData.apply( this, arguments );
+		} else {
+			console.log( 'LOOKING!!!!!!!' );
+			var evtArgs = arguments,
+				me = this,
+				timeoutFunc = function(){
+					return controller.onEventsStoreLoad.apply( me, evtArgs );
+				}
+				
+			setTimeout( timeoutFunc, 25 );
+		}
+	},
+	
+	processEventData: function(store, records, successful, operation, eOpts){
 		//console.log('controller.onEventsStoreLoad', this, store, successful, operation, Mayfest.ui.EventController);		
 		
 		var items = store.getData().items,
@@ -244,29 +281,9 @@ Ext.define('Mayfest.controller.Event', {
 					
 				}
 			]);
-		}
-		
-		
-		console.log('panels added', this.getEventtabs(), this.getCategorylists(), Ext.select('.catSelect') );
-		
-//		//attach some listeners
-//		Ext.each( Ext.select('.catSelect').elements, function( item, index, allItems ){
-//		
-//			var id = Ext.fly( item ).dom.id,
-//				select = Ext.getCmp( id );
-//			
-//			select.on({
-//				change: this.onCatSelectChange 
-//			});
-//
-//		}, this);
-//				
+		}		
 	},
 	
-	processEventTabs: function( panel, i, allPanels ){
-		console.log( 'process event tabs', this, panel, i );
-	},
-
 	onEventTabsActiveItemChange: function( tabPanel, panel, oldPanel ){
 		
 		//set the current day
@@ -296,17 +313,120 @@ Ext.define('Mayfest.controller.Event', {
 
 
 	onCatSelectChange: function(select, newValue, oldValue){
-		console.log( 'onCatSelectChange', select, newValue, oldValue );
 		
-		//Ext.getStore('EventList')
+		var value = newValue.data.value;
+		
+		Ext.getStore('EventList').clearFilter();
+		
+		if ( value > -1 ) {
+			Ext.getStore('EventList').filter([
+				{
+					filterFn: function(item) {
+						var match = false;
+
+						Ext.each( item.get('event_category'), function( cat ){
+							if( cat.term_id == value )
+								match = true;
+								return false;
+						});
+
+						return match;
+					}
+				}
+			]);
+
+		}
+		//console.log( 'onCatSelectChange', select, value, newValue, oldValue );
+	},
+
+	onListUpdateData: function( list, newData ){
+		console.log(' on lis UPDATE DATA ', list, newData );
+//
+//		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
+//		//  if there is none, then the disclosure icon it removed.
+//		var disclosures = Ext.select('#attractionsList .x-list-disclosure');
+//		
+//		if( disclosures.elements.length ){
+////			var i = 0;
+//			
+//			disclosures.each( function( a, b ){
+////				console.log(i+' a disclosure', this, this.getParent().down('.has_location'));
+////				i++;
+//				
+//				if( !this.getParent().down('.has_location') )
+//					this.hide();
+//			});
+//		}
+		
+	},
+
+	onListStoreLoad: function( store, records, success, operation ){
+		//console.log('ON LIST STORE LOAD', store, records, success, operation );
+
+		var tabParent = Mayfest.ui.EventController.getEventtabs(),
+			//active = tabParent.getActiveItem(),
+			id = tabParent.observableId;
+
+
+		//console.log('LIST LOAD', Mayfest.ui.EventController.getEventtabs().getActiveItem().select('#eventsList .x-list-disclosure'));
+		//console.log('LIST LOAD', Ext.select( Mayfest.ui.EventController.getEventtabs().getActiveItem().select('#eventsList .x-list-disclosure'));
+		console.log('LIST LOAD', id);
+
+//		
+//		
+//		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
+//		//  if there is none, then the disclosure icon it removed.
+//		var disclosures = Ext.select(id+' .x-list-disclosure');
+//		
+//		if( disclosures.elements.length ){
+////			var i = 0;
+//			
+//			disclosures.each( function( a, b ){
+//				//console.log(' a disclosure', this, this.getParent().down('.evtAtt'));
+////				i++;
+//				
+//				if( !this.getParent().down('.evtAtt') )
+//					this.hide();
+//			});
+//		}
+//
+
 	},
 	
 	onEventTabsInit: function(panel, eOpts){
 		console.log('initing event tabs', this, panel, eOpts)
 		
 	},
+	
+	getEventAttraction: function( attraction_id ){
+		var id = attraction_id;
+		
+		if( !id )
+			return null;
+		
+		var store = Ext.getStore('Attractions'),
+			attraction = store.getById( id );
+		
+		//console.log( id, store, attraction );
+		
+		return attraction;
+	},
 
-
+//
+//	//pass in map location id or default to currentLocation
+//	getAttractionLocation: function( attraction_id ){		
+//		var id = attraction_id || this.currentAttraction.mayfest_ml_uid;
+//		
+//		if( !id )
+//			return null;
+//
+//		var store = Ext.getStore('Locations'),
+//			location = store.getById( id );
+//
+//		//console.log('getLocationByAttractionID', store, this.currentAttraction, id, this);
+//
+//		return location;
+//	}
 
 
 //	

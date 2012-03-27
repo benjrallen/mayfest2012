@@ -23,6 +23,9 @@ Ext.define('Mayfest.controller.Attraction', {
 				
 		var me = this;
 		
+		Mayfest.ui.AttractionController = this;
+
+		
 		//Set up a template for the leaf
 		//	.from method Creates a template from the passed element's value (display:none textarea, preferred) or innerHTML.
 		//	Elements defined in index.php
@@ -141,8 +144,7 @@ Ext.define('Mayfest.controller.Attraction', {
 	
 	onAttractionsListActivate: function(list, newActiveItem, oldActiveItem, eOpts){
 		console.log('onAttractionsListActivate', this, list, newActiveItem, oldActiveItem, eOpts);
-		
-		
+			
 		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
 		//  if there is none, then the disclosure icon it removed.
 		var disclosures = Ext.select('#attractionsList .x-list-disclosure');

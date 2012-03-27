@@ -15,14 +15,50 @@ Ext.define('Mayfest.view.Events', {
 		
 		
 		//store: 'CategoryEvents',
-		
-		itemTpl: 	'{title}',
+//		itemTpl: 	'<tpl if="mayfest_attraction_uid">'+
+//						'<div class="has_location"></div>'+
+//					'</tpl>'+
+//					'{title}',
+		itemTpl: new Ext.XTemplate(
+//			'<tpl if="this.hasLocation( values.mayfest_attraction_uid )">'+
+//				'<div class="has_location"></div>'+
+//			'</tpl>'+
+			'{title}'+
+			'<span class="evtLoc">'+
+				'{[ this.getEventAttraction(values.mayfest_attraction_uid) ]}'+
+			'</span>',
+			//'{title}',
+			
+			{
+				compiled: true,
+//				helloWorld: function(title){
+//					return 'Hello ' + title	
+//				},
+//				hasLocation: function( id ){
+//					//id is mayfest_attraction_uid
+//					console.log('HAS LOCATION?', id, Mayfest.ui.AttractionController );
+//					
+//					return true;
+//				},
+				getEventAttraction: function( attraction_id ){
+					//console.log( 'ATTRACTION?', attraction_id,  Mayfest.ui.EventController.getEventAttraction( attraction_id ) );
+					
+					var attraction = Mayfest.ui.EventController.getEventAttraction( attraction_id );
+					
+					return ( attraction ? 
+								'<span class="evtAtt">@'+attraction.data.title+'</span>' :
+								''
+							);
+				}
+				
+			}
+		),
 
 		
 		
 		store: 'EventList',
 
-		//grouped: true,
+		grouped: true,
 		
 		//provides alphabet on the side
 		//indexBar: true,

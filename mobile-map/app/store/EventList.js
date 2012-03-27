@@ -9,8 +9,8 @@ Ext.define('Mayfest.store.EventList', {
 		//folderSort: true,
 
 		grouper: {
-			groupFn: function(record) {
-				return record.get('title')[0];
+			groupFn: function(record) {				
+				return record.get('mayfest_event_time');
 			}
 		},
 
