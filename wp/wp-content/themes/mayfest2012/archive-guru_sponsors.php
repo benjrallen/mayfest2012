@@ -39,7 +39,9 @@ get_header(); ?>
 	if (is_post_type_archive('guru_sponsors')){
 		query_posts(array(
 			'posts_per_page' => -1,
-			'post_type' => 'guru_sponsors'
+			'post_type' => 'guru_sponsors',
+			'order' => 'ASC',
+			'orderby' => 'menu_order date'
 		));
 	}
 		

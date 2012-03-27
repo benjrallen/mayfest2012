@@ -868,7 +868,7 @@ if( class_exists( 'NewPostType' )){
 		'post_type_name' => 'Sponsors',
 		'args' => array(
 			'rewrite' => array( 'slug' => 'sponsors' ),
-			'supports' => array( 'title', 'editor', 'thumbnail' ),
+			'supports' => array( 'title', 'editor', 'thumbnail', 'page-attributes' ),
 			'public' => true,
 			'has_archive' => true
 		)
