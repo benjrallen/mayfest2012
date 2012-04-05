@@ -18,24 +18,27 @@ Ext.define('Mayfest.view.MainUI', {
 				xtype: 'homepanel'
 			},
 			{
-				xtype: 'categoriespage',
-				
-				//id: 'categoriesList',	        
-
-				store: 'Categories',
-				
-		        displayField: 'name',
-		        
-		        // add a / for folder nodes in title/back button
-		        getTitleTextTpl: function() {
-		            return '{' + this.getDisplayField() + '}<tpl if="leaf !== true"></tpl>';
-		        },
-		        // add a / for folder nodes in the list
-		        getItemTextTpl: function(record) {
-		            return '{'+this.getDisplayField()+'}<tpl if="leaf !== true"></tpl>';
-		        }
-		        
+				xtype: 'categoriespage'
 			},
+//			{
+//				xtype: 'categoriespage',
+//				
+//				//id: 'categoriesList',	        
+//
+//				store: 'Categories',
+//				
+//		        displayField: 'name',
+//		        
+//		        // add a / for folder nodes in title/back button
+//		        getTitleTextTpl: function() {
+//		            return '{' + this.getDisplayField() + '}<tpl if="leaf !== true"></tpl>';
+//		        },
+//		        // add a / for folder nodes in the list
+//		        getItemTextTpl: function(record) {
+//		            return '{'+this.getDisplayField()+'}<tpl if="leaf !== true"></tpl>';
+//		        }
+//		        
+//			},
 			{
 				xtype: 'eventtabs'
 			},

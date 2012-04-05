@@ -12,41 +12,36 @@ Ext.define('Mayfest.controller.Main', {
 				selector: 'categorieslist'
 				//autoCreate: true
 			},
+//			categoriespage: {
+//				selector: 'categoriespage'
+//				//autoCreate: true
+//			},
 			navui: {
 				selector: 'navui'	
 			},
-			mainPanel: 'tabpanel'
+//			mainPanel: 'tabpanel',
+			mainui: 'mainui'
 		}
 	},
-		
+	
+	//used to set handlers on store loading
+	onlineStores: [
+		'Locations',
+		'Attractions',
+		'Events',
+		'Categories'
+	],
+	
+	//used to track what stores are loaded and take off the loading mask
+	offlineStores: [],
+	
 	init: function(){
 		
 		Mayfest.ui.MainController = this;
 
-//        Ext.getStore('Locations').on({
-//            scope: this,
-//
-//            beforeload: this.onBeforeLocationsStoreLoad,
-//            load: this.onLocationsStoreLoad
-//        });
-//		
-//        Ext.getStore('Attractions').on({
-//            scope: this,
-//
-//            beforeload: this.onBeforeAttractionsStoreLoad,
-//            load: this.onAttractionsStoreLoad
-//        });
-//		
-//
 
-		var stores = [
-			'Locations',
-			'Attractions',
-			'Events'
-		];
-
-		for ( var i=0; i<stores.length; i++ ){
-			var name = stores[i],
+		for ( var i=0; i<this.onlineStores.length; i++ ){
+			var name = this.onlineStores[i],
 				store = Ext.getStore(name);
 			
 			store.on({
@@ -54,7 +49,8 @@ Ext.define('Mayfest.controller.Main', {
 			});
 
 			Ext.getStore('Offline'+name).on({
-				load: this.onOfflineStoreLoad
+				load: this.onOfflineStoreLoad,
+				scope: this
 				//addrecords: this.onOfflineEventsAddRecords
 			});
 			
@@ -66,85 +62,33 @@ Ext.define('Mayfest.controller.Main', {
 			store = null;
 			name = null;
 		}
-
-//		var locationsStore = Ext.getStore('Locations');
-//		//this.offlineStore = Ext.getStore('OfflineAttractions');
-//
-//		locationsStore.on({
-//            load: this.onLocationsStoreLoad
-//		});
-//
-//
-//		Ext.getStore('OfflineLocations').on({
-//			load: this.onOfflineLocationsLoad
-//			//addrecords: this.onOfflineEventsAddRecords
-//		});
-//
-//		locationsStore.getProxy().on({
-//			exception: this.onLocationsStoreProxyTimeout
-//		});
-//
-//		locationsStore = null;
-//
-//		
-//		var attractionsStore = Ext.getStore('Attractions');
-//		//this.offlineStore = Ext.getStore('OfflineAttractions');
-//
-//		attractionsStore.on({
-//            load: this.onAttractionsStoreLoad
-//		});
-//
-//
-//		Ext.getStore('OfflineAttractions').on({
-//			load: this.onOfflineAttractionsLoad
-//			//addrecords: this.onOfflineEventsAddRecords
-//		});
-//
-//		attractionsStore.getProxy().on({
-//			exception: this.onAttractionsStoreProxyTimeout
-//		});
-//
-//		attractionsStore = null;
-
-
-//        Ext.getStore('Categories').on({
-//            //scope: this,
-//
-//            beforeload: this.onBeforeCategoriesStoreLoad,
-//            load: this.onCategoriesStoreLoad
-//        });
-
 		
-//		this.control({
-//			'button[action=submitContact]': {
-//				tap: 'submitContactForm'
-//			}
-//		});
-
-		
-		
+				
 		
 		this.control({
-			'categorieslist': {
-				render: this.onCategoriesListRender,
-				//activate: this.onCategoriesListActivate,
-				//show: this.onCategoriesListShow,
-				leafitemtap: this.onCategoriesLeafitemtap,
-				itemtap: this.onCategoriesItemTap,
-				back: this.onCategoriesListBack
-			},
+//			'categorieslist': {
+//				render: this.onCategoriesListRender,
+//				//activate: this.onCategoriesListActivate,
+//				//show: this.onCategoriesListShow,
+//				leafitemtap: this.onCategoriesLeafitemtap,
+//				itemtap: this.onCategoriesItemTap,
+//				back: this.onCategoriesListBack
+//			},
 			'navui': {
 				render: this.onNavUIRender,
-				show: function(){
-					console.log('navigationview show');
-				},
-				push: this.onNavPush,
-				pop: this.onNavPop,
-				back: this.onNavBack,
-				activeItemChange: this.onNavActiveItemChange
+//				show: function(){
+//					console.log('navigationview show');
+//				},
+//				push: this.onNavPush,
+//				pop: this.onNavPop,
+//				activeItemChange: this.onNavActiveItemChange,
+				back: this.onNavBack
 			},
-			'mainPanel': {
-				initialize: this.onMainPanelInit
+//			'mainPanel': {
+//				initialize: this.onMainPanelInit
+//			},
+			'mainui': {
+				activeitemchange: this.onMainActiveItemChange
 			}
 		});
 		
@@ -155,19 +99,25 @@ Ext.define('Mayfest.controller.Main', {
 		//setTimeout( function(){ console.log( 'controller init timeout', me.getViewport(), Ext.getCmp('viewport'), me.getContactForm(),me.getAttractionslist() ); }, 0 );
 		
 		
-		console.log( Ext.Viewport );
+		//console.log( Ext.Viewport );
 	},
 
-	onMainPanelInit: function(panel){
-		Mayfest.ui.mainPanel = panel;
+//	onMainPanelInit: function(panel){
+//		Mayfest.ui.mainPanel = panel;
+//	},
+
+	onMainActiveItemChange: function( tabpanel, newActiveItem, oldActiveItem, eOpts ){
+		console.log('Main active item change', this, tabpanel, newActiveItem, oldActiveItem, eOpts );	
+		//Mayfest.ui.nav.push( newActiveItem );
+		//console.log( 'main active item', newActiveItem.id, this.getCategoriespage().getNavigationBar() );
 	},
 
-	onCategoriesListBack: function( nestedList, node, lastActiveList, detailCardActive, dataview, eOpts ){
-		//console.log( 'onCategoriesListBack', nestedList, node, lastActiveList, detailCardActive, dataview, eOpts );
-		//console.log( 'more list back', nestedList.getStore() );
-	
-		//nestedList.getStore().sort('name', 'ASC');
-	},
+//	onCategoriesListBack: function( nestedList, node, lastActiveList, detailCardActive, dataview, eOpts ){
+//		//console.log( 'onCategoriesListBack', nestedList, node, lastActiveList, detailCardActive, dataview, eOpts );
+//		//console.log( 'more list back', nestedList.getStore() );
+//	
+//		//nestedList.getStore().sort('name', 'ASC');
+//	},
 	
 	onNavUIRender: function(){
 		
@@ -181,85 +131,86 @@ Ext.define('Mayfest.controller.Main', {
 		console.log( 'onNavUIRender!', this, Mayfest.ui );
 	},
 
-	onNavPush: function(thisView, mixedView){
-		console.log('onNavPush', thisView, mixedView, this);
-	},
-	onNavPop: function(thisView, mixedView){
-		console.log('onNavPop', thisView, mixedView, this);
-	},
+//	onNavPush: function(thisView, mixedView){
+//		console.log('onNavPush', thisView, mixedView, this);
+//	},
+//	onNavPop: function(thisView, mixedView){
+//		console.log('onNavPop', thisView, mixedView, this);
+//	},
 	onNavBack: function(thisView){
 		console.log('onNavBack', thisView.getActiveItem(), thisView, this);
+
+		//Mayfest.ui.AttractionController.getCatnav().show();
 		
 		thisView.getActiveItem().id === 'mainUI' ? 
 			thisView.getNavigationBar().hide() :
 			thisView.getNavigationBar().show();
-		
 	},
-	onNavActiveItemChange: function(container, newActiveItem, oldActiveItem){
-		console.log('onNavActiveItemChange', this, container, newActiveItem, oldActiveItem);
-	},
-
+//	onNavActiveItemChange: function(container, newActiveItem, oldActiveItem){
+//		console.log('onNavActiveItemChange', this, container, newActiveItem, oldActiveItem);
+//	},
+//
 //	onCategoriesListShow: function(){
 //	},
 	
-	onCategoriesItemTap: function(nestedList, list, index, target, record, e, eOpts){
-		//e.stopEvent();
-		console.log('categoriesItemTap', this, nestedList, list, index, target, record, e, eOpts);
-	},
+//	onCategoriesItemTap: function(nestedList, list, index, target, record, e, eOpts){
+//		//e.stopEvent();
+//		console.log('categoriesItemTap', this, nestedList, list, index, target, record, e, eOpts);
+//	},
+//	
+//	onCategoriesListRender: function(){
+//		console.log( 'onCategoriesListRender!', this, this.getAttractionslist() );
+//		
+//		//get list
+//		var list = this.getAttractionslist();
+//		//attach handlers
+////		list.on({
+////			leafitemtap: this.onAttractionsLeafitemtap
+////		});
+//	},
 	
-	onCategoriesListRender: function(){
-		console.log( 'onCategoriesListRender!', this, this.getAttractionslist() );
-		
-		//get list
-		var list = this.getAttractionslist();
-		//attach handlers
-//		list.on({
-//			leafitemtap: this.onAttractionsLeafitemtap
-//		});
-	},
+//	onCategoriesLeafitemtap: function(me, list, index, item, e){
+//		//console.log('leafitemtap', me, list, index, item, e);
+//		
+//		var store = list.getStore(),
+//			record = store.getAt(index),
+//			cat_id = record.data.term_id,			
+//			cat_store = Ext.getStore('CategoryAttractions'),
+//			//attractions = Ext.getStore('Attractions');
+//			attractions = this.getAttractionsByCatID( cat_id );
+//			//detailCard = me.getDetailCard();
+//
+//			//console.log( 'CAT_ID', cat_id );
+//			
+//			//detailCard.setStore( attractions );
+//			
+//			cat_store.setData( attractions.items );
+//			
+//		//console.log('leaf item additional', cat_id, store, record, item, attractions, detailCard, cat_store.getData());
+//		
+//	},
 	
-	onCategoriesLeafitemtap: function(me, list, index, item, e){
-		//console.log('leafitemtap', me, list, index, item, e);
-		
-		var store = list.getStore(),
-			record = store.getAt(index),
-			cat_id = record.data.term_id,			
-			cat_store = Ext.getStore('CategoryAttractions'),
-			//attractions = Ext.getStore('Attractions');
-			attractions = this.getAttractionsByCatID( cat_id );
-			//detailCard = me.getDetailCard();
-
-			//console.log( 'CAT_ID', cat_id );
-			
-			//detailCard.setStore( attractions );
-			
-			cat_store.setData( attractions.items );
-			
-		//console.log('leaf item additional', cat_id, store, record, item, attractions, detailCard, cat_store.getData());
-		
-	},
-	
-	getAttractionsByCatID: function( cat_id ){
-		var store = Ext.getStore('OfflineAttractions'),
-			attractions = store.queryBy(function( record, id ){
-				if( record.data.attraction_category.length ){
-					for (var i=0; i < record.data.attraction_category.length; i++){
-						//check the category on the attraction item.  return true to add it to return from query						
-						if ( record.data.attraction_category[i].term_id == cat_id ) {
-							return true;
-						}
-						
-						//return ( record.data.attraction_category[i].term_id == cat_id ? true : false );
-					}
-				}
-				
-				return false;
-			});
-		
-		//console.log( 'getAttractionsByCatID', attractions );
-		
-		return attractions;
-	},
+//	getAttractionsByCatID: function( cat_id ){
+//		var store = Ext.getStore('OfflineAttractions'),
+//			attractions = store.queryBy(function( record, id ){
+//				if( record.data.attraction_category.length ){
+//					for (var i=0; i < record.data.attraction_category.length; i++){
+//						//check the category on the attraction item.  return true to add it to return from query						
+//						if ( record.data.attraction_category[i].term_id == cat_id ) {
+//							return true;
+//						}
+//						
+//						//return ( record.data.attraction_category[i].term_id == cat_id ? true : false );
+//					}
+//				}
+//				
+//				return false;
+//			});
+//		
+//		//console.log( 'getAttractionsByCatID', attractions );
+//		
+//		return attractions;
+//	},
 	
 	//doesn't really fire cause it loads fast?
 	onBeforeLocationsStoreLoad: function(){
@@ -355,17 +306,15 @@ Ext.define('Mayfest.controller.Main', {
 	},
 
 	onOfflineStoreLoad: function(store, records, successful, operation, eOpts){
-		
+		console.log('on offline store load!', store._storeId, store);
 		//var controller = Mayfest.ui.EventController;
 		//console.log('controller.onOfflineAttractionsLoad', this, store, records, successful, operation, Mayfest.ui.EventController);		
 
 		//id gets lost when record set to phantom to add to offline store... reset it
 		store.each( function(record){
 			record.setId( record.data.raw_id );
-			console.log( record.raw.title, record.data.raw_id, record.getId() );
+			//console.log( record.raw.title, record.data.raw_id, record.getId() );
 		});
-
-		console.log('storeID', store._storeId);
 		
 		//Mayfest.ui.EventController.offlineAttractionStoreLoaded = true;
 		
@@ -379,7 +328,21 @@ Ext.define('Mayfest.controller.Main', {
 			case 'OfflineEvents':
 				Mayfest.ui.EventController.checkAttractionStoreData();
 				break;
+			case 'OfflineCategories':
+				Mayfest.ui.AttractionController.pushCatnav( 0, 'Directory' );
+				//Mayfest.ui.AttractionController.filterCategories(0);
+				break;
 		}
+		
+		//track that the store has loaded
+		this.offlineStores.push( store._storeId );
+		
+		//hide the mask?
+		if( this.offlineStores.length === this.onlineStores.length )
+			this.getNavui().unmask();
+
+		console.log('storeID', store._storeId, this.offlineStores, ( this.offlineStores.length === this.onlineStores.length ) );
+
 		
 		return;
 

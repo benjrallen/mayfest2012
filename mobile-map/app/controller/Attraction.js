@@ -5,6 +5,20 @@ Ext.define('Mayfest.controller.Attraction', {
 		refs: {
 			mapButton: {
 				selector: '#mapMe'
+			},
+			categoriespage: {
+				selector: 'categoriespage'
+				//autoCreate: true
+			},
+			catnav: {
+				selector: 'catnav'
+				//autoCreate: true
+			},
+			catNavBack: {
+				selector: '#catNavBack'	
+			},
+			categorieslist: {
+				selector: 'categorieslist'
 			}
 		},
 		control: {
@@ -20,6 +34,9 @@ Ext.define('Mayfest.controller.Attraction', {
 			},
 			'#mapMe' : {
 				tap: 'onMapMeTap'
+			},
+			'#catNavBack': {
+				tap: 'onCatNavBack'
 			}
 		}
 	},
@@ -71,6 +88,215 @@ Ext.define('Mayfest.controller.Attraction', {
 													}
 												);
 		
+		
+		this.control({
+//			categoriespage: {
+//				render: this.onCatNavUIRender,
+//				show: function(){
+//					console.log('navigationview show');
+//				},
+//				push: this.onCatNavPush,
+//				pop: this.onCatNavPop,
+//				back: this.onCatNavBack,
+//				activeItemChange: this.onCatNavActiveItemChange
+//			},
+			categorieslist: {
+				activate: 'onCatListActivate',
+				itemtap: 'onCatTap'
+			}
+		});
+	},
+
+
+	
+	onCatNavUIRender: function(){
+		
+//		Mayfest.ui.nav = this.getNavui();
+//		Mayfest.ui.navBar = Mayfest.ui.nav.getNavigationBar();
+//		
+//		//hide the navbar initially
+//		Mayfest.ui.navBar.hide();
+		
+		
+		console.log( 'onCatNavUIRender!', this, Mayfest.ui );
+	},
+
+	onCatNavPush: function(thisView, mixedView){
+		console.log('onCatNavPush', thisView, mixedView, this);
+	},
+	onCatNavPop: function(thisView, mixedView){
+		console.log('onCatNavPop', thisView, mixedView, this);
+	},
+	onCatNavBack: function(evt, t, o){
+		console.log('onCatNavBack', evt, t, o);
+
+		this.catNavArray.pop();
+		
+		this.doCatnav();
+
+//		thisView.getActiveItem().id === 'mainUI' ? 
+//			thisView.getNavigationBar().hide() :
+//			thisView.getNavigationBar().show();
+	},
+	onCatNavActiveItemChange: function(container, newActiveItem, oldActiveItem){
+		console.log('onCatNavActiveItemChange', this, container, newActiveItem, oldActiveItem);
+	},
+
+	onCatListActivate: function(list, newActiveItem, oldActiveItem, eOpts){
+		console.log('onCatListActivate', this, list, newActiveItem, oldActiveItem, eOpts);
+			
+		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
+		//  if there is none, then the disclosure icon it removed.
+//		var disclosures = Ext.select('#attractionsList .x-list-disclosure');
+//		
+//		if( disclosures.elements.length ){
+////			var i = 0;
+//			
+//			disclosures.each( function( a, b ){
+////				console.log(i+' a disclosure', this, this.getParent().down('.has_location'));
+////				i++;
+//				
+//				if( !this.getParent().down('.has_location') )
+//					this.hide();
+//			});
+//		}
+		
+	},
+
+//	onAttractionsListRefresh: function( list, eOpts ){
+//		console.log('onAttractionsListRefresh', this, list);
+//		//console.log( 'list items', list.getItems() );
+//	},
+	
+	catNavArray: [
+	
+	], 
+	
+	pushCatnav: function( term_id, title ){
+		
+		//if( term_id || term_id === 0 ){
+			this.catNavArray.push({ 'term_id': term_id, 'title': title });
+		//}
+		
+		this.doCatnav();
+		
+	},
+	
+	doCatnav: function(){
+		var target = this.catNavArray[ this.catNavArray.length - 1 ],
+			button = this.getCatNavBack();
+		
+		this.getCatnav().setTitle( target.title );
+		
+				
+		if( !this.filterCategories( target.term_id ) ) {
+			
+			console.log( 'last of the list!' );
+			
+//			var cat_store = Ext.getStore('CategoryAttractions'),
+//				//attractions = Ext.getStore('Attractions');
+//				attractions = this.getAttractionsByCatID( term_id );
+			var attractions = this.getAttractionsByCatID( target.term_id );
+				
+				//list runs off the following store.
+				Ext.getStore('CategoryAttractions').setData( attractions.items );
+
+		                
+		        if( !Mayfest.ui.AttractionsList ){
+					Mayfest.ui.AttractionsList = Ext.create('Mayfest.view.Attractions');
+		        }
+		        
+		        		        
+				//push it into the nav view(shows it);
+				this.getCategoriespage().setActiveItem( Mayfest.ui.AttractionsList );
+				
+				//Mayfest.ui.nav.push( Mayfest.ui.AttractionsList );		
+				//this.getCategoriespage().push( Mayfest.ui.AttractionsList );		
+				//Mayfest.ui.navBar.show();
+		} else {
+			console.log('NOT A LEAF' );
+			if( this.getCategoriespage().getActiveItem() !== this.getCategorieslist() )
+				this.getCategoriespage().setActiveItem( this.getCategorieslist() );
+				
+			
+		}
+		
+
+		if( this.catNavArray.length > 1 ){
+			var last = this.catNavArray[ this.catNavArray.length - 2 ];
+			
+			button.setText( last.title );
+			//if( button.isHidden() )
+				button.show();
+				
+		} else {
+			button.hide();
+		}
+
+
+		console.log( 'DO CAT NAV!', target.term_id, (target.term_id === 0) );
+
+		
+	},
+	
+	onCatTap: function(dataview, index, target, record){
+		console.log('onCatTap', this, dataview, index, target, record, record.get('term_id') );
+		
+		//var term_id = record.get('term_id')
+		var term_id = record.data.term_id;
+
+		
+		this.pushCatnav( record.data.term_id, record.data.name );
+
+		//DESELECT THE TAPPED ITEM
+		//http://stackoverflow.com/questions/5368188/sencha-touch-deselect-list-item
+		setTimeout(function(){dataview.deselect(index);},50);
+		//alert('HELLO!');
+		//dataview.deselect(index);
+
+	},
+	
+	getAttractionsByCatID: function( cat_id ){
+		var store = Ext.getStore('OfflineAttractions'),
+			attractions = store.queryBy(function( record, id ){
+				if( record.data.attraction_category.length ){
+					for (var i=0; i < record.data.attraction_category.length; i++){
+						//check the category on the attraction item.  return true to add it to return from query						
+						if ( record.data.attraction_category[i].term_id == cat_id ) {
+							return true;
+						}
+						
+						//return ( record.data.attraction_category[i].term_id == cat_id ? true : false );
+					}
+				}
+				
+				return false;
+			});
+		
+		//console.log( 'getAttractionsByCatID', attractions );
+		
+		return attractions;
+	},
+
+
+	
+	filterCategories: function( parent_id ){
+		
+		var store = this.getCategorieslist().getStore();
+		store.clearFilter();
+		store.filter([
+			{
+				filterFn: function(item) {
+					return ( item.get('parent') === parent_id );
+				}
+			}
+		]);
+
+		console.log( 'FILTER CATEGORIES', parent_id, store, store.data.items.length );
+
+
+		return ( store.data.items.length );
+		
 	},
 	
 	//use the disclose event to open directly to the map and stop the itemtap event
@@ -118,6 +344,8 @@ Ext.define('Mayfest.controller.Attraction', {
 //	},
 
 	onAttractionLeafShow: function(leaf, opts){
+		//this.getCatnav().hide();
+		
 		Mayfest.ui.navBar.show();
 		
 		//var bttn = this.getMapButton();

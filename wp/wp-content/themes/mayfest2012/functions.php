@@ -730,6 +730,17 @@ function content($limit = 55) {
 }
 
 
+function get_flat_terms( $term ){
+	$terms = get_terms( $term );
+	$return = array();
+	
+	foreach ( $terms as $t ){
+		$return[] = $t;
+	}
+	
+	return $return;
+}
+
 //for getting tree of terms structured by hierarchy
 function get_term_hierchy($term){
 	$terms = get_terms( $term );
@@ -1287,7 +1298,8 @@ if( class_exists( 'NewPostType' )){
   				$file = fopen( $filename, 'x+' );
   			}			
 						
-  			if( fwrite( $file, json_encode( array( 'children' => get_term_hierchy($term) ) ) ) === FALSE ){
+  			//if( fwrite( $file, json_encode( array( 'children' => get_term_hierchy($term) ) ) ) === FALSE ){
+  			if( fwrite( $file, json_encode( get_flat_terms($term) ) ) === FALSE ){
   				error_log('ERROR WRITING POSTS TO CACHE FILE IN FUNCTIONS.PHP ~line 1106: '.$filename);
   			}
 				

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html manifest="app.manifest" lang="en-US">
+<html manifest="" lang="en-US">
 <head>
     <meta charset="UTF-8">
     <title>Mayfest Mobile Map 2012</title>
@@ -21,6 +21,7 @@
     <script type="text/javascript" src="app/store/Attractions.js"></script>
     <script type="text/javascript" src="app/store/OfflineAttractions.js"></script>
     <script type="text/javascript" src="app/store/Categories.js"></script>
+    <script type="text/javascript" src="app/store/OfflineCategories.js"></script>
     <script type="text/javascript" src="app/store/CategoryAttractions.js"></script>
     <script type="text/javascript" src="app/store/CategoryEvents.js"></script>
     <script type="text/javascript" src="app/store/OfflineEvents.js"></script>
@@ -31,6 +32,8 @@
     <script type="text/javascript" src="app/view/AttractionLeaf.js"></script>
     <script type="text/javascript" src="app/view/Attractions.js"></script>
     <script type="text/javascript" src="app/view/Categories.js"></script>
+    <script type="text/javascript" src="app/view/CategoriesList.js"></script>
+    <script type="text/javascript" src="app/view/CategoriesNav.js"></script>
     <script type="text/javascript" src="app/view/Map.js"></script>
     <script type="text/javascript" src="app/view/Home.js"></script>
     <script type="text/javascript" src="app/view/EventTabs.js"></script>

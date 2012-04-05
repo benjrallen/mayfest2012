@@ -64,6 +64,9 @@ Ext.application({
 		//'Products', 
 		'Attractions', 
 		'Categories', 
+		//'CategoriesListNav',
+		'CategoriesNav',
+		'CategoriesList', 
 		'EventTabs', 
 		//'EventCategories',
 		'Events', 
@@ -83,6 +86,7 @@ Ext.application({
 		'OfflineEvents', 
 		'Events', 
 		'Categories', 
+		'OfflineCategories', 
 		'CategoryAttractions', 
 		'CategoryEvents'
 	],

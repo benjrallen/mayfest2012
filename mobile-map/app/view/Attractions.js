@@ -8,7 +8,7 @@ Ext.define('Mayfest.view.Attractions', {
 	alias: 'widget.attractionslist',
 	
 	config:{
-		//title: 'Attraction',
+		title: 'Attraction',
 		//iconCls: 'star',
 		//fullscreen: true,
 		//html: 'herro',

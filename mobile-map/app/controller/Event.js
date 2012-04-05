@@ -469,27 +469,19 @@ Ext.define('Mayfest.controller.Event', {
 			//active = tabParent.getActiveItem(),
 			id = tabParent.observableId;
 
-
-		//console.log('LIST LOAD', Mayfest.ui.EventController.getEventtabs().getActiveItem().select('#eventsList .x-list-disclosure'));
-		//console.log('LIST LOAD', Ext.select( Mayfest.ui.EventController.getEventtabs().getActiveItem().select('#eventsList .x-list-disclosure'));
-		//console.log('LIST LOAD', id);
-
-		
-
 	},
 	
-//	onEventTabsInit: function(panel, eOpts){
-//		console.log('initing event tabs', this, panel, eOpts)
-//		
-//	},
+	//eventAttractions: {},
 	
 	getEventAttraction: function( attraction_id ){
 		var id = attraction_id;
 		
+		console.log('GET EVENT ATTRACTION', attraction_id);
+		
 		if( !id )
 			return null;
 		
-		var store = Ext.getStore('Attractions'),
+		var store = Ext.getStore('OfflineAttractions'),
 			attraction = store.getById( id );
 		
 		//console.log( id, store, attraction );

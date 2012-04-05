@@ -19,10 +19,10 @@ app/model/Location.js
 app/store/Attractions.js
 app/store/OfflineAttractions.js
 app/store/Categories.js
+app/store/OfflineCategories.js
 app/store/CategoryAttractions.js
 app/store/CategoryEvents.js
 app/store/OfflineEvents.js
-app/store/OfflineAttractions.js
 app/store/Events.js
 app/store/EventList.js
 app/store/Locations.js
@@ -30,6 +30,8 @@ app/store/OfflineLocations.js
 app/view/AttractionLeaf.js
 app/view/Attractions.js
 app/view/Categories.js
+app/view/CategoriesList.js
+app/view/CategoriesNav.js
 app/view/Map.js
 app/view/Home.js
 app/view/EventTabs.js

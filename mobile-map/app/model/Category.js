@@ -16,14 +16,14 @@ Ext.define('Mayfest.model.Category', {
         	{name: "slug", 				type: "string"},
         	{name: "taxonomy", 			type: "string"},
         	{name: "term_taxonomy_id", 	type: "int"},
-        	{name: "leaf",				type: "bool"},
+        	//{name: "leaf",				type: "bool"},
+        	{	name: 'id',
+        		type: 'int',
+        		convert: function(value, record) {
+        			return record.data.term_id;	
+        		}
+        	},
         	{name: 'raw_id',							type: "int"	}
-//        	{	name: 'raw_id',
-//        		type: 'int',
-//        		convert: function(value, record) {
-//        			return record.data.id;	
-//        		}
-//        	}
         ]
     }       
 
