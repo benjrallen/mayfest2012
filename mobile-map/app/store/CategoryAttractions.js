@@ -12,6 +12,6 @@ Ext.define('Mayfest.store.CategoryAttractions', {
 			groupFn: function(record) {
 				return record.get('title')[0];
 			}
-		},
+		}
     }
 });

@@ -15,25 +15,6 @@ Ext.define('Mayfest.view.EventCategories', {
 		
 		
 		cls: 'catListPanel'
-
-//		items: [
-//			{
-//				xtype: 'eventslist'
-//			}
-//		]
-
-
-
-//		detailCard: {
-//			xtype: 'eventslist'
-//		}
-		
-		//grouped: true,
-		
-		//itemTpl: '{name}',
-		
-		//store: 'Locations'
-		
 		
 	},
 	

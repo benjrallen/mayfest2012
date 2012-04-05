@@ -11,10 +11,11 @@ Ext.define('Mayfest.view.EventTabs', {
 	config: {
 		fullscreen: true,
 		tabBarPosition: 'top',
-		
 		title: 'Events',
 		iconCls: 'star',
-		
+		ui: 'mayfest',
+		//iconCls: 'list',
+				
 		items: [
 
 			{
@@ -29,7 +30,7 @@ Ext.define('Mayfest.view.EventTabs', {
 	                    label: 'Category'
 	                }
 	            ]			
-			},
+			}
 
 
 //			{

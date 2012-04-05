@@ -12,7 +12,9 @@ Ext.define('Mayfest.store.Attractions', {
         	url: Mayfest.paths.data() + 'mayfest_attraction.json',
         	reader: {
         		type: 'json'
-        	}
+        	},
+        	parentStore: 'Attractions',
+			timeout: Mayfest.times.offlineTimeout
         }
 
     }

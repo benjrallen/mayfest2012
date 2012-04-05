@@ -5,11 +5,11 @@ Ext.define('Mayfest.controller.Main', {
 		refs: {
 			canvasMap: {
 				//specifying the ref automatically creates a few functions, including 'getContactForm'
-				selector: 'canvasmap',
+				selector: 'canvasmap'
 				//autoCreate: true
 			},
 			attractionslist: {
-				selector: 'categorieslist',
+				selector: 'categorieslist'
 				//autoCreate: true
 			},
 			navui: {
@@ -18,9 +18,11 @@ Ext.define('Mayfest.controller.Main', {
 			mainPanel: 'tabpanel'
 		}
 	},
-	
+		
 	init: function(){
 		
+		Mayfest.ui.MainController = this;
+
 //        Ext.getStore('Locations').on({
 //            scope: this,
 //
@@ -36,12 +38,81 @@ Ext.define('Mayfest.controller.Main', {
 //        });
 //		
 //
-        Ext.getStore('Categories').on({
-            //scope: this,
 
-            beforeload: this.onBeforeCategoriesStoreLoad,
-            load: this.onCategoriesStoreLoad
-        });
+		var stores = [
+			'Locations',
+			'Attractions',
+			'Events'
+		];
+
+		for ( var i=0; i<stores.length; i++ ){
+			var name = stores[i],
+				store = Ext.getStore(name);
+			
+			store.on({
+            	load: this.onOnlineStoreLoad
+			});
+
+			Ext.getStore('Offline'+name).on({
+				load: this.onOfflineStoreLoad
+				//addrecords: this.onOfflineEventsAddRecords
+			});
+			
+
+			store.getProxy().on({
+				exception: this.onOnlineStoreProxyTimeout
+			});
+			
+			store = null;
+			name = null;
+		}
+
+//		var locationsStore = Ext.getStore('Locations');
+//		//this.offlineStore = Ext.getStore('OfflineAttractions');
+//
+//		locationsStore.on({
+//            load: this.onLocationsStoreLoad
+//		});
+//
+//
+//		Ext.getStore('OfflineLocations').on({
+//			load: this.onOfflineLocationsLoad
+//			//addrecords: this.onOfflineEventsAddRecords
+//		});
+//
+//		locationsStore.getProxy().on({
+//			exception: this.onLocationsStoreProxyTimeout
+//		});
+//
+//		locationsStore = null;
+//
+//		
+//		var attractionsStore = Ext.getStore('Attractions');
+//		//this.offlineStore = Ext.getStore('OfflineAttractions');
+//
+//		attractionsStore.on({
+//            load: this.onAttractionsStoreLoad
+//		});
+//
+//
+//		Ext.getStore('OfflineAttractions').on({
+//			load: this.onOfflineAttractionsLoad
+//			//addrecords: this.onOfflineEventsAddRecords
+//		});
+//
+//		attractionsStore.getProxy().on({
+//			exception: this.onAttractionsStoreProxyTimeout
+//		});
+//
+//		attractionsStore = null;
+
+
+//        Ext.getStore('Categories').on({
+//            //scope: this,
+//
+//            beforeload: this.onBeforeCategoriesStoreLoad,
+//            load: this.onCategoriesStoreLoad
+//        });
 
 		
 //		this.control({
@@ -169,7 +240,7 @@ Ext.define('Mayfest.controller.Main', {
 	},
 	
 	getAttractionsByCatID: function( cat_id ){
-		var store = Ext.getStore('Attractions'),
+		var store = Ext.getStore('OfflineAttractions'),
 			attractions = store.queryBy(function( record, id ){
 				if( record.data.attraction_category.length ){
 					for (var i=0; i < record.data.attraction_category.length; i++){
@@ -230,7 +301,8 @@ Ext.define('Mayfest.controller.Main', {
 //		});
 
 	},
-		
+
+/*		
 	//doesn't really fire cause it loads fast?
 	onBeforeCategoriesStoreLoad: function(){
 		console.log('controller.onBeforeCategoriesStoreLoad');
@@ -244,5 +316,191 @@ Ext.define('Mayfest.controller.Main', {
 		//console.log( 'store.getData()', store.getData() );
 		
 	},
+*/
+	
+	onOnlineStoreLoad: function(store, records, successful, operation, eOpts){
+		console.log('LOADED onOnlineStoreLoad', this, store, store._storeId, successful, operation);		
+		
+		if( successful ) {
+			//var controller = Mayfest.ui.EventController;
+			
+			//_storeId provides the storename to append Offline to
+			var offlineStore = Ext.getStore('Offline'+store._storeId);
+			
+			offlineStore.getProxy().clear();
+			
+			store.each( function(record, i){
+				//var id = record.getId();
+				record.data.raw_id = record.getId();
+				record.phantom = true;
+				//offlineStore.add( record );
+				//var attraction = offlineStore.add( record );
+				//console.log( attraction );
+			});
+			
+			offlineStore.add( records );
+			
+			offlineStore.sync();
+			
+			offlineStore.load();
+		}
+	},
+
+	//define a key in the proxy setup object in the main online store so we can get a reference to it here
+	onOnlineStoreProxyTimeout: function ( proxy, response, operation, eOpts ) {
+		console.log( 'OFFLINE!!! PROXY TIMEOUT', proxy, operation );
+		
+		//var store = proxy.config.parentStore;
+        Ext.getStore('Offline'+proxy.config.parentStore).load();
+	},
+
+	onOfflineStoreLoad: function(store, records, successful, operation, eOpts){
+		
+		//var controller = Mayfest.ui.EventController;
+		//console.log('controller.onOfflineAttractionsLoad', this, store, records, successful, operation, Mayfest.ui.EventController);		
+
+		//id gets lost when record set to phantom to add to offline store... reset it
+		store.each( function(record){
+			record.setId( record.data.raw_id );
+			console.log( record.raw.title, record.data.raw_id, record.getId() );
+		});
+
+		console.log('storeID', store._storeId);
+		
+		//Mayfest.ui.EventController.offlineAttractionStoreLoaded = true;
+		
+		switch( store._storeId ){
+			case 'OfflineAttractions':
+				Mayfest.ui.EventController.offlineAttractionStoreLoaded = true;
+				break;
+			case 'OfflineLocations':
+				console.log( 'SWITCHED Locations' );
+				break;
+			case 'OfflineEvents':
+				Mayfest.ui.EventController.checkAttractionStoreData();
+				break;
+		}
+		
+		return;
+
+	},
+/*		
+	//function for Location store load
+	//	make it set the data in the offline store
+	//	make the controller store the offline store
+	onLocationsStoreLoad: function(store, records, successful, operation, eOpts){
+			console.log('controller.onLocationsStoreLoad', this, store, successful, operation, Mayfest.ui.EventController);		
+		
+		if( successful ) {
+			//var controller = Mayfest.ui.EventController;
+			
+			var offlineStore = Ext.getStore('OfflineLocations');
+			
+			offlineStore.getProxy().clear();
+			
+			store.each( function(record, i){
+//				var id = record.getId();
+							
+				record.phantom = true;
+				//record.setId( id );
+//				var attraction = offlineStore.add( record );
+//				console.log( attraction );
+			});
+			
+			offlineStore.add( records );
+			
+			//offlineStore.setData( records );
+	
+			offlineStore.sync();
+			
+			offlineStore.load();
+		}
+	},
+	
+	//function for the Locationstore proxy exception
+	//	make controller store the offline store
+	//	fire process event data
+	onLocationsStoreProxyTimeout: function ( proxy, response, operation, eOpts ) {        
+        console.log('MAIN CONTROLLER THINKS WE ARE OFFLINE');
+        Ext.getStore('OfflineAttractions').load();
+        //Mayfest.ui.EventController.offlineStore.load();
+    },
+
+	//offline store load fires process event data	
+	onOfflineLocationsLoad: function(store, records, successful, operation, eOpts){
+		var controller = Mayfest.ui.EventController;
+		console.log('controller.onOfflineLocationsLoad', this, store, records, successful, operation, Mayfest.ui.EventController);		
+
+		//id gets lost when record set to phantom to add to offline store... reset it
+		store.each( function(record){
+			//console.log( 'offline', record, record.raw.id );
+			
+			record.setId( record.raw.id );
+		});
+		
+		return;
+	},
+	
+	
+	//function for event store load
+	//	make it set the data in the offline store
+	//	make the controller store the offline store
+	onAttractionsStoreLoad: function(store, records, successful, operation, eOpts){
+			console.log('controller.onAttractionsStoreLoad', this, store, successful, operation, Mayfest.ui.EventController);		
+		
+		if( successful ) {
+			//var controller = Mayfest.ui.EventController;
+			
+			var offlineStore = Ext.getStore('OfflineAttractions');
+			
+			offlineStore.getProxy().clear();
+			
+			store.each( function(record, i){
+//				var id = record.getId();
+							
+				record.phantom = true;
+				//record.setId( id );
+//				var attraction = offlineStore.add( record );
+//				console.log( attraction );
+			});
+			
+			offlineStore.add( records );
+			
+			//offlineStore.setData( records );
+	
+			offlineStore.sync();
+			
+			offlineStore.load();
+		}
+	},
+	
+	//function for the eventstore proxy exception
+	//	make controller store the offline store
+	//	fire process event data
+	onAttractionsStoreProxyTimeout: function ( proxy, response, operation, eOpts ) {        
+        console.log('MAIN CONTROLLER THINKS WE ARE OFFLINE');
+        Ext.getStore('OfflineAttractions').load();
+        //Mayfest.ui.EventController.offlineStore.load();
+    },
+
+	//offline store load fires process event data	
+	onOfflineAttractionsLoad: function(store, records, successful, operation, eOpts){
+		var controller = Mayfest.ui.EventController;
+		console.log('controller.onOfflineAttractionsLoad', this, store, records, successful, operation, Mayfest.ui.EventController);		
+
+		//id gets lost when record set to phantom to add to offline store... reset it
+		store.each( function(record){
+			//console.log( 'offline', record, record.raw.id );
+			
+			record.setId( record.raw.id );
+		});
+
+		Mayfest.ui.EventController.offlineAttractionStoreLoaded = true;
+		
+		return;
+
+
+	}
+*/
 	
 });

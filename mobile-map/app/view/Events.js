@@ -1,7 +1,7 @@
 Ext.define('Mayfest.view.Events', {
 	extend: 'Ext.List',
 	
-	//id: 'eventsList',
+	id: 'eventsList',
 	
 	xtype: 'eventslist',
 	
@@ -23,31 +23,49 @@ Ext.define('Mayfest.view.Events', {
 //			'<tpl if="this.hasLocation( values.mayfest_attraction_uid )">'+
 //				'<div class="has_location"></div>'+
 //			'</tpl>'+
-			'{title}'+
-			'<span class="evtLoc">'+
-				'{[ this.getEventAttraction(values.mayfest_attraction_uid) ]}'+
-			'</span>',
+			'<span class="title">{title}</span>'+
+					'{[ this.getEventGenres(values.genre) ]}'+
+					'{[ this.getEventAttraction(values.mayfest_attraction_uid) ]}'+
+			
+//			'<div class="meta">'+
+//				'<span class="evtTime">'+
+//					'{mayfest_event_time}'+
+//				'</span>'+
+				//'<span class="evtLoc">'+
+					//'{[ this.getEventAttraction(values.mayfest_attraction_uid) ]}'+
+				//'</span>'+
+				'<div class="clear"></div>',
+//			'</div>',
 			//'{title}',
 			
 			{
 				compiled: true,
-//				helloWorld: function(title){
-//					return 'Hello ' + title	
-//				},
-//				hasLocation: function( id ){
-//					//id is mayfest_attraction_uid
-//					console.log('HAS LOCATION?', id, Mayfest.ui.AttractionController );
-//					
-//					return true;
-//				},
+				getEventGenres: function( genre ){
+					//console.log('GENRE', genre );
+					
+					var s = '';
+					
+					if( !genre.length )
+						return s;
+					
+					for( var i=0; i<genre.length; i++ ){
+						if( i > 0 )
+							s += ', ';
+							
+						s += genre[i].name;
+					}
+					
+					return '<span class="evtGen">'+s+'</span>';
+				},
 				getEventAttraction: function( attraction_id ){
-					//console.log( 'ATTRACTION?', attraction_id,  Mayfest.ui.EventController.getEventAttraction( attraction_id ) );
+					//console.log( 'ATTRACTION?', this, attraction_id,  Mayfest.ui.EventController.getEventAttraction( attraction_id ) );
 					
 					var attraction = Mayfest.ui.EventController.getEventAttraction( attraction_id );
 					
 					return ( attraction ? 
-								'<span class="evtAtt">@'+attraction.data.title+'</span>' :
-								''
+								//'<span class="evtSep">@</span><span class="evtAtt">'+attraction.data.title+'</span>' :
+								'<span class="evtAtt">'+attraction.data.title+'</span>' :
+								'<span class="evtAtt">?</span>'
 							);
 				}
 				
@@ -57,6 +75,7 @@ Ext.define('Mayfest.view.Events', {
 		
 		
 		store: 'EventList',
+		//store: 'OfflineEvents',
 
 		grouped: true,
 		

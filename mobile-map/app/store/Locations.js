@@ -9,9 +9,13 @@ Ext.define('Mayfest.store.Locations', {
         	url: Mayfest.paths.data() + 'mayfest_map_location.json',
         	reader: {
         		type: 'json'
-        	}
+        	},
+			parentStore: 'Locations',
+			timeout: Mayfest.times.offlineTimeout
+			
+
         },
-        autoLoad: true,
+        autoLoad: true
         //remoteFilter: true
     }
 });

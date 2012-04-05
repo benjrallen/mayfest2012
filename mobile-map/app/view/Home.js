@@ -7,7 +7,7 @@ Ext.define('Mayfest.view.Home', {
 	config: {
 		//fullscreen: true,
 		title: 'Home',
-		iconCls: 'home',
+		iconCls: 'mayfest-logo',
 		cls: 'home',
 		html: [
 			'<h1>Hey, welcome home</h1>',

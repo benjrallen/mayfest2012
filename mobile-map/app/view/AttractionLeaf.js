@@ -15,7 +15,17 @@ Ext.define('Mayfest.view.AttractionLeaf', {
 		scrollable: {
 			direction: 'vertical',
 			directionLock: true
-		}
+		},
+		items: [
+			{
+				xtype: 'button',
+				ui: 'mayfest round',
+				id: 'mapMe',
+				text: 'Map',
+				right: '1em',
+				top: '1em'
+			}
+		]
 				
 	},
 	

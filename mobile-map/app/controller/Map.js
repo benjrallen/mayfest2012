@@ -25,6 +25,30 @@ Ext.define('Mayfest.controller.Map', {
 		
 	},
 	
+	goToMapLocation: function(){
+		
+		if( Mayfest.ui.currentLocation ){
+			
+			var location = Mayfest.ui.currentLocation.data;
+			
+			Mayfest.ui.mainPanel.setActiveItem( Mayfest.ui.map );
+			
+//			Mayfest.ui.mapController.arrow = true;
+//			Mayfest.ui.mapController.arrowDrawn = false;
+//			Mayfest.ui.mapController.moveTo( location.mayfest_ml_x, location.mayfest_ml_y );
+			this.arrow = true;
+			this.arrowDrawn = false;
+			this.moveTo( location.mayfest_ml_x, location.mayfest_ml_y );
+
+			location = null;
+			return;
+		}
+
+		return;
+//		Mayfest.ui.nav.push( Mayfest.ui.map );
+//		Mayfest.ui.navBar.show();
+	},
+
 
 	//cache it to keep phone from calling this function ten thousand times
 	//  TEMPORARY use for development
@@ -44,7 +68,7 @@ Ext.define('Mayfest.controller.Map', {
 	
 	
 	//initial zooming and dragging functions
-	zooming:	false,
+	//zooming:	false,
 	dragging:	false,
 	
 	//initial map positions

@@ -16,7 +16,18 @@ Ext.define('Mayfest.model.Location', {
         	{name: "mayfest_ml_type",	type: "string"},
         	{name: "mayfest_ml_desc",	type: "string"},
         	{name: "mayfest_ml_x",		type: "int"},
-        	{name: "mayfest_ml_y",		type: "int"}
+        	{name: "mayfest_ml_y",		type: "int"},
+
+
+        	{name: 'raw_id',							type: "int"	}
+        	
+//			{	name: 'raw_id',
+//        		type: 'int',
+//        		convert: function(value, record) {
+//        			return record.data.id;	
+//        		}
+//        	}
+
 //            {name: "description",    type: "string", mapping: "description.texts.en"},
 //            {name: "image", type: "string", mapping: "image.id", convert: function(value, record) {
 //                return "http://kiva.org/img/w80h80/" + value + ".jpg";

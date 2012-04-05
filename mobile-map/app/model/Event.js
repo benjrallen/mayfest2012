@@ -42,10 +42,19 @@ Ext.define('Mayfest.model.Event', {
                 }
 
         	},
-        	
+
+//        	{	name: 'raw_id',
+//        		type: 'int',
+//        		convert: function(value, record) {
+//        			return record.data.id;	
+//        		}
+//        	},
+
         	{name: "event_category",			type: "auto"},
         	{name: "genre",						type: "auto"},
-        	{name: "thumbnail",					type: "auto"}
+        	{name: "thumbnail",					type: "auto"},
+        	
+        	{name: 'raw_id',							type: "int"	}
         ]
     }       
 

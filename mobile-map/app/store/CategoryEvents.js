@@ -12,6 +12,6 @@ Ext.define('Mayfest.store.CategoryEvents', {
 			groupFn: function(record) {
 				return record.get('title')[0];
 			}
-		},
+		}
     }
 });

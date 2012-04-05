@@ -12,8 +12,11 @@ Ext.define('Mayfest.store.Events', {
         	url: Mayfest.paths.data() + 'mayfest_event.json',
         	reader: {
         		type: 'json'
-        	}
+        	},
+			parentStore: 'Events',	        
+	        timeout: Mayfest.times.offlineTimeout
         }
+        
 
     }
 });

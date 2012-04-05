@@ -3,17 +3,23 @@ Ext.define('Mayfest.controller.Attraction', {
 
 	config: {
 		refs: {
+			mapButton: {
+				selector: '#mapMe'
+			}
 		},
 		control: {
 			'#attractionsList' : {
 				activate: 'onAttractionsListActivate',
 				itemtap: 'onAttractionTap',
-				disclose: 'onAttractionDisclosure',
-				refresh: 'onAttractionsListRefresh'
+				disclose: 'onAttractionDisclosure'
+				//refresh: 'onAttractionsListRefresh'
 			},
 			
 			'#attractionLeaf' : {
 				show: 'onAttractionLeafShow'
+			},
+			'#mapMe' : {
+				tap: 'onMapMeTap'
 			}
 		}
 	},
@@ -32,6 +38,9 @@ Ext.define('Mayfest.controller.Attraction', {
 		Mayfest.ui.templates.attractionLeaf =	Ext.XTemplate.from(
 													Ext.get('attraction-leaf-template'),
 													{
+//														getMapLocation: function(){
+//															return Mayfest.ui.currentLocation;
+//														},
 														getThumbnail: function( thumb ){
 															
 															var atts = thumb['app-thumb'];
@@ -72,9 +81,11 @@ Ext.define('Mayfest.controller.Attraction', {
 
         this.currentAttraction = record.data;
 
-        this.currentAttraction.mapLocation = this.getAttractionLocation();
+        //this.currentAttraction.mapLocation = this.getAttractionLocation();
+        Mayfest.ui.currentLocation = this.getAttractionLocation();
 
-		this.goToMapLocation();
+		//this.goToMapLocation();
+		Mayfest.ui.mapController.goToMapLocation();
 	},
 	onMapMeTap: function( evt, t, o ){
 		//console.log('YOU BETTER FIX THE FACT THAT THE EVENT CALLBACK GETS FIRED TWICE!!!  onMapMeTap', this.currentAttraction);
@@ -83,67 +94,43 @@ Ext.define('Mayfest.controller.Attraction', {
 
 		Mayfest.ui.nav.pop();		
 		
-		this.goToMapLocation();
+		//this.goToMapLocation();
+		Mayfest.ui.mapController.goToMapLocation();
+
 	},
 
-	goToMapLocation: function(){
-		
-		if( this.currentAttraction.mapLocation ){
-			
-			var location = this.currentAttraction.mapLocation.data;
-			
-			Mayfest.ui.mainPanel.setActiveItem( Mayfest.ui.map );
-			
-			Mayfest.ui.mapController.arrow = true;
-			Mayfest.ui.mapController.arrowDrawn = false;
-			Mayfest.ui.mapController.moveTo( location.mayfest_ml_x, location.mayfest_ml_y );
-
-		}
-
-//		Mayfest.ui.nav.push( Mayfest.ui.map );
-//		Mayfest.ui.navBar.show();
-	},
-
-	onMapMePress: function( evt, t, o ){
-		console.log('onMapMePress', this);
-	},
+//	goToMapLocation: function(){
+//		
+//		if( this.currentAttraction.mapLocation ){
+//			
+//			var location = this.currentAttraction.mapLocation.data;
+//			
+//			Mayfest.ui.mainPanel.setActiveItem( Mayfest.ui.map );
+//			
+//			Mayfest.ui.mapController.arrow = true;
+//			Mayfest.ui.mapController.arrowDrawn = false;
+//			Mayfest.ui.mapController.moveTo( location.mayfest_ml_x, location.mayfest_ml_y );
+//
+//		}
+//
+////		Mayfest.ui.nav.push( Mayfest.ui.map );
+////		Mayfest.ui.navBar.show();
+//	},
 
 	onAttractionLeafShow: function(leaf, opts){
 		Mayfest.ui.navBar.show();
-		//console.log('onAttractionsLEAFShow', this, leaf, nav );
-
-		var bttn = Ext.select('#mapMe');
-
-		if( bttn.elements.length && !leaf.hasBeenActivated ){
-			
-			leaf.hasBeenActivated = true;
-			
-			//think I need to make a reference to current scope
-			var me = this;
-			
-			//set handler on mapMe button
-			Ext.select('#mapMe').each(function(el){
-				el.clearListeners();
-				
-				el.on({
-					//touchstart: me.handlers.onMapMePress,
-					//touchend: me.handlers.onMapMePress,
-					//tap: function(evt, t, o){ me.handlers.onMapMeTap.apply(me, arguments); }
-					touchstart: me.onMapMePress,
-					touchend: me.onMapMePress,
-					tap: function(evt, t, o){ me.onMapMeTap.apply(me, arguments); }
-				});
-			});
-		}
-		console.log('onAttractionsLEAFShow', leaf, bttn);
-
 		
+		//var bttn = this.getMapButton();
 		
+		Mayfest.ui.currentLocation ?
+			this.getMapButton().show() :
+			this.getMapButton().hide();
 		
+		console.log('onAttractionsLEAFShow', this, leaf, this.getMapButton(), Mayfest.ui.currentLocation );
 	},
 	
 	onAttractionsListActivate: function(list, newActiveItem, oldActiveItem, eOpts){
-		console.log('onAttractionsListActivate', this, list, newActiveItem, oldActiveItem, eOpts);
+		//console.log('onAttractionsListActivate', this, list, newActiveItem, oldActiveItem, eOpts);
 			
 		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
 		//  if there is none, then the disclosure icon it removed.
@@ -163,26 +150,22 @@ Ext.define('Mayfest.controller.Attraction', {
 		
 	},
 
-	onAttractionsListRefresh: function( list, eOpts ){
-		console.log('onAttractionsListRefresh', this, list);
-		//console.log( 'list items', list.getItems() );
-	},
+//	onAttractionsListRefresh: function( list, eOpts ){
+//		console.log('onAttractionsListRefresh', this, list);
+//		//console.log( 'list items', list.getItems() );
+//	},
 	
 	onAttractionTap: function(dataview, index, target, record){
-		console.log('onAttractionTap', dataview, index, target, record );
+		//console.log('onAttractionTap', dataview, index, target, record );
 		
-		//this block from geo congress
-        if (this.currentAttraction == record.data) {
-            //Ext.getCmp('viewport').setActiveItem(1);
-            //return;
-        }
-
         this.currentAttraction = record.data;
 
-        this.currentAttraction.mapLocation = this.getAttractionLocation();
+        //this.currentAttraction.mapLocation = this.getAttractionLocation();
+        
+        Mayfest.ui.currentLocation = this.getAttractionLocation();
         
         //console.log('this.currentAttraction.mapLocation', this.currentAttraction.mapLocation);
-        console.log('Mayfest.ui.nav', Mayfest.ui.nav, Mayfest.root.getNavigationBar() );
+        //console.log('Mayfest.ui.nav', Mayfest.ui.nav, Mayfest.root.getNavigationBar() );
         
         //var attraction = Ext.getCmp('attractionLeaf');
         
@@ -210,7 +193,7 @@ Ext.define('Mayfest.controller.Attraction', {
 		if( !id )
 			return null;
 
-		var store = Ext.getStore('Locations'),
+		var store = Ext.getStore('OfflineLocations'),
 			location = store.getById( id );
 
 		//console.log('getLocationByAttractionID', store, this.currentAttraction, id, this);

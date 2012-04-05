@@ -11,6 +11,7 @@ Ext.define('Mayfest.view.MainUI', {
 	config: {
 		fullscreen: true,
 		tabBarPosition: 'bottom',
+		ui: 'mayfest',
 		
 		items: [
 			{

@@ -29,7 +29,14 @@ Ext.define('Mayfest.model.Attraction', {
         	
         	{name: "attraction_category",				type: "auto"},
         	{name: "genre",								type: "auto"},
-        	{name: "thumbnail",							type: "auto"}
+        	{name: "thumbnail",							type: "auto"},
+        	{name: 'raw_id',							type: "int"	}
+//        	{	name: 'raw_id',
+//        		type: 'int',
+//        		convert: function(value, record) {
+//        			return record.data.id;	
+//        		}
+//        	}
 
 
 			//should work, but throws known bug

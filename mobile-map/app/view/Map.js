@@ -7,6 +7,8 @@ Ext.define('Mayfest.view.Map', {
 	config: {
 		title: 'Map',
 		iconCls: 'maps',
+		//iconCls: 'circle2',
+		//iconCls: 'download',
 		
 		fullscreen: true,
 		//width: '100%',
@@ -25,7 +27,7 @@ Ext.define('Mayfest.view.Map', {
 
 		html: '<canvas id="canvas"></canvas>'+
               '<div id="cNavCont">'+
-    	        '<div id="zoomIn" class="cNav plus">&plus;</div>'+
+    	        '<div id="zoomIn" class="cNav plus">+</div>'+
 				'<div id="zoomOut" class="cNav minus">&minus;</div>'+
 			  '</div>'
 			  

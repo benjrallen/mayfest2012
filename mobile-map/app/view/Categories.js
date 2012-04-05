@@ -7,7 +7,8 @@ Ext.define('Mayfest.view.Categories', {
 	
 	config:{
 		title: 'Directory',
-		iconCls: 'star',
+		//iconCls: 'star',
+		iconCls: 'list',
 		fullscreen: true,
 
 		detailCard: {
