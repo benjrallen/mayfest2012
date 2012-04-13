@@ -49,57 +49,84 @@ Ext.define('Mayfest.controller.Attraction', {
 		Mayfest.ui.AttractionController = this;
 
 		
-		//Set up a template for the leaf
-		//	.from method Creates a template from the passed element's value (display:none textarea, preferred) or innerHTML.
-		//	Elements defined in index.php
-		Mayfest.ui.templates.attractionLeaf =	Ext.XTemplate.from(
-													Ext.get('attraction-leaf-template'),
-													{
-//														getMapLocation: function(){
-//															return Mayfest.ui.currentLocation;
-//														},
-														getThumbnail: function( thumb ){
-															
-															var atts = thumb['app-thumb'];
-															console.log( 'GET THUMBNAIL', thumb );
-															
-															return '<img src="'+atts[0]+'" width="'+atts[1]+'" height="'+atts[2]+'" />';
-														},
-														hasName: function( first, last ){
-															return ( (first && first !== '') || (last && last !== '') ) ? true : false;
-														},
-														buildName: function( first, last ){
-															//fix those strings
-															var name = false;
-															
-															if( first && first !== '' ){
-																name = first;
-															}
-															if( last && last !== '' ){
-																if ( name ) {
-																	name += ' '+last;
-																} else {
-																	name = last;
-																}
-															}
-															
-															return name || '';
-														}
-													}
-												);
-		
+		//Set up a template for the leaf		
+		Mayfest.ui.templates.attractionLeaf =	new Ext.XTemplate(
+			'<article id="{id}" class="leaf">'+
+				'<h2>{title}</h2>'+
+				'<tpl if="genre.length">'+
+					'<div class="entry-tag field">'+
+						'<tpl for="genre">'+
+							'<span class="tax" term_id="{term_id}">{name}{[ xindex < xcount ? \', \' : \'\' ]}</span>'+
+						'</tpl>'+
+					'</div>'+
+				'</tpl>'+
+				'<tpl if="thumbnail != \'\'">'+
+					'<div class="pic">'+
+						'{[ this.getThumbnail( values.thumbnail ) ]}'+
+					'</div>'+
+				'</tpl>'+
+				'<div class="entry-meta">'+
+					'<tpl if="this.hasName( values.mayfest_att_first_name, values.mayfest_att_last_name )">'+
+						'<div class="field">'+
+							'<label>Name:</label>'+
+							'<span>{[ this.buildName( values.mayfest_att_first_name, values.mayfest_att_last_name ) ]}</span>'+
+						'</div>'+
+					'</tpl>'+
+					'<tpl if="this.hasName( values.mayfest_att_first_name_partner, values.mayfest_att_last_name_partner )">'+
+						'<div class="field">'+
+							'<label>Partner:</label>'+
+							'<span>{[ this.buildName( values.mayfest_att_first_name_partner, values.mayfest_att_last_name_partner ) ]}</span>'+
+						'</div>'+
+					'</tpl>'+
+					'<tpl if="mayfest_att_city && mayfest_att_city != \'\'">'+
+						'<div class="field">'+
+							'<label>City:</label>'+
+							'<span>{mayfest_att_city}</span>'+
+						'</div>'+
+					'</tpl>'+
+					'<tpl if="mayfest_att_city && mayfest_att_city != \'\'">'+
+						'<div class="field">'+
+							'<label>State:</label>'+
+							'<span>{mayfest_att_state}</span>'+
+						'</div>'+
+					'</tpl>'+
+				'</div>'+
+				'<div class="entry-content">'+
+					'{content}'+
+				'</div>'+
+			'</article>',
+			{
+				getThumbnail: function( thumb ){
+					
+					var atts = thumb['app-thumb'];
+					//console.log( 'GET THUMBNAIL', thumb );
+					
+					return '<img src="'+atts[0]+'" width="'+atts[1]+'" height="'+atts[2]+'" />';
+				},
+				hasName: function( first, last ){
+					return ( (first && first !== '') || (last && last !== '') ) ? true : false;
+				},
+				buildName: function( first, last ){
+					//fix those strings
+					var name = false;
+					
+					if( first && first !== '' ){
+						name = first;
+					}
+					if( last && last !== '' ){
+						if ( name ) {
+							name += ' '+last;
+						} else {
+							name = last;
+						}
+					}
+					
+					return name || '';
+				}
+			}
+		);
 		
 		this.control({
-//			categoriespage: {
-//				render: this.onCatNavUIRender,
-//				show: function(){
-//					console.log('navigationview show');
-//				},
-//				push: this.onCatNavPush,
-//				pop: this.onCatNavPop,
-//				back: this.onCatNavBack,
-//				activeItemChange: this.onCatNavActiveItemChange
-//			},
 			categorieslist: {
 				//activate: 'onCatListActivate',
 				itemtap: 'onCatTap'
@@ -107,28 +134,13 @@ Ext.define('Mayfest.controller.Attraction', {
 		});
 	},
 
-
 	
-	onCatNavUIRender: function(){
-		
-//		Mayfest.ui.nav = this.getNavui();
-//		Mayfest.ui.navBar = Mayfest.ui.nav.getNavigationBar();
-//		
-//		//hide the navbar initially
-//		Mayfest.ui.navBar.hide();
-		
-		
-		console.log( 'onCatNavUIRender!', this, Mayfest.ui );
-	},
+	catNavArray: [
+	
+	], 
 
-	onCatNavPush: function(thisView, mixedView){
-		console.log('onCatNavPush', thisView, mixedView, this);
-	},
-	onCatNavPop: function(thisView, mixedView){
-		console.log('onCatNavPop', thisView, mixedView, this);
-	},
 	onCatNavBack: function(evt, t, o){
-		console.log('onCatNavBack', evt, t, o);
+		//console.log('onCatNavBack', evt, t, o);
 
 		this.catNavArray.pop();
 		
@@ -138,39 +150,7 @@ Ext.define('Mayfest.controller.Attraction', {
 //			thisView.getNavigationBar().hide() :
 //			thisView.getNavigationBar().show();
 	},
-	onCatNavActiveItemChange: function(container, newActiveItem, oldActiveItem){
-		console.log('onCatNavActiveItemChange', this, container, newActiveItem, oldActiveItem);
-	},
 
-//	onCatListActivate: function(list, newActiveItem, oldActiveItem, eOpts){
-//		console.log('onCatListActivate', this, list, newActiveItem, oldActiveItem, eOpts);
-//			
-//		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
-//		//  if there is none, then the disclosure icon it removed.
-////		var disclosures = Ext.select('#attractionsList .x-list-disclosure');
-////		
-////		if( disclosures.elements.length ){
-//////			var i = 0;
-////			
-////			disclosures.each( function( a, b ){
-//////				console.log(i+' a disclosure', this, this.getParent().down('.has_location'));
-//////				i++;
-////				
-////				if( !this.getParent().down('.has_location') )
-////					this.hide();
-////			});
-////		}
-//		
-//	},
-
-//	onAttractionsListRefresh: function( list, eOpts ){
-//		console.log('onAttractionsListRefresh', this, list);
-//		//console.log( 'list items', list.getItems() );
-//	},
-	
-	catNavArray: [
-	
-	], 
 	
 	pushCatnav: function( term_id, title ){
 		
@@ -316,24 +296,6 @@ Ext.define('Mayfest.controller.Attraction', {
 
 	},
 
-//	goToMapLocation: function(){
-//		
-//		if( this.currentAttraction.mapLocation ){
-//			
-//			var location = this.currentAttraction.mapLocation.data;
-//			
-//			Mayfest.ui.mainPanel.setActiveItem( Mayfest.ui.map );
-//			
-//			Mayfest.ui.mapController.arrow = true;
-//			Mayfest.ui.mapController.arrowDrawn = false;
-//			Mayfest.ui.mapController.moveTo( location.mayfest_ml_x, location.mayfest_ml_y );
-//
-//		}
-//
-////		Mayfest.ui.nav.push( Mayfest.ui.map );
-////		Mayfest.ui.navBar.show();
-//	},
-
 	onAttractionLeafShow: function(leaf, opts){
 		//this.getCatnav().hide();
 		
@@ -368,11 +330,6 @@ Ext.define('Mayfest.controller.Attraction', {
 		}
 		
 	},
-
-//	onAttractionsListRefresh: function( list, eOpts ){
-//		console.log('onAttractionsListRefresh', this, list);
-//		//console.log( 'list items', list.getItems() );
-//	},
 	
 	onAttractionTap: function(dataview, index, target, record){
 		//console.log('onAttractionTap', dataview, index, target, record );
@@ -391,15 +348,35 @@ Ext.define('Mayfest.controller.Attraction', {
         if( !Mayfest.ui.AttractionLeaf ){
 			Mayfest.ui.AttractionLeaf = Ext.create('Mayfest.view.AttractionLeaf');
         }
-        
+
+
         var view = Mayfest.ui.AttractionLeaf;
         //Mayfest.ui.navBar.titleComponent.setTitle('herro');
         //view.setTitle('herro');
 		
 		//console.log( 'title?', Mayfest.ui.navBar );
 		//apply the record's data to the template
+
+        
+//        var html = 'herro';
+//        
+//        try{
+//			html = Mayfest.ui.templates.attractionLeaf.apply( this.currentAttraction );
+//			
+//        } catch( e ) {
+//        	console.log( 'something went way wrong!  ', e );
+//        	//alert( 'something went way wrong!  ', e );
+//        	for ( var key in e )
+//        		alert( key + ': ' + e[key] );
+//        }		
+//
+//		view.setHtml( html );
+
 		//set the templates returned html for the leaf
+		
 		view.setHtml( Mayfest.ui.templates.attractionLeaf.apply( this.currentAttraction ) );
+
+		
 		//push it into the nav view(shows it);
 		Mayfest.ui.nav.push( view );		
 		

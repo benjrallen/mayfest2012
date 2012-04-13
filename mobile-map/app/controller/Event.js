@@ -33,23 +33,10 @@ Ext.define('Mayfest.controller.Event', {
 	currentDay: null,
 	currentEvent: null,  //used for the leaf and the disclose item
 	eventList: null,  //only make one list component for the panels instead of four separate ones
-
-	//offlineStore: null,
 	
 	init: function(){
 
 		Mayfest.ui.EventController = this;
-
-
-//		Ext.getStore('EventList').on({
-//			load: this.onListStoreLoad
-//		});
-
-//        Ext.getStore('OfflineAttractions').on({
-//            scope: this,
-//            load: this.onAttractionsStoreLoad
-//        });
-
 
 		this.control({
 			'eventtabs': {
@@ -73,43 +60,90 @@ Ext.define('Mayfest.controller.Event', {
 		var me = this;
 		
 		//Set up a template for the leaf
-		//	.from method Creates a template from the passed element's value (display:none textarea, preferred) or innerHTML.
-		//	Elements defined in index.php
-		Mayfest.ui.templates.eventLeaf =	Ext.XTemplate.from(
-												Ext.get('event-leaf-template'),
-												{
-//													getMapLocation: function(){
-//														return Mayfest.ui.currentLocation;
-//													},
-													getThumbnail: function( thumb ){
-														
-														var atts = thumb['app-thumb'];
-														//console.log( 'GET THUMBNAIL', thumb );
-														
-														return '<img src="'+atts[0]+'" width="'+atts[1]+'" height="'+atts[2]+'" />';
-													},
-													getValues: function( values ){
-														
-														console.log( 'VALUES', values );
-													},
-													hasDate: function( date ){
-														return ( (date && date !== '') ) ? true : false;
-													},
-													buildDate: function( date ){
-														//fix those strings
-														if( !date )
-															return '';
-														
-														return Ext.Date.format( date, 'g:ia - D.' );
-													},
-													buildAttraction: function( attraction_id ){
-														var store = Ext.getStore('OfflineAttractions'),
-															attraction = store.getById( attraction_id );
-																													
-														return attraction.data.title;
-													}
-												}
-											);
+		Mayfest.ui.templates.eventLeaf =	new Ext.XTemplate(
+			'<article id="{id}" class="leaf">'+
+				'<h2>{title}</h2>'+
+				'<tpl if="event_category.length">'+
+					'<div class="entry-cat field">'+
+						'<tpl for="event_category">'+
+							'<span class="tax" term_id="{term_id}">{name}{[ xindex < xcount ? \', \' : \'\' ]}</span>'+
+						'</tpl>'+
+						'<span class="sep">: </span>'+
+					'</div>'+
+				'</tpl>'+
+				'<tpl if="genre.length">'+
+					'<div class="entry-tag field">'+
+						'<tpl for="genre">'+
+							'<span class="tax" term_id="{term_id}">{name}{[ xindex < xcount ? \', \' : \'\' ]}</span>'+
+						'</tpl>'+
+					'</div>'+
+				'</tpl>'+
+				'<tpl if="thumbnail != \'\'">'+
+					'<div class="pic">'+
+						'{[ this.getThumbnail( values.thumbnail ) ]}'+
+					'</div>'+
+				'</tpl>'+
+				'<div class="entry-meta">'+
+					'<tpl if="this.hasDate( values.date )">'+
+						'<div class="field">'+
+							'<label>When:</label>'+
+							'<span>{[ this.buildDate( values.date ) ]}</span>'+
+						'</div>'+
+					'</tpl>'+
+					'<tpl if="mayfest_attraction_uid && mayfest_attraction_uid != \'\'">'+
+						'<div class="field">'+
+							'<label>Where:</label>'+
+							'<span>{[ this.buildAttraction( values.mayfest_attraction_uid ) ]}</span>'+
+						'</div>'+
+					'</tpl>'+
+					'<tpl if="this.hasName( values.mayfest_att_first_name, values.mayfest_att_last_name )">'+
+						'<div class="field">'+
+							'<label>Name:</label>'+
+							'<span>{[ this.buildName( values.mayfest_att_first_name, values.mayfest_att_last_name ) ]}</span>'+
+						'</div>'+
+					'</tpl>'+
+					'<tpl if="this.hasName( values.mayfest_att_first_name_partner, values.mayfest_att_last_name_partner )">'+
+						'<div class="field">'+
+							'<label>Partner:</label>'+
+							'<span>{[ this.buildName( values.mayfest_att_first_name_partner, values.mayfest_att_last_name_partner ) ]}</span>'+
+						'</div>'+
+					'</tpl>'+
+				'</div>'+
+				'<div class="entry-content">'+
+					'{content}'+
+				'</div>'+
+			'</article>',
+			{
+				getThumbnail: function( thumb ){
+					
+					var atts = thumb['app-thumb'];
+					//console.log( 'GET THUMBNAIL', thumb );
+					
+					return '<img src="'+atts[0]+'" width="'+atts[1]+'" height="'+atts[2]+'" />';
+				},
+//				getValues: function( values ){
+//					
+//					console.log( 'VALUES', values );
+//				},
+				hasDate: function( date ){
+					return ( (date && date !== '') ) ? true : false;
+				},
+				buildDate: function( date ){
+					//fix those strings
+					if( !date )
+						return '';
+					
+					return Ext.Date.format( date, 'g:ia - D.' );
+				},
+				buildAttraction: function( attraction_id ){
+					var store = Ext.getStore('OfflineAttractions'),
+						attraction = store.getById( attraction_id );
+																				
+					return attraction.data.title;
+				}
+			}
+		);
+
 
 
 	},
@@ -128,14 +162,6 @@ Ext.define('Mayfest.controller.Event', {
 			return controller.processEventData();
 		} else {
 			//console.log( 'LOOKING!!!!!!!' );
-			
-//			var args = arguments,
-//				me = this,
-//				timeoutFunc = function(){
-//					return controller.checkAttractionStoreData.apply( me, args );
-//				}
-//				
-//			setTimeout( timeoutFunc, 25 );
 			setTimeout( controller.checkAttractionStoreData, 25 );
 		}
 	},
@@ -361,20 +387,6 @@ Ext.define('Mayfest.controller.Event', {
 		return Mayfest.ui.AttractionController.getAttractionLocation( attraction.data.mayfest_ml_uid );;
 	},
 
-//	onListUpdateData: function( list, newData ){
-//		console.log(' on list UPDATE DATA ', list, newData );
-//		
-//	},
-
-//	onListStoreLoad: function( store, records, success, operation ){
-//		//console.log('ON LIST STORE LOAD', store, records, success, operation );
-//
-//		var tabParent = Mayfest.ui.EventController.getEventtabs(),
-//			//active = tabParent.getActiveItem(),
-//			id = tabParent.observableId;
-//
-//	},
-	
 	//eventAttractions: {},
 	
 	getEventAttraction: function( attraction_id ){
