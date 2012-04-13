@@ -3,7 +3,7 @@ Ext.define('Mayfest.store.Attractions', {
 
     config: {
         model: 'Mayfest.model.Attraction',
-        autoLoad: true,
+        autoLoad: false,
         //remoteFilter: true,
 
         proxy: {

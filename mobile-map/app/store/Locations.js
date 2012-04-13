@@ -15,7 +15,7 @@ Ext.define('Mayfest.store.Locations', {
 			
 
         },
-        autoLoad: true
+        autoLoad: false
         //remoteFilter: true
     }
 });

@@ -101,7 +101,7 @@ Ext.define('Mayfest.controller.Attraction', {
 //				activeItemChange: this.onCatNavActiveItemChange
 //			},
 			categorieslist: {
-				activate: 'onCatListActivate',
+				//activate: 'onCatListActivate',
 				itemtap: 'onCatTap'
 			}
 		});
@@ -142,26 +142,26 @@ Ext.define('Mayfest.controller.Attraction', {
 		console.log('onCatNavActiveItemChange', this, container, newActiveItem, oldActiveItem);
 	},
 
-	onCatListActivate: function(list, newActiveItem, oldActiveItem, eOpts){
-		console.log('onCatListActivate', this, list, newActiveItem, oldActiveItem, eOpts);
-			
-		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
-		//  if there is none, then the disclosure icon it removed.
-//		var disclosures = Ext.select('#attractionsList .x-list-disclosure');
-//		
-//		if( disclosures.elements.length ){
-////			var i = 0;
+//	onCatListActivate: function(list, newActiveItem, oldActiveItem, eOpts){
+//		console.log('onCatListActivate', this, list, newActiveItem, oldActiveItem, eOpts);
 //			
-//			disclosures.each( function( a, b ){
-////				console.log(i+' a disclosure', this, this.getParent().down('.has_location'));
-////				i++;
-//				
-//				if( !this.getParent().down('.has_location') )
-//					this.hide();
-//			});
-//		}
-		
-	},
+//		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
+//		//  if there is none, then the disclosure icon it removed.
+////		var disclosures = Ext.select('#attractionsList .x-list-disclosure');
+////		
+////		if( disclosures.elements.length ){
+//////			var i = 0;
+////			
+////			disclosures.each( function( a, b ){
+//////				console.log(i+' a disclosure', this, this.getParent().down('.has_location'));
+//////				i++;
+////				
+////				if( !this.getParent().down('.has_location') )
+////					this.hide();
+////			});
+////		}
+//		
+//	},
 
 //	onAttractionsListRefresh: function( list, eOpts ){
 //		console.log('onAttractionsListRefresh', this, list);
@@ -191,11 +191,8 @@ Ext.define('Mayfest.controller.Attraction', {
 				
 		if( !this.filterCategories( target.term_id ) ) {
 			
-			console.log( 'last of the list!' );
+			//console.log( 'last of the list!' );
 			
-//			var cat_store = Ext.getStore('CategoryAttractions'),
-//				//attractions = Ext.getStore('Attractions');
-//				attractions = this.getAttractionsByCatID( term_id );
 			var attractions = this.getAttractionsByCatID( target.term_id );
 				
 				//list runs off the following store.
@@ -205,20 +202,14 @@ Ext.define('Mayfest.controller.Attraction', {
 		        if( !Mayfest.ui.AttractionsList ){
 					Mayfest.ui.AttractionsList = Ext.create('Mayfest.view.Attractions');
 		        }
-		        
 		        		        
-				//push it into the nav view(shows it);
+				//push it into view(shows it)
 				this.getCategoriespage().setActiveItem( Mayfest.ui.AttractionsList );
 				
-				//Mayfest.ui.nav.push( Mayfest.ui.AttractionsList );		
-				//this.getCategoriespage().push( Mayfest.ui.AttractionsList );		
-				//Mayfest.ui.navBar.show();
 		} else {
-			console.log('NOT A LEAF' );
+			//console.log('NOT A LEAF' );
 			if( this.getCategoriespage().getActiveItem() !== this.getCategorieslist() )
 				this.getCategoriespage().setActiveItem( this.getCategorieslist() );
-				
-			
 		}
 		
 
@@ -234,13 +225,13 @@ Ext.define('Mayfest.controller.Attraction', {
 		}
 
 
-		console.log( 'DO CAT NAV!', target.term_id, (target.term_id === 0) );
+		//console.log( 'DO CAT NAV!', target.term_id, (target.term_id === 0) );
 
 		
 	},
 	
 	onCatTap: function(dataview, index, target, record){
-		console.log('onCatTap', this, dataview, index, target, record, record.get('term_id') );
+		//console.log('onCatTap', this, dataview, index, target, record, record.get('term_id') );
 		
 		//var term_id = record.get('term_id')
 		var term_id = record.data.term_id;
@@ -292,7 +283,7 @@ Ext.define('Mayfest.controller.Attraction', {
 			}
 		]);
 
-		console.log( 'FILTER CATEGORIES', parent_id, store, store.data.items.length );
+		//console.log( 'FILTER CATEGORIES', parent_id, store, store.data.items.length );
 
 
 		return ( store.data.items.length );
@@ -301,7 +292,7 @@ Ext.define('Mayfest.controller.Attraction', {
 	
 	//use the disclose event to open directly to the map and stop the itemtap event
 	onAttractionDisclosure: function( list, record, target, index, e, eOpts ){
-		console.log( 'onAttractionDisclosure DISCLOSE EVENT FIRED', list, record, target, index, e, eOpts );
+		//console.log( 'onAttractionDisclosure DISCLOSE EVENT FIRED', list, record, target, index, e, eOpts );
 		
 		e.stopPropagation();
 
@@ -346,7 +337,7 @@ Ext.define('Mayfest.controller.Attraction', {
 	onAttractionLeafShow: function(leaf, opts){
 		//this.getCatnav().hide();
 		
-		Mayfest.ui.navBar.show();
+		//Mayfest.ui.navBar.show();
 		
 		//var bttn = this.getMapButton();
 		
@@ -354,7 +345,7 @@ Ext.define('Mayfest.controller.Attraction', {
 			this.getMapButton().show() :
 			this.getMapButton().hide();
 		
-		console.log('onAttractionsLEAFShow', this, leaf, this.getMapButton(), Mayfest.ui.currentLocation );
+		//console.log('onAttractionsLEAFShow', this, leaf, this.getMapButton(), Mayfest.ui.currentLocation );
 	},
 	
 	onAttractionsListActivate: function(list, newActiveItem, oldActiveItem, eOpts){
@@ -385,7 +376,7 @@ Ext.define('Mayfest.controller.Attraction', {
 	
 	onAttractionTap: function(dataview, index, target, record){
 		//console.log('onAttractionTap', dataview, index, target, record );
-		
+				
         this.currentAttraction = record.data;
 
         //this.currentAttraction.mapLocation = this.getAttractionLocation();
@@ -399,19 +390,41 @@ Ext.define('Mayfest.controller.Attraction', {
         
         if( !Mayfest.ui.AttractionLeaf ){
 			Mayfest.ui.AttractionLeaf = Ext.create('Mayfest.view.AttractionLeaf');
+ 			Mayfest.ui.viewport.add( Mayfest.ui.AttractionLeaf );
+ 			
+ 			//alert( 'attractionleaf added' );
         }
+ 
+ 		alert('before: '+ Mayfest.ui.AttractionLeaf.id );
         
-        var view = Mayfest.ui.AttractionLeaf;
+        //var view = Mayfest.ui.AttractionLeaf;
+        
+        
         //Mayfest.ui.navBar.titleComponent.setTitle('herro');
         //view.setTitle('herro');
 		
 		//console.log( 'title?', Mayfest.ui.navBar );
-		
 		//apply the record's data to the template
 		//set the templates returned html for the leaf
-		view.setHtml( Mayfest.ui.templates.attractionLeaf.apply( this.currentAttraction ) );
+
+		try{
+			Mayfest.ui.AttractionLeaf.setHtml( Mayfest.ui.templates.attractionLeaf.apply( this.currentAttraction ) );
+		} catch(e) {
+			alert('something went wrong!  ' + e);	
+		}
+		//view.setHtml( Mayfest.ui.templates.attractionLeaf.apply( this.currentAttraction ) );
+
+ 		alert('afterView: '+ Mayfest.ui.AttractionLeaf.id );
+		
+		
 		//push it into the nav view(shows it);
-		Mayfest.ui.nav.push( view );		
+		//Mayfest.ui.nav.push( view );		
+		Mayfest.ui.viewport.setActiveItem( Mayfest.ui.AttractionLeaf );
+		
+		alert(Mayfest.ui.viewport.getActiveItem().id );
+				//alert( view );
+
+
 	},
 	
 	//pass in map location id or default to currentLocation

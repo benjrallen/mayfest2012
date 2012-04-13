@@ -3,7 +3,7 @@ Ext.define('Mayfest.store.Categories', {
 		
     config: {
         model: 'Mayfest.model.Category',
-        autoLoad: true,
+        autoLoad: false,
         //remoteFilter: true,
 		//rootVisible: false,
 		//folderSort: true,

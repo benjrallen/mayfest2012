@@ -3,7 +3,7 @@ Ext.define('Mayfest.store.Events', {
 
     config: {
         model: 'Mayfest.model.Event',
-        autoLoad: true,
+        autoLoad: false,
         //remoteFilter: true,
 
         proxy: {

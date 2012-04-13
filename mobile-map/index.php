@@ -12,7 +12,8 @@
 <?php */ ?>
 
     <script type="text/javascript" src="touch/sencha-touch-all-debug.js"></script>
-    <script type="text/javascript" src="app.js"></script>
+
+    <script type="text/javascript" src="env.js"></script>
 
     <script type="text/javascript" src="app/model/Attraction.js"></script>
     <script type="text/javascript" src="app/model/Category.js"></script>
@@ -40,11 +41,14 @@
     <script type="text/javascript" src="app/view/Events.js"></script>
     <script type="text/javascript" src="app/view/EventCategories.js"></script>
     <script type="text/javascript" src="app/view/MainUI.js"></script>
+    <script type="text/javascript" src="app/view/MainNav.js"></script>
     <script type="text/javascript" src="app/view/Viewport.js"></script>
     <script type="text/javascript" src="app/controller/Main.js"></script>
     <script type="text/javascript" src="app/controller/Attraction.js"></script>
     <script type="text/javascript" src="app/controller/Event.js"></script>
     <script type="text/javascript" src="app/controller/Map.js"></script>
+
+    <script type="text/javascript" src="app.js"></script>
 
 </head>
 <body>

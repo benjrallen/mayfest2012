@@ -27,9 +27,7 @@ Ext.define('Mayfest.view.AttractionLeaf', {
 			}
 		]
 				
-	},
-	
-	hasBeenActivated: false
+	}
 	
 	
 });
