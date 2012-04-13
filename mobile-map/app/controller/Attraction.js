@@ -337,7 +337,7 @@ Ext.define('Mayfest.controller.Attraction', {
 	onAttractionLeafShow: function(leaf, opts){
 		//this.getCatnav().hide();
 		
-		//Mayfest.ui.navBar.show();
+		Mayfest.ui.navBar.show();
 		
 		//var bttn = this.getMapButton();
 		
@@ -376,7 +376,7 @@ Ext.define('Mayfest.controller.Attraction', {
 	
 	onAttractionTap: function(dataview, index, target, record){
 		//console.log('onAttractionTap', dataview, index, target, record );
-				
+		
         this.currentAttraction = record.data;
 
         //this.currentAttraction.mapLocation = this.getAttractionLocation();
@@ -390,38 +390,19 @@ Ext.define('Mayfest.controller.Attraction', {
         
         if( !Mayfest.ui.AttractionLeaf ){
 			Mayfest.ui.AttractionLeaf = Ext.create('Mayfest.view.AttractionLeaf');
- 			Mayfest.ui.viewport.add( Mayfest.ui.AttractionLeaf );
- 			
- 			//alert( 'attractionleaf added' );
         }
- 
- 		alert('before: '+ Mayfest.ui.AttractionLeaf.id );
         
-        //var view = Mayfest.ui.AttractionLeaf;
-        
-        
+        var view = Mayfest.ui.AttractionLeaf;
         //Mayfest.ui.navBar.titleComponent.setTitle('herro');
         //view.setTitle('herro');
 		
 		//console.log( 'title?', Mayfest.ui.navBar );
 		//apply the record's data to the template
 		//set the templates returned html for the leaf
-
-		try{
-			Mayfest.ui.AttractionLeaf.setHtml( Mayfest.ui.templates.attractionLeaf.apply( this.currentAttraction ) );
-		} catch(e) {
-			alert('something went wrong!  ' + e);	
-		}
-		//view.setHtml( Mayfest.ui.templates.attractionLeaf.apply( this.currentAttraction ) );
-
- 		alert('afterView: '+ Mayfest.ui.AttractionLeaf.id );
-		
-		
+		view.setHtml( Mayfest.ui.templates.attractionLeaf.apply( this.currentAttraction ) );
 		//push it into the nav view(shows it);
-		//Mayfest.ui.nav.push( view );		
-		Mayfest.ui.viewport.setActiveItem( Mayfest.ui.AttractionLeaf );
+		Mayfest.ui.nav.push( view );		
 		
-		alert(Mayfest.ui.viewport.getActiveItem().id );
 				//alert( view );
 
 

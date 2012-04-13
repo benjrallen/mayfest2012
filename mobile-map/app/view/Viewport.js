@@ -1,16 +1,15 @@
 Ext.define('Mayfest.view.Viewport', {
-	extend: 'Ext.Panel',
-	//extend: 'Ext.navigation.View',
+	//extend: 'Ext.tab.Panel',
+	extend: 'Ext.navigation.View',
 
 	//id: 'navigationView',
-	//xtype: 'navui',
+	xtype: 'navui',
 	
-	//alias: 'widget.navui',
+	alias: 'widget.ui',
 	
 	config: {
         autoDestroy: false,
 		fullscreen: true,
-		layout: 'card',
 		//tabBarPosition: 'bottom',	
 		//title: 'Main Nav View',	
 		//useTitleForBackButtonText: true,		
@@ -21,9 +20,6 @@ Ext.define('Mayfest.view.Viewport', {
 		},
 
 		items: [
-			{
-				xtype: 'navui'	
-			},
 			{
 				xtype: 'mainui'
 			}

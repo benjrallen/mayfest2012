@@ -16,14 +16,9 @@ Ext.define('Mayfest.controller.Main', {
 //				selector: 'categoriespage'
 //				//autoCreate: true
 //			},
-
-			//navui is the Viewport
 			navui: {
 				selector: 'navui'	
 			},
-			
-			//mainnav is the main docked navigation bar on the viewport
-			mainnav: 'mainnav',
 			mainPanel: 'tabpanel',
 			mainui: 'mainui'
 		}
@@ -89,9 +84,6 @@ Ext.define('Mayfest.controller.Main', {
 //				itemtap: this.onCategoriesItemTap,
 //				back: this.onCategoriesListBack
 //			},
-
-
-			//think I can get rid of this control when main bar is set up.
 			'navui': {
 				render: this.onNavUIRender,
 //				show: function(){
@@ -102,11 +94,6 @@ Ext.define('Mayfest.controller.Main', {
 //				activeItemChange: this.onNavActiveItemChange,
 				back: this.onNavBack
 			},
-			
-			'mainnav': {
-				render: this.onMainNavRender	
-			},
-			
 			'mainPanel': {
 				initialize: this.onMainPanelInit
 			},
@@ -141,203 +128,160 @@ Ext.define('Mayfest.controller.Main', {
 //	
 //		//nestedList.getStore().sort('name', 'ASC');
 //	},
-
-// 04 - 13 - started modifying nav	
-//	onNavUIRender: function(){
-//		
-//		//Mayfest.ui.nav = this.getNavui();
-//		//Mayfest.ui.navBar = Mayfest.ui.nav.getNavigationBar();
-//		
-//		//hide the navbar initially
-//		//Mayfest.ui.navBar.hide();
-//		
-//		
-//		console.log( 'onNavUIRender!', this, Mayfest.ui );
-//	},
-//
-////	onNavPush: function(thisView, mixedView){
-////		//console.log('onNavPush', thisView, mixedView, this);
-////		//alert( 'ON NAV PUSH');
-////	},
-////	onNavPop: function(thisView, mixedView){
-////		console.log('onNavPop', thisView, mixedView, this);
-////	},
-//	onNavBack: function(thisView){
-//		//console.log('onNavBack', thisView.getActiveItem(), thisView, this);
-//
-//		//Mayfest.ui.AttractionController.getCatnav().show();
-//		
-//		thisView.getActiveItem().id === 'mainUI' ? 
-//			thisView.getNavigationBar().hide() :
-//			thisView.getNavigationBar().show();
-//	},
-
-	mainNavArray: [],
 	
-	onMainNavRender: function(){
-		Mayfest.ui.nav = this.getMainnav();
-		Mayfest.ui.navArray = this.mainNavArray;
-
-		console.log( 'onMainNavRender!', this, Mayfest.ui );
-	},
-
-	pushMainNav: function( thisPanel, parentPanel, title, term_id){
-		
-		//do something and push object to this.mainNavArray
-		
-		
-		//then do the mainNav		
-	},
-
-	doMainNav: function(){
-		
-	},
-
-
-
 	onNavUIRender: function(){
 		
-		Mayfest.ui.viewport = this.getNavui();
-		//Mayfest.ui.nav = this.getNavui();
-		//Mayfest.ui.navBar = Mayfest.ui.nav.getNavigationBar();
+		Mayfest.ui.nav = this.getNavui();
+		Mayfest.ui.navBar = Mayfest.ui.nav.getNavigationBar();
 		
 		//hide the navbar initially
-		//Mayfest.ui.navBar.hide();
+		Mayfest.ui.navBar.hide();
 		
 		
-		console.log( 'onNavUIRender!', this, Mayfest.ui );
+		//console.log( 'onNavUIRender!', this, Mayfest.ui );
 	},
 
+//	onNavPush: function(thisView, mixedView){
+//		//console.log('onNavPush', thisView, mixedView, this);
+//		//alert( 'ON NAV PUSH');
+//	},
+//	onNavPop: function(thisView, mixedView){
+//		console.log('onNavPop', thisView, mixedView, this);
+//	},
+	onNavBack: function(thisView){
+		//console.log('onNavBack', thisView.getActiveItem(), thisView, this);
 
-	onCatNavPush: function(thisView, mixedView){
-		console.log('onCatNavPush', thisView, mixedView, this);
-	},
-	onCatNavPop: function(thisView, mixedView){
-		console.log('onCatNavPop', thisView, mixedView, this);
-	},
-	onCatNavBack: function(evt, t, o){
-		console.log('onCatNavBack', evt, t, o);
-
-		this.catNavArray.pop();
+		//Mayfest.ui.AttractionController.getCatnav().show();
 		
-		this.doCatnav();
-
-//		thisView.getActiveItem().id === 'mainUI' ? 
-//			thisView.getNavigationBar().hide() :
-//			thisView.getNavigationBar().show();
+		thisView.getActiveItem().id === 'mainUI' ? 
+			thisView.getNavigationBar().hide() :
+			thisView.getNavigationBar().show();
 	},
-	onCatNavActiveItemChange: function(container, newActiveItem, oldActiveItem){
-		console.log('onCatNavActiveItemChange', this, container, newActiveItem, oldActiveItem);
-	},
-
-//	onCatListActivate: function(list, newActiveItem, oldActiveItem, eOpts){
-//		console.log('onCatListActivate', this, list, newActiveItem, oldActiveItem, eOpts);
+//	onNavActiveItemChange: function(container, newActiveItem, oldActiveItem){
+//		console.log('onNavActiveItemChange', this, container, newActiveItem, oldActiveItem);
+//	},
+//
+//	onCategoriesListShow: function(){
+//	},
+	
+//	onCategoriesItemTap: function(nestedList, list, index, target, record, e, eOpts){
+//		//e.stopEvent();
+//		console.log('categoriesItemTap', this, nestedList, list, index, target, record, e, eOpts);
+//	},
+//	
+//	onCategoriesListRender: function(){
+//		console.log( 'onCategoriesListRender!', this, this.getAttractionslist() );
+//		
+//		//get list
+//		var list = this.getAttractionslist();
+//		//attach handlers
+////		list.on({
+////			leafitemtap: this.onAttractionsLeafitemtap
+////		});
+//	},
+	
+//	onCategoriesLeafitemtap: function(me, list, index, item, e){
+//		//console.log('leafitemtap', me, list, index, item, e);
+//		
+//		var store = list.getStore(),
+//			record = store.getAt(index),
+//			cat_id = record.data.term_id,			
+//			cat_store = Ext.getStore('CategoryAttractions'),
+//			//attractions = Ext.getStore('Attractions');
+//			attractions = this.getAttractionsByCatID( cat_id );
+//			//detailCard = me.getDetailCard();
+//
+//			//console.log( 'CAT_ID', cat_id );
 //			
-//		//this is a lot of DOM querying, but it searches for a div printed out in the template, based on the existence of the map location.
-//		//  if there is none, then the disclosure icon it removed.
-////		var disclosures = Ext.select('#attractionsList .x-list-disclosure');
-////		
-////		if( disclosures.elements.length ){
-//////			var i = 0;
-////			
-////			disclosures.each( function( a, b ){
-//////				console.log(i+' a disclosure', this, this.getParent().down('.has_location'));
-//////				i++;
-////				
-////				if( !this.getParent().down('.has_location') )
-////					this.hide();
-////			});
-////		}
+//			//detailCard.setStore( attractions );
+//			
+//			cat_store.setData( attractions.items );
+//			
+//		//console.log('leaf item additional', cat_id, store, record, item, attractions, detailCard, cat_store.getData());
 //		
 //	},
-
-//	onAttractionsListRefresh: function( list, eOpts ){
-//		console.log('onAttractionsListRefresh', this, list);
-//		//console.log( 'list items', list.getItems() );
+	
+//	getAttractionsByCatID: function( cat_id ){
+//		var store = Ext.getStore('OfflineAttractions'),
+//			attractions = store.queryBy(function( record, id ){
+//				if( record.data.attraction_category.length ){
+//					for (var i=0; i < record.data.attraction_category.length; i++){
+//						//check the category on the attraction item.  return true to add it to return from query						
+//						if ( record.data.attraction_category[i].term_id == cat_id ) {
+//							return true;
+//						}
+//						
+//						//return ( record.data.attraction_category[i].term_id == cat_id ? true : false );
+//					}
+//				}
+//				
+//				return false;
+//			});
+//		
+//		//console.log( 'getAttractionsByCatID', attractions );
+//		
+//		return attractions;
 //	},
-	
-	catNavArray: [
-	
-	], 
-	
-	pushCatnav: function( term_id, title ){
-		
-		//if( term_id || term_id === 0 ){
-			this.catNavArray.push({ 'term_id': term_id, 'title': title });
-		//}
-		
-		this.doCatnav();
-		
+//	
+//	//doesn't really fire cause it loads fast?
+//	onBeforeLocationsStoreLoad: function(){
+//		console.log('controller.onBeforeLocationsStoreLoad');
+//	},
+//	
+//	//can probably take a lot of this out of use.
+//	onLocationsStoreLoad: function(store, records, successful, operation, eOpts){
+//		console.log('controller.onLocationsStoreLoad', store, successful, operation, eOpts);
+//		
+//		//Ext.getStore('Attractions').load();
+//
+////
+////		Ext.each( records, function( item, index, recordsItSelf ){
+////			console.log( store.getAt(index) );
+////		});
+//	},
+//
+//	//doesn't really fire cause it loads fast?
+//	onBeforeAttractionsStoreLoad: function(){
+//		console.log('controller.onBeforeAttractionsStoreLoad');
+//	},
+//	
+//	//can probably take a lot of this out of use.
+//	onAttractionsStoreLoad: function(store, records, successful, operation, eOpts){
+//		//actually do these first lines
+//		//Ext.getStore('Events').load();
+//		
+//		
+//		//console.log('controller.onAttractionsStoreLoad', store, successful, operation, eOpts);
+//		
+//		
+//		
+//		//console.log('controller.onAttractionsStoreLoad', store, records, successful, operation, eOpts);
+//
+////		Ext.each( records, function( item, index, recordsItSelf ){
+////			var uid = store.getAt(index).data.mayfest_ml_uid;
+////			
+////			console.log( store.getAt(index), Ext.getStore('Locations').getById( uid ) );
+////			
+////			
+////		});
+//
+//	},
+
+/*		
+	//doesn't really fire cause it loads fast?
+	onBeforeCategoriesStoreLoad: function(){
+		console.log('controller.onBeforeCategoriesStoreLoad');
 	},
 	
-	doCatnav: function(){
-		var target = this.catNavArray[ this.catNavArray.length - 1 ],
-			button = this.getCatNavBack();
+	//can probably take a lot of this out of use.
+	onCategoriesStoreLoad: function(store, records, successful, operation, eOpts){
+		console.log('controller.onCategoriesStoreLoad', store, records, successful, operation, eOpts);
 		
-		this.getCatnav().setTitle( target.title );
-		
-				
-		if( !this.filterCategories( target.term_id ) ) {
-			
-			//console.log( 'last of the list!' );
-			
-			var attractions = this.getAttractionsByCatID( target.term_id );
-				
-				//list runs off the following store.
-				Ext.getStore('CategoryAttractions').setData( attractions.items );
-
-		                
-		        if( !Mayfest.ui.AttractionsList ){
-					Mayfest.ui.AttractionsList = Ext.create('Mayfest.view.Attractions');
-		        }
-		        		        
-				//push it into view(shows it)
-				this.getCategoriespage().setActiveItem( Mayfest.ui.AttractionsList );
-				
-		} else {
-			//console.log('NOT A LEAF' );
-			if( this.getCategoriespage().getActiveItem() !== this.getCategorieslist() )
-				this.getCategoriespage().setActiveItem( this.getCategorieslist() );
-		}
-		
-
-		if( this.catNavArray.length > 1 ){
-			var last = this.catNavArray[ this.catNavArray.length - 2 ];
-			
-			button.setText( last.title );
-			//if( button.isHidden() )
-				button.show();
-				
-		} else {
-			button.hide();
-		}
-
-
-		//console.log( 'DO CAT NAV!', target.term_id, (target.term_id === 0) );
-
+		//store.sort('name', 'ASC')
+		//console.log( 'store.getData()', store.getData() );
 		
 	},
-	
-	onCatTap: function(dataview, index, target, record){
-		//console.log('onCatTap', this, dataview, index, target, record, record.get('term_id') );
-		
-		//var term_id = record.get('term_id')
-		var term_id = record.data.term_id;
-
-		
-		this.pushCatnav( record.data.term_id, record.data.name );
-
-		//DESELECT THE TAPPED ITEM
-		//http://stackoverflow.com/questions/5368188/sencha-touch-deselect-list-item
-		setTimeout(function(){dataview.deselect(index);},50);
-		//alert('HELLO!');
-		//dataview.deselect(index);
-
-	},
-
-
-
-
+*/
 	
 	onOnlineStoreLoad: function(store, records, successful, operation, eOpts){
 		//console.log('LOADED onOnlineStoreLoad', this, store, store._storeId, successful, operation);		
@@ -417,5 +361,123 @@ Ext.define('Mayfest.controller.Main', {
 		return;
 
 	}
+/*		
+	//function for Location store load
+	//	make it set the data in the offline store
+	//	make the controller store the offline store
+	onLocationsStoreLoad: function(store, records, successful, operation, eOpts){
+			console.log('controller.onLocationsStoreLoad', this, store, successful, operation, Mayfest.ui.EventController);		
+		
+		if( successful ) {
+			//var controller = Mayfest.ui.EventController;
+			
+			var offlineStore = Ext.getStore('OfflineLocations');
+			
+			offlineStore.getProxy().clear();
+			
+			store.each( function(record, i){
+//				var id = record.getId();
+							
+				record.phantom = true;
+				//record.setId( id );
+//				var attraction = offlineStore.add( record );
+//				console.log( attraction );
+			});
+			
+			offlineStore.add( records );
+			
+			//offlineStore.setData( records );
+	
+			offlineStore.sync();
+			
+			offlineStore.load();
+		}
+	},
+	
+	//function for the Locationstore proxy exception
+	//	make controller store the offline store
+	//	fire process event data
+	onLocationsStoreProxyTimeout: function ( proxy, response, operation, eOpts ) {        
+        console.log('MAIN CONTROLLER THINKS WE ARE OFFLINE');
+        Ext.getStore('OfflineAttractions').load();
+        //Mayfest.ui.EventController.offlineStore.load();
+    },
+
+	//offline store load fires process event data	
+	onOfflineLocationsLoad: function(store, records, successful, operation, eOpts){
+		var controller = Mayfest.ui.EventController;
+		console.log('controller.onOfflineLocationsLoad', this, store, records, successful, operation, Mayfest.ui.EventController);		
+
+		//id gets lost when record set to phantom to add to offline store... reset it
+		store.each( function(record){
+			//console.log( 'offline', record, record.raw.id );
+			
+			record.setId( record.raw.id );
+		});
+		
+		return;
+	},
+	
+	
+	//function for event store load
+	//	make it set the data in the offline store
+	//	make the controller store the offline store
+	onAttractionsStoreLoad: function(store, records, successful, operation, eOpts){
+			console.log('controller.onAttractionsStoreLoad', this, store, successful, operation, Mayfest.ui.EventController);		
+		
+		if( successful ) {
+			//var controller = Mayfest.ui.EventController;
+			
+			var offlineStore = Ext.getStore('OfflineAttractions');
+			
+			offlineStore.getProxy().clear();
+			
+			store.each( function(record, i){
+//				var id = record.getId();
+							
+				record.phantom = true;
+				//record.setId( id );
+//				var attraction = offlineStore.add( record );
+//				console.log( attraction );
+			});
+			
+			offlineStore.add( records );
+			
+			//offlineStore.setData( records );
+	
+			offlineStore.sync();
+			
+			offlineStore.load();
+		}
+	},
+	
+	//function for the eventstore proxy exception
+	//	make controller store the offline store
+	//	fire process event data
+	onAttractionsStoreProxyTimeout: function ( proxy, response, operation, eOpts ) {        
+        console.log('MAIN CONTROLLER THINKS WE ARE OFFLINE');
+        Ext.getStore('OfflineAttractions').load();
+        //Mayfest.ui.EventController.offlineStore.load();
+    },
+
+	//offline store load fires process event data	
+	onOfflineAttractionsLoad: function(store, records, successful, operation, eOpts){
+		var controller = Mayfest.ui.EventController;
+		console.log('controller.onOfflineAttractionsLoad', this, store, records, successful, operation, Mayfest.ui.EventController);		
+
+		//id gets lost when record set to phantom to add to offline store... reset it
+		store.each( function(record){
+			//console.log( 'offline', record, record.raw.id );
+			
+			record.setId( record.raw.id );
+		});
+
+		Mayfest.ui.EventController.offlineAttractionStoreLoaded = true;
+		
+		return;
+
+
+	}
+*/
 	
 });

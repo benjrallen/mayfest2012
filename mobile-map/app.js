@@ -75,7 +75,6 @@ Ext.application({
 		'Events', 
 		'Map', 
 		'AttractionLeaf', 
-		'MainNav',
 		'MainUI'
 		//'CategoryFieldSelect'
 	],

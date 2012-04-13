@@ -41,7 +41,6 @@
     <script type="text/javascript" src="app/view/Events.js"></script>
     <script type="text/javascript" src="app/view/EventCategories.js"></script>
     <script type="text/javascript" src="app/view/MainUI.js"></script>
-    <script type="text/javascript" src="app/view/MainNav.js"></script>
     <script type="text/javascript" src="app/view/Viewport.js"></script>
     <script type="text/javascript" src="app/controller/Main.js"></script>
     <script type="text/javascript" src="app/controller/Attraction.js"></script>
