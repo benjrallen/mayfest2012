@@ -26,11 +26,11 @@ Ext.define('Ext.overrides.Connection', {
 
 
 
-
-Ext.Loader.setConfig({
-	//enabled: true
-	enabled: false
-});
+//
+//Ext.Loader.setConfig({
+//	//enabled: true
+//	enabled: false
+//});
 
 //Ext.ns('Mayfest', 'Mayfest.paths', 'Mayfest.ui.nav', 'Mayfest.ui.navBar', 'Mayfest.ui.mainPanel', 'Mayfest.ui.map', 'Mayfest.ui.mapController', 'Mayfest.ui.EventController', 'Mayfest.ui.MainController','Mayfest.ui.AttractionController', 'Mayfest.ui.templates', 'Mayfest.ui.currentLocation', 'Mayfest.times.offlineTimeout');
 Ext.ns('Mayfest', 'Mayfest.paths', 'Mayfest.ui.nav', 'Mayfest.ui.mainPanel', 'Mayfest.ui.map', 'Mayfest.ui.mapController', 'Mayfest.ui.EventController', 'Mayfest.ui.MainController','Mayfest.ui.AttractionController', 'Mayfest.ui.templates', 'Mayfest.ui.currentLocation', 'Mayfest.times.offlineTimeout');
@@ -46,6 +46,8 @@ Mayfest.paths.base = function(){
 					'http://gurustudev.com/review/mayfest2012/' :
 					'http://gurustudev.com/~ben/mayfest2012/'
 				);
+	} else if( window.location.href.indexOf( 'localhost' ) > -1 ) {
+		return 'http://gurustudev.com/~ben/mayfest2012/';		
 	} else {
 		return 'http://www.tulsamayfest.org/';
 	}

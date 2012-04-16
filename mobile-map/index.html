@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html manifest="app.manifest" lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Mayfest Mobile Map 2012</title>
+    <style type="text/css">
+        /**
+         * Example of an initial loading indicator.
+         * It is recommended to keep this as minimal as possible to provide instant feedback
+         * while other resources are still being loaded for the first time
+         */
+        html, body {
+            height: 100%;
+        }
+
+        #appLoadingIndicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -10px;
+            margin-left: -50px;
+            width: 100px;
+            height: 20px;
+        }
+
+        #appLoadingIndicator > * {
+            background-color: #FFFFFF;
+            float: left;
+            height: 20px;
+            margin-left: 11px;
+            width: 20px;
+            -webkit-animation-name: appLoadingIndicator;
+            -webkit-border-radius: 13px;
+            -webkit-animation-duration: 0.8s;
+            -webkit-animation-iteration-count: infinite;
+            -webkit-animation-direction: linear;
+            opacity: 0.3
+        }
+
+        #appLoadingIndicator > :nth-child(1) {
+            -webkit-animation-delay: 0.18s;
+        }
+
+        #appLoadingIndicator > :nth-child(2) {
+            -webkit-animation-delay: 0.42s;
+        }
+
+        #appLoadingIndicator > :nth-child(3) {
+            -webkit-animation-delay: 0.54s;
+        }
+
+        @-webkit-keyframes appLoadingIndicator{
+            0% {
+                opacity: 0.3
+            }
+
+            50% {
+                opacity: 1;
+                background-color:#9E4199
+            }
+
+            100% {
+                opacity:0.3
+            }
+        }
+    </style>
+
+<link rel="stylesheet" href="touch/resources/css/mayfest-map.css" />    
+<script type="text/javascript" src="touch/sencha-touch-all.js"></script>
+<script type="text/javascript" src="mayfest.js"></script>
+
+<!--	<script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="app/model/Attraction.js"></script>
+    <script type="text/javascript" src="app/model/Category.js"></script>
+    <script type="text/javascript" src="app/model/Event.js"></script>
+    <script type="text/javascript" src="app/model/Location.js"></script>
+    <script type="text/javascript" src="app/store/Attractions.js"></script>
+    <script type="text/javascript" src="app/store/OfflineAttractions.js"></script>
+    <script type="text/javascript" src="app/store/Categories.js"></script>
+    <script type="text/javascript" src="app/store/OfflineCategories.js"></script>
+    <script type="text/javascript" src="app/store/CategoryAttractions.js"></script>
+    <script type="text/javascript" src="app/store/CategoryEvents.js"></script>
+    <script type="text/javascript" src="app/store/OfflineEvents.js"></script>
+    <script type="text/javascript" src="app/store/Events.js"></script>
+    <script type="text/javascript" src="app/store/EventList.js"></script>
+    <script type="text/javascript" src="app/store/Locations.js"></script>
+    <script type="text/javascript" src="app/store/OfflineLocations.js"></script>
+    <script type="text/javascript" src="app/view/AttractionLeaf.js"></script>
+    <script type="text/javascript" src="app/view/Attractions.js"></script>
+    <script type="text/javascript" src="app/view/Categories.js"></script>
+    <script type="text/javascript" src="app/view/CategoriesList.js"></script>
+    <script type="text/javascript" src="app/view/CategoriesNav.js"></script>
+    <script type="text/javascript" src="app/view/Map.js"></script>
+    <script type="text/javascript" src="app/view/Home.js"></script>
+    <script type="text/javascript" src="app/view/EventTabs.js"></script>
+    <script type="text/javascript" src="app/view/Events.js"></script>
+    <script type="text/javascript" src="app/view/EventCategories.js"></script>
+    <script type="text/javascript" src="app/view/MainUI.js"></script>
+    <script type="text/javascript" src="app/view/Viewport.js"></script>
+    <script type="text/javascript" src="app/controller/Main.js"></script>
+    <script type="text/javascript" src="app/controller/Attraction.js"></script>
+    <script type="text/javascript" src="app/controller/Event.js"></script>
+    <script type="text/javascript" src="app/controller/Map.js"></script>-->
+
+</head>
+<body>
+    <div id="appLoadingIndicator">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</body>
+</html>
+

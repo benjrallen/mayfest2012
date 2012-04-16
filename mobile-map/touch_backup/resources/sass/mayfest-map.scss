@@ -1,0 +1,43 @@
+
+$base-blue:		#14A4CA;
+$base-purple:	#9E4199;
+$base-teal:		#00B4B7;
+$base-orange: 	#E27F00;
+$base-yellow: 	#E5D700;
+$base-red: 		#D93C38;
+
+
+//$base-color: darken( $base-purple, 10% );
+$base-color: #333;
+
+$include-toolbar-uis: false;
+$include-tabbar-uis: false;
+$list-active-gradient: 'none';
+$list-active-color: desaturate( lighten( $base-blue, 20% ), 30% );
+$list-pressed-color: desaturate( lighten( $base-blue, 20% ), 30% );
+$list-header-bg-color: desaturate( lighten($base-blue, 0% ), 30% );
+$list-header-gradient: 'none';
+$page-bg-color: #fefefe;
+
+@import 'sencha-touch/default/all';
+
+
+@include sencha-panel;
+@include sencha-buttons;
+@include sencha-sheet;
+@include sencha-picker;
+@include sencha-tabs;
+@include sencha-toolbar;
+@include sencha-toolbar-forms;
+@include sencha-indexbar;
+@include sencha-list;
+@include sencha-list-paging;
+@include sencha-list-pullrefresh;
+@include sencha-layout;
+@include sencha-carousel;
+@include sencha-form;
+@include sencha-msgbox;
+@include sencha-loading-spinner;
+
+
+@import 'mayfest-app';

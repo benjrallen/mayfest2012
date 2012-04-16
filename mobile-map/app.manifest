@@ -1,11 +1,11 @@
 CACHE MANIFEST
 
-# Mayfest App version 0.1.0
+# Mayfest App version 0.1.1
 
-index.php
+index.html
 
 mayfest.js 
-touch/sencha-touch-all.js
+touch/mayfest-sencha-touch-all.js
 
 touch/resources/css/mayfest-map.css
 

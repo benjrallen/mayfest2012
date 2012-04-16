@@ -19,24 +19,31 @@ $list-header-bg-color: desaturate( lighten($base-blue, 0% ), 30% );
 $list-header-gradient: 'none';
 $page-bg-color: #fefefe;
 
+//buttons.scss
+$include-default-icons: false;
+$include-button-uis: false;
+
+
+
+
 @import 'sencha-touch/default/all';
 
 
 @include sencha-panel;
 @include sencha-buttons;
-@include sencha-sheet;
-@include sencha-picker;
+//@include sencha-sheet;
+//@include sencha-picker;
 @include sencha-tabs;
 @include sencha-toolbar;
-@include sencha-toolbar-forms;
+//@include sencha-toolbar-forms;
 @include sencha-indexbar;
 @include sencha-list;
-@include sencha-list-paging;
-@include sencha-list-pullrefresh;
+//@include sencha-list-paging;
+//@include sencha-list-pullrefresh;
 @include sencha-layout;
-@include sencha-carousel;
+//@include sencha-carousel;
 @include sencha-form;
-@include sencha-msgbox;
+//@include sencha-msgbox;
 @include sencha-loading-spinner;
 
 

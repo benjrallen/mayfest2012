@@ -5,6 +5,8 @@
 
 @include pictos-iconmask('mayfest-logo');
 @include pictos-iconmask('list');
+@include pictos-iconmask('star');
+@include pictos-iconmask('maps');
 //@include pictos-iconmask('circle2');
 //@include pictos-iconmask('download');
 
@@ -120,10 +122,87 @@
 //@include mayfest-tabbar-ui('light', $tabs-light, 'none', $tabs-light-active);
 
 
-
+@mixin mobile-sprite{
+	background: url('../../../img/mobile-sprite-8.png') no-repeat;
+}
 
 .home{
-	background: #badaff;
+	//background: lighten( desaturate( $base-blue, 40% ), 50% );
+	background: #fefefe;
+	
+	& .x-innerhtml{
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	
+	& .line{
+		height: 100%;
+		width: 1px;
+		margin-left: -1px;
+	}
+	& .line, & .home-wrap{
+		@include inline-block;
+	}
+	
+	& .home-wrap{
+		width: 100%;
+		text-align: center;
+	}
+	
+	& h1, & p, & h2, & a, & .sponsored-by, & .logo{
+		display: block;	
+		margin-left: auto;
+		margin-right: auto;
+	}
+	
+	& .logo{
+		//background: $base-blue;
+		
+		& h1{
+			@include mobile-sprite;
+			background-position: 0 0;
+			width: 198px;
+			height: 123px;
+			text-indent: -9999em;
+			margin-bottom: 1em;
+		}
+		& p{
+			font-size: 80%;
+			width: 198px;
+		}
+		
+		& h1, & p{
+		}
+	}
+	
+	& .sponsored-by{
+		margin-top: 2em;
+		//background: $base-red;
+		//text-align: center;
+		width: 159px;
+		
+		& h2{
+			font-size: 70%;
+			margin-bottom: 0.5em;
+		}
+		& a{
+			@include mobile-sprite;
+			background-position: 0 -153px;
+			width: 159px;
+			height: 48px;
+			text-indent: -9999em;
+			
+			&:hover{
+				opacity: 0.7;	
+			}
+			&:active{
+				opacity: 1;
+			}
+		}
+	}
 }
 
 
