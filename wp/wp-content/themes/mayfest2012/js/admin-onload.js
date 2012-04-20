@@ -167,7 +167,7 @@ try{
 
 					//data = flattenNestedData( data, 'children' );
 
-					console.log( data );
+					//console.log( data );
 
 
 					$.each(data, makeOption);
