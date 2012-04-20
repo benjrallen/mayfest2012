@@ -66,7 +66,7 @@ try{
 			//
 
 			//make a simple call
-			$.get( 
+			$.getJSON( 
 				apiUrl + file,
 				function(data){
 
@@ -156,7 +156,7 @@ try{
 			//
 
 			//make a simple call
-			$.get( 
+			$.getJSON( 
 				apiUrl + file,
 				function(data){
 
@@ -251,7 +251,7 @@ try{
 			//
 			
 			//make a simple call
-			$.get( 
+			$.getJSON( 
 				apiUrl + file,
 				function(data){
 					//console.log( 'data gotten', data, flatData );
@@ -314,7 +314,7 @@ try{
 			loadingMsg.insertAfter(locInput);
 			
 			//make a simple call
-			$.get( 
+			$.getJSON( 
 				apiUrl + file,
 				function(data){
 					//hide the loading message
