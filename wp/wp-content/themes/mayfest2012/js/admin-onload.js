@@ -13,7 +13,6 @@ try{
     }
 }
 
-
 (function($){
 	
 	$(document).ready(function(){
@@ -74,7 +73,7 @@ try{
 					//hide the loading message
 					loadingMsg.hide();
 
-					data = flattenNestedData( data, 'children' );
+					//data = flattenNestedData( data, 'children' );
 
 					$.each(data, makeOption);
 
@@ -163,8 +162,13 @@ try{
 
 					//hide the loading message
 					loadingMsg.hide();
+					
+					//console.log( data );
 
-					data = flattenNestedData( data, 'children' );
+					//data = flattenNestedData( data, 'children' );
+
+					console.log( data );
+
 
 					$.each(data, makeOption);
 
