@@ -27,11 +27,11 @@ Ext.define('Mayfest.model.Event', {
                 		//if time is not defined, define it as 12:01 AM
                 		!record.data.mayfest_event_time || record.data.mayfest_event_time === '' ?
                 			dateStr += ' 12:01AM' :
-                			dateStr += ' ' + record.data.mayfest_event_time
+                			dateStr += ' ' + record.data.mayfest_event_time;
 	                	
 	                	var dt = Ext.Date.parse(dateStr, this._dateFormat);
 	                	
-	                	console.log( 'date converting', this, record, dateStr, dt );
+	                	//console.log( 'date converting', this, record, dateStr, dt );
 	                	
 	                	return dt;
 	                	
