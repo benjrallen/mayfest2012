@@ -178,6 +178,8 @@ Ext.define('Mayfest.controller.Event', {
 				
 				var data = items[i].data;
 				
+				console.log( data );
+				
 				//push each separate day into the eventDays array
 				if ( data.date ) {
 					//create the entry if it doesn't yet exist
