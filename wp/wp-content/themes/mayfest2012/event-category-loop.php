@@ -8,7 +8,8 @@
     //$cat = get_term( $cat_id, 'attraction_category' );
       
     //print_r( $cat );
-  
+  	
+  	global $prefix;
   
     query_posts(array(
       'paged' => get_query_var('page'),
@@ -22,8 +23,9 @@
     			//'operator' => 'IN'
     		)
     	),
+    	'meta_key' => $prefix . 'event_day',
     	'order' => 'ASC',
-    	'orderby' => 'date modified'
+    	'orderby' => 'meta_value date'
     	     
     ));
     

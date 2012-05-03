@@ -1716,6 +1716,9 @@ if( class_exists( 'MetaBoxTemplate' )){
     $day = get_post_meta($post->ID, $prefix . 'event_day', true);
     $time = get_post_meta($post->ID, $prefix . 'event_time', true);
     
+    
+    //$day = str_replace('-','/',$day);
+    
     //get_post_meta($post->ID, $v, true)
     
     if( !empty( $day ) ){
@@ -1726,14 +1729,13 @@ if( class_exists( 'MetaBoxTemplate' )){
         $day .= ' '.$time;
         $format = 'm-d-Y g:iA';
         $date = DateTime::createFromFormat( $format, $day );
-        echo $date->format( 'g:iA' ).' - '.$date->format( 'l, F g' );
+        echo $date->format( 'g:iA' ).' - '.$date->format( 'l, F j' );
+
       } else {
         $format = 'm-d-Y';
         $date = DateTime::createFromFormat( $format, $day );
-        //echo $day;
-        //print_r( $date );
         
-        echo $date->format( 'l, F g' );
+        echo $date->format( 'l, F j' );
       }
       
     } else {
