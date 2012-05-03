@@ -1761,6 +1761,59 @@ if( class_exists( 'MetaBoxTemplate' )){
   }
 
 
+//to build out attraction info
+function mayfest_attraction_meta(){
+	global $post;
+	
+			//do the post meta lookup here
+			global $prefix;
+			$metas = array(
+			  'First Name'        => $prefix . 'att_first_name',
+			  'Last Name'         => $prefix . 'att_last_name',
+			  'Partner First Name'=> $prefix . 'att_first_name_partner',
+			  'Partner Last Name' => $prefix . 'att_last_name_partner',
+			  'City'              => $prefix . 'att_city',
+			  'State'             => $prefix . 'att_state',
+			  
+			);
+			
+			foreach( $metas as $k => $v ){
+			  	$metas[ $k ] = get_post_meta($post->ID, $v, true);
+		        if( empty( $metas[$k] ) )
+		          unset( $metas[$k] );
+			}
+		
+			if( !empty($metas) ){
+
+	        	//and the partner names
+	  			if( isset($metas['Partner First Name']) && isset($metas['Partner Last Name']) ){
+	  			 	//$metas['Partner Name'] = $metas['Partner First Name'].' '.$metas['Partner Last Name'];
+	  			 	$metas = array( 'Partner' => $metas['Partner First Name'].' '.$metas['Partner Last Name'] ) + $metas;
+	          		unset($metas['Partner First Name']);
+	          		unset($metas['Partner Last Name']);
+	  			}
+	  			//combine the names
+	  			if( isset($metas['First Name']) && isset($metas['Last Name']) ){
+	  			  	//$metas['Name'] = $metas['First Name'].' '.$metas['Last Name'];
+	  			 	$metas = array( 'Name' => $metas['First Name'].' '.$metas['Last Name'] ) + $metas;
+	     			unset($metas['First Name']);
+	          		unset($metas['Last Name']);
+	  			}
+				
+				//make a container
+				echo '<div class="attraction-meta">';
+	  			foreach( $metas as $k => $v ){
+				    echo  '<div class="piece">'.
+				            '<span class="label">'.$k.': </span>'.
+				            '<span class="value">'.$v.'</span>'.
+				          '</div>';
+	  			}
+	  			echo '</div>';
+	     	 }
+	
+}
+
+
 //use this to add a keyed value to the beginning of an array
 function array_unshift_assoc(&$arr, $key, $val) { 
     $arr = array_reverse($arr, true); 

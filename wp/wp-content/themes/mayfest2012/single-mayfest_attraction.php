@@ -43,7 +43,10 @@ get_header(); ?>
 					// echo '<div><span>'.$thumbTitle.'</span></div>';
 				echo '</div>';
 			}
-			
+
+			mayfest_attraction_meta();
+
+/*			
 			//do the post meta lookup here
 			global $prefix;
 			$metas = array(
@@ -89,6 +92,7 @@ get_header(); ?>
 	  			}
 	  			echo '</div>';
 	     	 }
+*/
 		?>
 
 		<div class="entry-full">
