@@ -21,7 +21,9 @@ Ext.define('Mayfest.controller.Map', {
 		
 		Mayfest.ui.mapController = me;
 		
-		//console.log('Map Controller Init', this.getMapPanel() );
+		console.log('Map Controller Init', Mayfest.paths.isDeployed() );
+		
+		me.guruLogoString =  this.pathPre+ '0' + this.pathSuf + "img/guruLogoAlpha256.png";
 		
 	},
 	
@@ -52,7 +54,10 @@ Ext.define('Mayfest.controller.Map', {
 
 	//cache it to keep phone from calling this function ten thousand times
 	//  TEMPORARY use for development
-	basePath: Mayfest.paths.base(),
+	//basePath: Mayfest.paths.base(),
+
+	pathPre: Mayfest.paths.isDeployed() ? 'http://i' : 'http://mayfesti',
+	pathSuf: Mayfest.paths.isDeployed() ? '.mayfestmobile.com/' : '.gurustudev.com/',
 
 	//some stuff we only want to run once on activate
 	canvasIsActivated: false,
@@ -122,8 +127,13 @@ Ext.define('Mayfest.controller.Map', {
     zoom:		1,	
 	
 
-    //watch the url strings here on launch!!
-	guruLogoString: "http://mayfestmobile.com/img/guruLogoAlpha256.png",
+    //watch the url strings here on launch!!... logo string set in init.
+	//guruLogoString: "http://mayfestmobile.com/img/guruLogoAlpha256.png",
+	//guruLogoString: this.pathPre+ '0' + this.pathSuf + "img/guruLogoAlpha256.png",
+	guruLogoString: null,
+
+		//return this.pathPre+ sub + this.pathSuf + "img/map/tiles/pngbatch/" + z + "_" + x + "_" + y + ".png";
+
 
     //watch the url strings here on launch!!
     getTileString: function(x,y,z){
@@ -132,10 +142,12 @@ Ext.define('Mayfest.controller.Map', {
 		
 		//random number function for image subdomains for map loading
 		
-		//var sub = this.rand(5);
+		var sub = this.rand(6);
 		//var url = "http://i"+sub+".mayfestmobile.com/img/map/tiles/pngbatch/" + z + "_" + x + "_" + y + ".png";
-		return this.basePath + "mobile-map/img/map/tiles/pngbatch/" + z + "_" + x + "_" + y + ".png";
-		        
+		//return this.basePath + "mobile-map/img/map/tiles/pngbatch/" + z + "_" + x + "_" + y + ".png";
+		//console.log( this.pathPre+ sub + this.pathSuf + "img/map/tiles/pngbatch/" + z + "_" + x + "_" + y + ".png" );
+		return this.pathPre+ sub + this.pathSuf + "img/map/tiles/pngbatch/" + z + "_" + x + "_" + y + ".png";
+				        
 		//return url;
     },
     

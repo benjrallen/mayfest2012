@@ -35,10 +35,13 @@ Ext.ns('Mayfest', 'Mayfest.paths', 'Mayfest.ui.nav', 'Mayfest.ui.navBar', 'Mayfe
 Mayfest.times.offlineTimeout = 10000;
 
 //alert( navigator.onLine );
+Mayfest.paths.isDeployed = function(){
+	console.log( 'isDeployed', ( window.location.href.indexOf( 'gurustudev' ) < 0 && window.location.href.indexOf( 'localhost' ) < 0 ));
+	return ( window.location.href.indexOf( 'gurustudev' ) < 0 && window.location.href.indexOf( 'localhost' ) < 0 );	
+};
 
 Mayfest.paths.base = function(){
 	
-	//console.log( 'BASE PATH', window.location.href );
 	if( window.location.href.indexOf( 'gurustudev' ) > -1 ){
 		//check for ben's or review repo
 		return	( window.location.href.indexOf( 'review' ) > -1 ?
@@ -50,6 +53,7 @@ Mayfest.paths.base = function(){
 	} else {
 		return 'http://www.tulsamayfest.org/';
 	}
+
 };
 
 //Mayfest.data.remotePath = 'http://gurustudev.com/~ben/mayfest2012/wp/wp-content/themes/mayfest2012/app_cache/';
