@@ -59,6 +59,21 @@ get_header(); ?>
 	 * called loop-archives.php and that will be used instead.
 	 */
 	 get_template_part( 'loop', 'sponsor' );
+	 
+	 
+	 $page = get_page_by_title( 'Sponsors' );
 ?>
+
+<article id="post-<?php echo $page->ID ?>" class="hentry">
+	<div class="entry-content clearfix">
+		<div class="entry-full">
+			<?php 
+				echo apply_filters('the_content', $page->post_content);
+			?>
+		</div>		
+	</div><!-- .entry-content -->
+</article><!-- #post-## -->
+
+
 <div class="clearfix"></div>
 <?php get_footer(); ?>

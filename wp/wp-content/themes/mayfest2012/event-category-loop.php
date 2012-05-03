@@ -21,7 +21,10 @@
     			'terms' => $cat_id
     			//'operator' => 'IN'
     		)
-    	)      
+    	),
+    	'order' => 'ASC',
+    	'orderby' => 'date modified'
+    	     
     ));
     
     //if( have_posts() ) : while( have_posts() ) : the_post();
