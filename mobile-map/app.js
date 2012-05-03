@@ -36,7 +36,7 @@ Mayfest.times.offlineTimeout = 10000;
 
 //alert( navigator.onLine );
 Mayfest.paths.isDeployed = function(){
-	console.log( 'isDeployed', ( window.location.href.indexOf( 'gurustudev' ) < 0 && window.location.href.indexOf( 'localhost' ) < 0 ));
+	//console.log( 'isDeployed', ( window.location.href.indexOf( 'gurustudev' ) < 0 && window.location.href.indexOf( 'localhost' ) < 0 ));
 	return ( window.location.href.indexOf( 'gurustudev' ) < 0 && window.location.href.indexOf( 'localhost' ) < 0 );	
 };
 

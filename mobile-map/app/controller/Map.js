@@ -21,7 +21,7 @@ Ext.define('Mayfest.controller.Map', {
 		
 		Mayfest.ui.mapController = me;
 		
-		console.log('Map Controller Init', Mayfest.paths.isDeployed() );
+		//console.log('Map Controller Init', Mayfest.paths.isDeployed() );
 		
 		me.guruLogoString =  this.pathPre+ '0' + this.pathSuf + "img/guruLogoAlpha256.png";
 		
