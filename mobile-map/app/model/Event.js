@@ -31,7 +31,7 @@ Ext.define('Mayfest.model.Event', {
 	                	
 	                	var dt = Ext.Date.parse(dateStr, this._dateFormat);
 	                	
-	                	//console.log( 'date converting', this, record, dt );
+	                	console.log( 'date converting', this, record, dateStr, dt );
 	                	
 	                	return dt;
 	                	
