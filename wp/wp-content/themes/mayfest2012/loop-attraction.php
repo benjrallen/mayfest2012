@@ -44,6 +44,7 @@
 	<?php if ( is_archive() || is_search() ) : // Only display excerpts for archives and search. ?>
 			<div class="entry-summary">
 				<?php the_excerpt(); ?>
+				<?php //the_content( __( 'Read More <span class="meta-nav">&rarr;</span>', 'boilerplate' ) ); ?>
 				<div class="clearfix"></div>
 			</div><!-- .entry-summary -->
 	<?php else : ?>
