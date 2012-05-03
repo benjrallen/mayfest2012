@@ -207,9 +207,10 @@ Ext.define('Mayfest.controller.Event', {
 								};
 						}
 					}
-				
+					
 					data = null;
 				}
+				
 			}
 			
 			//day = null;
@@ -221,7 +222,7 @@ Ext.define('Mayfest.controller.Event', {
 		//sort the keys
 		eventDayKeys.sort();
 		
-		//console.log('event days', Mayfest.ui.EventController.eventDays, Mayfest.ui.EventController.eventDayKeys);
+		console.log('event days', Mayfest.ui.EventController.eventDays, Mayfest.ui.EventController.eventDayKeys);
 		
 		//add the panels
 		Mayfest.ui.EventController.addEventTabs();
@@ -243,7 +244,7 @@ Ext.define('Mayfest.controller.Event', {
 			var key = this.eventDayKeys[i],
 				day = this.eventDays[key];
 				
-			//console.log( key, day );
+			console.log( key, day );
 			
 			
 			//add the panels
