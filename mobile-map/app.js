@@ -32,7 +32,7 @@ Ext.define('Ext.overrides.Connection', {
 
 Ext.ns('Mayfest', 'Mayfest.paths', 'Mayfest.ui.nav', 'Mayfest.ui.navBar', 'Mayfest.ui.mainPanel', 'Mayfest.ui.map', 'Mayfest.ui.mapController', 'Mayfest.ui.EventController', 'Mayfest.ui.MainController','Mayfest.ui.AttractionController', 'Mayfest.ui.templates', 'Mayfest.ui.currentLocation', 'Mayfest.times.offlineTimeout');
 
-Mayfest.times.offlineTimeout = 10000;
+Mayfest.times.offlineTimeout = 25000;
 
 //alert( navigator.onLine );
 Mayfest.paths.isDeployed = function(){
